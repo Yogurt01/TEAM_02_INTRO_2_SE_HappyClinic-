@@ -13,7 +13,7 @@ body{
     border:solid black;
     border-radius: 5px;
     width:40vw;
-    height:80vh;
+    height:70vh;
     padding:20px;
 }
 .big-form{
@@ -27,7 +27,7 @@ body{
     margin: 10px 0px;
     width:80%;
     align-self: center;
-    height:20px;
+    height:25px;
 }
 .small-form {
     display: flex;
@@ -46,6 +46,22 @@ body{
     border:none;
 }
 .submit-btn:hover{
-    transform: scale(1.2);
-    transition: transform 0.1s;
+    transform: scale(1.05);
+    transition: transform 0.3s;
+}
+p{
+    align-self: center;
+}
+.form-container-login{
+    display:flex;
+    flex-direction: column;
+    border:solid black;
+    border-radius: 5px;
+    width:40vw;
+    height:50vh;
+    padding:20px;
+}
+.login{
+    align-self: center;
+    justify-content: center;
 }
