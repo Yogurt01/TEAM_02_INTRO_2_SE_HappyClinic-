@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/styles/signin.css">
+</head>
+<body>
+    <h1 class="title">Log in</h1>
+    <div class="form-container-login">
+        <div class="error">
+            <% if (error) { %>
+                <div class="alert alert-danger" role="alert">
+                    <%= error %>
+                </div>
+            <% } %>
+        </div>
+        <form method="POST" action="/auth/login" class="big-form login">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit" class="submit-btn" >Login</button>
+        </form>
+        <p class="text-center mt-3">
+            Don't have an account? <a href="/auth/register">Register</a>
+        </p>
+    </div>
+</body>
+</html>
