@@ -52,3 +52,16 @@ body{
 p{
     align-self: center;
 }
+.form-container-login{
+    display:flex;
+    flex-direction: column;
+    border:solid black;
+    border-radius: 5px;
+    width:40vw;
+    height:50vh;
+    padding:20px;
+}
+.login{
+    align-self: center;
+    justify-content: center;
+}

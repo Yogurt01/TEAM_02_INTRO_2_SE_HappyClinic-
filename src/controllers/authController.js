@@ -2,7 +2,6 @@ const User = require('../models/user');
 const jwt = require('../config/jwt');
 
 exports.getLogin = (req, res) => {
-    console.log('redirecting to login')
     res.render('login', { error: null });
 };
 
