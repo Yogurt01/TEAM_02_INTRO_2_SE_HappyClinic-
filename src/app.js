@@ -19,8 +19,9 @@ app.use(cookieParser());
 app.use(express.static('public')); 
 
 connectDB()
-
-app.use('/',authController.getRegister)
+app.get('/', (req, res) => {
+  res.redirect('/auth/register');
+});
 app.use('/auth', authRoutes);
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
