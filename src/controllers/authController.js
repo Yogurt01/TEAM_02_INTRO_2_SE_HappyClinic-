@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const jwt = require('../config/jwt');
-
+const bcrypt = require('bcryptjs');
+require('dotenv')
 exports.getLogin = (req, res) => {
     res.render('login', { error: null });
 };
@@ -11,16 +12,35 @@ exports.getRegister = (req, res) => {
 
 exports.postRegister = async (req, res) => {
     const { username, password, email, birth, gender, CCCD } = req.body;
+
     try {
+        // Check if the username already exists
         const userExists = await User.findOne({ username });
         if (userExists) {
             return res.render('register', { error: 'Username already exists' });
         }
 
-        const newUser = new User({ username, password, email, birth, gender, CCCD });
+        // Hash the password before saving it
+        const hashedPassword = await bcrypt.hash(password, parseInt(process.env.SALT_ROUNDS)); // 10 is the salt rounds
+
+        // Create a new user with the hashed password
+        const newUser = new User({
+            username,
+            password: hashedPassword,
+            email,
+            birth,
+            gender,
+            CCCD
+        });
+
+        // Save the new user to the database
         await newUser.save();
+        console.log('User saved successfully');
+
+        // Redirect to the login page
         res.redirect('/auth/login');
     } catch (err) {
+        console.error('Error during registration:', err); // Log the actual error
         res.render('register', { error: 'An error occurred while creating your account. Please try again later.' });
     }
 };
