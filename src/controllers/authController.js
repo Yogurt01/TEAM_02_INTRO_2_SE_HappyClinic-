@@ -20,13 +20,10 @@ exports.postRegister = async (req, res) => {
             return res.render('register', { error: 'Username already exists' });
         }
 
-        // Hash the password before saving it
-        const hashedPassword = await bcrypt.hash(password, parseInt(process.env.SALT_ROUNDS)); // 10 is the salt rounds
-
         // Create a new user with the hashed password
         const newUser = new User({
             username,
-            password: hashedPassword,
+            password,
             email,
             birth,
             gender,
