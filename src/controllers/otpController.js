@@ -1,7 +1,9 @@
 const otpStore = require('../models/otpStore')
 const { MongoClient } = require('mongodb');
-require('dotenv').config
+const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+require('dotenv').config
+require('mongoose')
 exports.verifyOTP = async (req, res) => {
     const { email, otp } = req.body;
     if (!email || !otp) {
@@ -26,25 +28,20 @@ exports.verifyOTP = async (req, res) => {
     otpStore.deleteOtp(email);
   
     try {
-      const client = new MongoClient(process.env.MONGO_URI);
-      await client.connect();
-      const db = client.db('Restaurant');
-      const customers = db.collection('customer');
-
       // Insert new user into the database
-      const { name, phone, address, password } = req.session.registrationData; // Use session to store user data temporarily
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const { username,password,gender,CCCD,birth,email } = req.session.registrationData; // Use session to store user data temporarily
       console.log(req.session.registrationData)
-      const newUser = {
-        name,
-        email,
-        phone,
-        address,
-        password: hashedPassword,
-      };
-      await customers.insertOne(newUser);
+      const newUser = new User({
+        username:username,
+        password:password,
+        email:email,
+        birth:birth,
+        gender:gender,
+        CCCD:CCCD
+      });
+      await newUser.save();
   
-      res.render('login', { title: 'Login', successMessage: 'Registration successful! Please log in.' });
+      res.render('login', { title: 'Login', successMessage: 'Registration successful! Please log in.',error:'none' });
     } catch (err) {
       console.error(err);
       res.render('otpConfirm', { title: 'OTP Confirmation', email, errorMessage: 'Failed to complete registration. Please try again.' });

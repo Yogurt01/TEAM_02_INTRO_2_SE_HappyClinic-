@@ -32,6 +32,7 @@ exports.postRegister = async (req, res) => {
             gender,
             CCCD
         });
+        
         console.log(newUser)
         const otp = otpGenerator.generate(6, {
             upperCaseAlphabets: false,
@@ -57,13 +58,14 @@ exports.postRegister = async (req, res) => {
            subject: 'Your OTP for Registration',
            text: `Your OTP is ${otp}. It is valid for 5 minutes.`,
         });
-        // req.session.registrationData = {
-        //   name: req.body.name,
-        //   email: req.body.email,
-        //   phone: req.body.phone,
-        //   address: req.body.address,
-        //   password: req.body.password
-        //   };
+        req.session.registrationData = {
+          username: req.body.username,
+          email: req.body.email,
+          gender:req.body.gender,
+          birth: req.body.birth,
+          password: req.body.password,
+          CCCD:req.body.CCCD
+        };
          // Redirect to OTP confirmation page
         res.render('otpConfirm', { title: 'OTP Confirmation',errorMessage:'none', email });
     } catch (err) {
