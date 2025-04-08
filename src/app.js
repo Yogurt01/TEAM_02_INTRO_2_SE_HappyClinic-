@@ -20,7 +20,7 @@ app.use(express.static('public'));
 
 connectDB()
 app.get('/', (req, res) => {
-  res.redirect('/auth/register');
+  res.redirect('/auth/login');
 });
 app.use('/auth', authRoutes);
 const PORT = process.env.PORT;
