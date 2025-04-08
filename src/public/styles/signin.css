@@ -65,3 +65,7 @@ p{
     align-self: center;
     justify-content: center;
 }
+.gg-btn{
+    background-color: rgb(130, 20, 20);
+    color:white;
+}
