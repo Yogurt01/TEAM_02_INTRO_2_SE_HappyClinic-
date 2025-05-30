@@ -68,4 +68,14 @@ p{
 .gg-btn{
     background-color: rgb(130, 20, 20);
     color:white;
+    justify-content: center;
+    align-self: center;
+}
+.gg-a{
+    width:40vw;
+    height:50vh;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
 }
