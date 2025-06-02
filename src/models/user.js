@@ -1,14 +1,40 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 require('dotenv')
+const AddressSchema = new mongoose.Schema({
+  houseNumber: {
+    type: String,
+    required: true  // số nhà, ví dụ "123"
+  },
+  street: {
+    type: String,
+    required: true  // tên đường, ví dụ "Đường Lê Lợi"
+  },
+  ward: {
+    type: String,
+    required: true  // phường/xã, ví dụ "Phường Bến Thành"
+  },
+  district: {
+    type: String,
+    required: true  // quận/huyện, ví dụ "Quận 1"
+  },
+  city: {
+    type: String,
+    required: true  // tỉnh/thành phố, ví dụ "TP. Hồ Chí Minh"
+  }
+  });
+
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    email: {type:String, required:true, unique:true},
+    fullname: {type:String, required:false}, 
     birth: {type:Date, required: true},
+    email: {type:String, required:true, unique:true},
     gender: {type:String, required:true},
     CCCD: {type:String, required:true, unique:true},
-    role:{type:String,default:'patient'}
+    role:{type:String,default:'patient'},
+    phone: {type:String, required:false, unique:true}, 
+    address: { type: AddressSchema, required: false }
 });
 
 // Hash mật khẩu trước khi lưu
