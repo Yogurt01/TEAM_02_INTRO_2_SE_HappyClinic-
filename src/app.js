@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const session = require("express-session");
 const passport = require("passport");
 require('dotenv')
+require('./config/passport')(); // <-- This initializes and registers the Google strategy
 
 const app = express();
 
