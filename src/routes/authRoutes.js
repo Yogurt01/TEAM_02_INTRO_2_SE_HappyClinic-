@@ -14,7 +14,7 @@ router.get("/google",
 router.get("/google/callback", 
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
-    const user = req.user;
+    const {user} = req;
 
     // Tạo JWT từ user info
     const token = jwtLib.generateToken({ id: user.id, name: user.displayName });
