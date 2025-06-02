@@ -7,6 +7,7 @@ const User = require('../models/user');
 exports.getProfile = async (req, res) => {
   try {
     // authenticateToken đã gán req.user = { id, username }
+
     const userId = req.user.id;
     if (!userId) {
       return res.redirect('/auth/login');
@@ -125,27 +126,6 @@ exports.postEditProfile = async (req, res) => {
 };
 
 
-/**
- * POST /profile/delete
- * Xử lý xoá tài khoản
- */x
-exports.postDeleteProfile = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    if (!userId) {
-      return res.redirect('/auth/login');
-    }
 
-    // Xóa document user
-    await User.findByIdAndDelete(userId);
 
-    // Xóa cookie chứa JWT (đăng xuất)
-    res.clearCookie('token');
 
-    // Redirect về trang đăng ký
-    return res.redirect('/auth/register');
-  } catch (err) {
-    console.error('Lỗi postDeleteProfile:', err);
-    return res.redirect('/');
-  }
-};

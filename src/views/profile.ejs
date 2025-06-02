@@ -1,3 +1,4 @@
+<!-- views/profile.ejs -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -101,60 +102,65 @@
         />
       </div>
 
-      <!-- Địa chỉ (nested fields) -->
+      <!-- Địa chỉ (nested fields) với placeholder và label rõ ràng -->
       <div>
         <label class="block font-medium text-gray-700 mb-2">Địa chỉ</label>
         <div class="grid grid-cols-1 gap-4">
-          <!-- House Number -->
+          <!-- Số nhà -->
           <div>
+            <label class="block text-gray-600">Số nhà</label>
             <input
               type="text"
               name="houseNumber"
-              placeholder="Số nhà"
+              placeholder="Ví dụ: 123, 45/2, 1A"
               value="<%= user.address.houseNumber || '' %>"
               class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               required
             />
           </div>
-          <!-- Street -->
+          <!-- Đường / Thôn / Xóm -->
           <div>
+            <label class="block text-gray-600">Đường / Thôn / Xóm</label>
             <input
               type="text"
               name="street"
-              placeholder="Đường"
+              placeholder="Ví dụ: Đường Lê Lợi, Thôn 5"
               value="<%= user.address.street || '' %>"
               class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               required
             />
           </div>
-          <!-- Ward -->
+          <!-- Xã / Phường -->
           <div>
+            <label class="block text-gray-600">Xã / Phường</label>
             <input
               type="text"
               name="ward"
-              placeholder="Phường/Xã"
+              placeholder="Ví dụ: Phường Bến Thành"
               value="<%= user.address.ward || '' %>"
               class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               required
             />
           </div>
-          <!-- District -->
+          <!-- Quận / Huyện -->
           <div>
+            <label class="block text-gray-600">Quận / Huyện</label>
             <input
               type="text"
               name="district"
-              placeholder="Quận/Huyện"
+              placeholder="Ví dụ: Quận 1, Huyện Thuận An"
               value="<%= user.address.district || '' %>"
               class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               required
             />
           </div>
-          <!-- City -->
+          <!-- Tỉnh / Thành phố -->
           <div>
+            <label class="block text-gray-600">Tỉnh / Thành phố</label>
             <input
               type="text"
               name="city"
-              placeholder="Tỉnh/Thành phố"
+              placeholder="Ví dụ: TP. Hồ Chí Minh, Bình Dương"
               value="<%= user.address.city || '' %>"
               class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               required
@@ -163,24 +169,14 @@
         </div>
       </div>
 
-      <div class="flex space-x-3 pt-4">
-        <!-- Nút Lưu thay đổi -->
+      <!-- Nút Lưu thay đổi -->
+      <div class="pt-4">
         <button
           type="submit"
           class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded"
         >
           Lưu thay đổi
         </button>
-
-        <!-- Nút Xoá tài khoản -->
-        <form action="/profile/delete" method="POST" onsubmit="return confirm('Bạn có chắc muốn xoá tài khoản?');">
-          <button
-            type="submit"
-            class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded"
-          >
-            Xoá tài khoản
-          </button>
-        </form>
       </div>
     </form>
   </div>
