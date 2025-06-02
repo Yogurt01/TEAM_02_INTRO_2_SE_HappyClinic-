@@ -4,10 +4,11 @@ const connectDB = require('./config/db')
 const authController = require('./controllers/authController')
 const authRoutes = require('./routes/authRoutes')
 const dashboardRoutes = require('./routes/dashboardRoutes')
+const profileRoutes = require('./routes/profileRoutes'); //profile
 const cookieParser = require('cookie-parser');
 const session = require("express-session");
 const passport = require("passport");
-require('dotenv')
+require('dotenv').config();
 
 const app = express();
 
@@ -36,12 +37,28 @@ app.use(session({
   cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }  // 1 day in milliseconds
 }));
 
+app.use((req, res, next) => {
+  const token = req.cookies.token;
+  if (token) {
+    try {
+      // verifyToken trả về payload như { id, username }
+      const payload = require('./config/jwt').verifyToken(token);
+      res.locals.user = payload;  
+    } catch (err) {
+      res.locals.user = null;
+    }
+  } else {
+    res.locals.user = null;
+  }
+  next();
+});
 
 connectDB()
 app.get('/', (req, res) => {
   res.redirect('/auth/login');
 });
 app.use('/auth', authRoutes);
+app.use('/profile', profileRoutes); //profile
 app.use('/', dashboardRoutes); 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
