@@ -20,7 +20,12 @@ router.get("/google/callback",
     const token = jwtLib.generateToken({ id: user.id, name: user.displayName });
 
     // Gán JWT vào cookie
-    res.cookie("token", token, { httpOnly: true });
+    res.cookie("token", token, { 
+      httpOnly: true, 
+      secure: true, 
+      sameSite: 'Lax', 
+      maxAge: 24 * 60 * 60 * 1000 // 1 day in milliseconds
+    });
 
     res.redirect("/dashboard");
   }
