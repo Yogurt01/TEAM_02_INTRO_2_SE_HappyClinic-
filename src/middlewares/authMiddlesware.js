@@ -9,6 +9,7 @@ const authenticateToken = (req, res, next) => {
 
     try {
         const user = jwt.verifyToken(token); // Giải mã token
+        console.log("decode user", user)
         req.user = user; // Gán user vào req.user
         next();
     } catch (error) {

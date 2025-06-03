@@ -1,9 +1,18 @@
 const jwt = require('jsonwebtoken');
 
-// Hàm tạo token
 exports.generateToken = (user) => {
-    // Tạo token với id và username của user
-    return jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' }); 
+    const fullName = user.displayName || `${user.name?.givenName || ''} ${user.name?.familyName || ''}`.trim();
+    const email =
+        user.email ||                         // already set on user
+        user.emails?.[0]?.value ||            // from Google profile
+        user._json?.email;
+    const payload = {
+        id: user.id , // or user._id if you're storing in DB
+        username: fullName,
+        email: email
+    };
+
+    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 };
 
 // Hàm xác thực token
