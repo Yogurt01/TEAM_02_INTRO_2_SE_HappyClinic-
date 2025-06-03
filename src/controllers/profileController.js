@@ -16,6 +16,7 @@ exports.getProfile = async (req, res) => {
 
     // Lấy toàn bộ document user (bao gồm nested address)
     const user = await User.findOne({ email: userEmail }).lean();
+    console.log('user', user)
     if (!user) {
       return res.redirect('/auth/login');
     }

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Thanh Toán VietQR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <%- include('partials/navbar') %>
+    <div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-2xl shadow-lg space-y-6">
+    <h2 class="text-2xl font-bold text-center text-blue-600">Tạo mã QR VietQR nhanh</h2>
+
+    <form action="/payment/generate" method="POST" class="space-y-4">
+        <div>
+        <label class="block text-sm font-medium text-gray-700">Số tiền (VNĐ):</label>
+        <input type="number" name="amount" required 
+                class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+        <label class="block text-sm font-medium text-gray-700">Nội dung:</label>
+        <input type="text" name="memo" required 
+                class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <button type="submit" 
+                class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200">
+        Tạo QR
+        </button>
+    </form>
+
+    <% if (qrUrl) { %>
+    <div class="text-center">
+        <h3 class="text-lg font-semibold text-green-600 mt-6">Mã QR của bạn:</h3>
+        <img src="<%= qrUrl %>" alt="QR thanh toán" class="mx-auto mt-4 border border-gray-300 rounded-md shadow-sm">
+    </div>
+    <% } %>
+    </div>
+
+</body>
+</html>
