@@ -28,12 +28,12 @@ const userSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     fullname: {type:String, required:false}, 
-    birth: {type:Date, required: true},
+    birth: {type:Date, required: false},
     email: {type:String, required:true, unique:true},
-    gender: {type:String, required:true},
-    CCCD: {type:String, required:true, unique:true},
+    gender: {type:String, required:false},
+    CCCD: {type:String, required:false},
     role:{type:String,default:'patient'},
-    phone: {type:String, required:false, unique:true}, 
+    phone: {type:String, required:false, unique:false}, 
     address: { type: AddressSchema, required: false }
 });
 

@@ -13,16 +13,10 @@ router.get("/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
-router.get("/google/callback", 
+router.get(
+  "/google/callback", 
   passport.authenticate("google", { failureRedirect: "/" }),
-  (req, res) => {
-    const {user} = req;
-    console.log(user)
-
-    const token = jwt.generateToken(user)
-    res.cookie('token', token, { httpOnly: true });
-    res.redirect("/dashboard");
-  }
+  authController.googleLogin
 );
 router.get('/login', authController.getLogin);
 router.post('/login', authController.postLogin);

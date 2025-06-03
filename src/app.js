@@ -2,15 +2,16 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const connectDB = require('./config/db')
 const authController = require('./controllers/authController')
-const authRoutes = require('./routes/authRoutes')
-const dashboardRoutes = require('./routes/dashboardRoutes')
-const profileRoutes = require('./routes/profileRoutes'); //profile
 const cookieParser = require('cookie-parser');
 const session = require("express-session");
 const passport = require("passport");
 require('dotenv').config();
 require('./config/passport')(); 
 
+const authRoutes = require('./routes/authRoutes')
+const dashboardRoutes = require('./routes/dashboardRoutes')
+const profileRoutes = require('./routes/profileRoutes'); //profile
+const paymentRoutes = require('./routes/paymentRoutes')
 const app = express();
 
 app.set('view engine', 'ejs')
@@ -60,6 +61,7 @@ app.get('/', (req, res) => {
 });
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes); //profile
+app.use('/payment', paymentRoutes)
 app.use('/', dashboardRoutes); 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
