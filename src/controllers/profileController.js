@@ -8,13 +8,14 @@ exports.getProfile = async (req, res) => {
   try {
     // authenticateToken đã gán req.user = { id, username }
 
-    const userId = req.user.id;
-    if (!userId) {
+    const userEmail = req.user.email;
+    console.log(userEmail)
+    if (!userEmail) {
       return res.redirect('/auth/login');
     }
 
     // Lấy toàn bộ document user (bao gồm nested address)
-    const user = await User.findById(userId).lean();
+    const user = await User.findOne({ email: userEmail }).lean();
     if (!user) {
       return res.redirect('/auth/login');
     }

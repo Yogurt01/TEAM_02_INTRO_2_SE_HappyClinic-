@@ -4,7 +4,7 @@ const authenticateToken = require('../middlewares/authMiddlesware');
 const otp = require('../controllers/otpController')
 const router = express.Router();
 const passport = require("passport");
-const jwtLib = require('../config/jwt');
+const jwt = require('../config/jwt');
 const availabilityController = require('../controllers/availabilityController');
 
 
@@ -17,18 +17,10 @@ router.get("/google/callback",
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
     const {user} = req;
+    console.log(user)
 
-    // Tạo JWT từ user info
-    const token = jwtLib.generateToken({ id: user.id, name: user.displayName });
-
-    // Gán JWT vào cookie
-    res.cookie("token", token, { 
-      httpOnly: true, 
-      secure: true, 
-      sameSite: 'Lax', 
-      maxAge: 24 * 60 * 60 * 1000 // 1 day in milliseconds
-    });
-
+    const token = jwt.generateToken(user)
+    res.cookie('token', token, { httpOnly: true });
     res.redirect("/dashboard");
   }
 );
