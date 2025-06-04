@@ -1,153 +1,208 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Doctor Availability Management</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="/styles/availability.css" />
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Doctor Availability Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/styles/availability.css" />
+    
 
-</head>
-<body>
-  <%- include('partials/navbar') %>
-  <h1 class="title">Doctor Availability Management</h1>
+  </head>
+  <body>
+    <%- include('partials/navbar') %>
+    <div class="breadcrumb">
+      <a href="/dashboard">TRANG CHỦ</a> &raquo; <span>QUẢN LÝ LỊCH KHÁM</span>
+    </div>
+    <h1 style="text-align: center; color: #2c3e50; margin-bottom: 30px; font-size: 35px; font-weight: bold;">Doctor Availability Management</h1>
 
-  <div class="form-container-availability">
-    <% if (error) { %>
-      <div class="alert alert-danger" role="alert">
-        <%= error %>
-      </div>
-    <% } %>
 
-    <h2>Đăng ký lịch khám và thông tin bệnh nhân</h2>
-    <form id="main-form" method="POST" action="/auth/availability#main-form" class="availability-form">
-      <input type="hidden" name="id" id="slotId" value="">
-      <div>
-        <label for="date">Ngày khám</label>
-        <input type="date" id="date" name="date" required>
-      </div>
-      <div>
-        <label for="startTime">Giờ bắt đầu</label>
-        <input type="time" id="startTime" name="startTime" required>
-      </div>
-      <div>
-        <label for="endTime">Giờ kết thúc</label>
-        <input type="time" id="endTime" name="endTime" required>
-      </div>
-      <div>
-        <label for="patientName">Tên bệnh nhân</label>
-        <input type="text" id="patientName" name="patientName" required>
-      </div>
-      <div>
-        <label for="patientAge">Tuổi bệnh nhân</label>
-        <input type="number" id="patientAge" name="patientAge" min="0" required>
-      </div>
-      <div style="grid-column: 1 / -1;">
-        <label for="symptoms">Triệu chứng</label>
-        <input type="text" id="symptoms" name="symptoms" required>
-      </div>
-      <div style="display: flex; align-items: end;">
-        <button type="submit">Thêm lịch khám</button>
-      </div>
-    </form>
 
-    <h2>Lịch khám đã đăng ký</h2>
-    <!-- Filter form -->
-    <form id="filterForm" method="GET" action="/auth/availability#filterForm" class="filter-form" style="text-align: right;">
-      <label for="filterStatus">Lọc theo trạng thái khám: </label>
-      <select name="filterStatus" id="filterStatus" onchange="this.form.submit()">
-        <option value="all" <%= filterStatus === 'all' ? 'selected' : '' %>>Tất cả</option>
-        <option value="checked" <%= filterStatus === 'checked' ? 'selected' : '' %>>Đã khám</option>
-        <option value="unchecked" <%= filterStatus === 'unchecked' ? 'selected' : '' %>>Chưa khám</option>
-      </select>
-    </form>
-    <table>
-      <thead>
-        <tr>
-          <th>Ngày</th>
-          <th>Giờ bắt đầu</th>
-          <th>Giờ kết thúc</th>
-          <th>Tên bệnh nhân</th>
-          <th>Tuổi</th>
-          <th>Triệu chứng</th>
-          <th>Trạng thái khám</th>
-          <th>Đánh dấu đã khám</th>
-          <th>Hành động</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% slots.forEach(slot => { %>
+    <div class="form-container-availability">
+      <% if (error) { %>
+        <div id="error-message" class="alert alert-danger" role="alert">
+          <%= error %>
+        </div>
+      <% } %>
+
+      <% if (success) { %>
+        <div class="alert alert-danger">
+          Thao tác thành công!
+        </div>
+      <% } %>
+
+      <h2 style="margin-top: 30px ;border-bottom: 2px solid #3498db; padding-bottom: 5px ;color: #2c3e50; font-size: 25px; font-weight: bold;">Đăng ký lịch khám và thông tin bệnh nhân</h2>
+      <form id="main-form" method="POST" action="/auth/availability#main-form" class="availability-form">
+        <input type="hidden" name="id" id="slotId" value="">
+        <div>
+          <label for="date">Ngày khám</label>
+          <input type="date" id="date" name="date" required>
+        </div>
+        <div>
+          <label for="startTime">Giờ bắt đầu</label>
+          <input type="time" id="startTime" name="startTime" required>
+        </div>
+        <div>
+          <label for="endTime">Giờ kết thúc</label>
+          <input type="time" id="endTime" name="endTime" required>
+        </div>
+        <div>
+          <label for="patientName">Tên bệnh nhân</label>
+          <input type="text" id="patientName" name="patientName" required>
+        </div>
+        <div>
+          <label for="patientGender">Giới tính:</label>
+            <select class="form-control" name="patientGender" id="patientGender" required>
+              <option value="">-- Chọn giới tính --</option>
+              <option value="Nam">Nam</option>
+              <option value="Nữ">Nữ</option>
+              <option value="Khác">Khác</option>
+            </select>
+        </div>
+        <div>
+          <label for="patientBirth">Ngày sinh</label>
+          <input type="date" id="patientBirth" name="patientBirth" required>
+        </div>
+        <div>
+          <label for="patientEmail">Email bệnh nhân</label>
+          <input type="text" id="patientEmail" name="patientEmail" required>
+        </div>
+        <div>
+          <label for="patientPhone">Số điện thoại</label>
+          <input type="text" id="patientPhone" name="patientPhone" required>
+        </div>
+        <div>
+          <label for="patientAddress">Địa chỉ</label>
+          <input type="text" id="patientAddress" name="patientAddress" required>
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <label for="symptoms">Triệu chứng</label>
+          <input type="text" id="symptoms" name="symptoms" required>
+        </div>
+        <div style="display: flex; align-items: end;">
+          <button type="submit">Thêm lịch khám</button>
+        </div>
+      </form>
+
+      <h2 style="margin-top: 30px ;border-bottom: 2px solid #3498db; padding-bottom: 5px ;color: #2c3e50; font-size: 25px; font-weight: bold;">Lịch khám đã đăng ký</h2>
+      <!-- Filter form -->
+      <form id="filterForm" method="GET" action="/auth/availability#filterForm" class="filter-form" style="text-align: right;">
+        <label for="filterStatus">Lọc theo trạng thái khám: </label>
+        <select name="filterStatus" id="filterStatus" onchange="this.form.submit()">
+          <option value="all" <%= filterStatus === 'all' ? 'selected' : '' %>>Tất cả</option>
+          <option value="checked" <%= filterStatus === 'checked' ? 'selected' : '' %>>Đã khám</option>
+          <option value="unchecked" <%= filterStatus === 'unchecked' ? 'selected' : '' %>>Chưa khám</option>
+        </select>
+      </form>
+      <table>
+        <thead>
           <tr>
-            <td>
-              <input form="edit-form-<%= slot._id %>" type="date" name="date" value="<%= slot.date %>" required readonly>
-            </td>
-            <td>
-              <input form="edit-form-<%= slot._id %>" type="time" name="startTime" value="<%= slot.startTime %>" required readonly>
-            </td>
-            <td>
-              <input form="edit-form-<%= slot._id %>" type="time" name="endTime" value="<%= slot.endTime %>" required readonly>
-            </td>
-            <td>
-              <input form="edit-form-<%= slot._id %>" type="text" name="patientName" value="<%= slot.patientName %>" required readonly>
-            </td>
-            <td>
-              <input form="edit-form-<%= slot._id %>" type="number" name="patientAge" value="<%= slot.patientAge %>" min="0" required readonly>
-            </td>
-            <td>
-              <input form="edit-form-<%= slot._id %>" type="text" name="symptoms" value="<%= slot.symptoms %>" required readonly>
-            </td>
-            <td class="<%= slot.isChecked ? 'status-checked' : 'status-unchecked' %>">
-              <%= slot.isChecked ? 'Đã khám' : 'Chưa khám' %>
-            </td>
-            <td>
-              <% if (!slot.isChecked) { %>
-                <form id="check-form" method="POST" action="/auth/availability/check/<%= slot._id %>#check-form">
-                  <button type="submit" class="action-btn check-btn">Đánh dấu đã khám</button>
-                </form>
-              <% } else { %>
-                <span>✓</span>
-              <% } %>
-            </td>
-            <td>
-              <button type="button" class="action-btn edit-btn"onclick="editSlot('<%= slot._id %>', '<%= slot.date %>', '<%= slot.startTime %>', '<%= slot.endTime %>', '<%= slot.patientName %>', <%= slot.patientAge %>, '<%= slot.symptoms %>')">
-                Sửa
-              </button>
-              <form id="delete-form" method="POST" action="/auth/availability/delete/<%= slot._id %>#delete-form" onsubmit="return confirm('Bạn có chắc chắn muốn xóa lịch khám này không?');" style="display:inline;">
-                <button type="submit" class="action-btn delete-btn">Xóa</button>
-              </form>
-            </td>
+            <th>Mã bệnh nhân</th>
+            <th>Ngày khám</th>
+            <th>Giờ bắt đầu</th>
+            <th>Giờ kết thúc</th>
+            <th>Tên bệnh nhân</th>
+
+            <th>Triệu chứng</th>
+            <th>Trạng thái khám</th>
+            <th>Đánh dấu đã khám</th>
+            <th>Hành động</th>
           </tr>
-        <% }) %>
-      </tbody>
-    </table>
-  </div>
+        </thead>
+        <tbody>
+          <% slots.forEach(slot => { %>
+            <tr>
+              <td>
+                <input form="edit-form-<%= slot._id %>" type="text" name="patientCode" value="<%= slot.patientCode %>" required readonly>
+              </td>
+              <td>
+                <input form="edit-form-<%= slot._id %>" type="date" name="date" value="<%= slot.date %>" required readonly>
+              </td>
+              <td>
+                <input form="edit-form-<%= slot._id %>" type="time" name="startTime" value="<%= slot.startTime %>" required readonly>
+              </td>
+              <td>
+                <input form="edit-form-<%= slot._id %>" type="time" name="endTime" value="<%= slot.endTime %>" required readonly>
+              </td>
+              <td>
+                <input form="edit-form-<%= slot._id %>" type="text" name="patientName" value="<%= slot.patientName %>" required readonly>
+              </td>
+              <td>
+                <input form="edit-form-<%= slot._id %>" type="text" name="symptoms" value="<%= slot.symptoms %>" required readonly>
+              </td>
+              <td class="<%= slot.isChecked ? 'status-checked' : 'status-unchecked' %>">
+                <%= slot.isChecked ? 'Đã khám' : 'Chưa khám' %>
+              </td>
+              <td>
+                <% if (!slot.isChecked) { %>
+                  <form id="check-form" method="POST" action="/auth/availability/check/<%= slot._id %>#check-form">
+                    <button type="submit" class="action-btn check-btn">Đánh dấu đã khám</button>
+                  </form>
+                <% } else { %>
+                  <span>✓</span>
+                <% } %>
+              </td>
+              <td>
+                <button type="button" class="action-btn edit-btn"onclick="editSlot('<%= slot._id %>', '<%= slot.date %>', '<%= slot.startTime %>', '<%= slot.endTime %>', '<%= slot.patientName %>', '<%= slot.patientBirth %>', '<%= slot.symptoms %>', '<%= slot.patient.email %>', '<%= slot.patient.phone %>', '<%= slot.patient.address %>', '<%= slot.patient.gender %>')">
+                  Sửa
+                </button>
+                <form id="delete-form" method="POST" action="/auth/availability/delete/<%= slot._id %>#delete-form" onsubmit="return confirm('Bạn có chắc chắn muốn xóa lịch khám này không?');" style="display:inline;">
+                  <button type="submit" class="action-btn delete-btn">Xóa</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
 
-  <script>
-    function editSlot(id, date, startTime, endTime, patientName, patientAge, symptoms) {
-      document.getElementById('slotId').value = id;
-      document.getElementById('date').value = date;
-      document.getElementById('startTime').value = startTime;
-      document.getElementById('endTime').value = endTime;
-      document.getElementById('patientName').value = patientName;
-      document.getElementById('patientAge').value = patientAge;
-      document.getElementById('symptoms').value = symptoms;
+    <script>
+      function editSlot(id, date, startTime, endTime, patientName, patientBirth, symptoms, patientEmail, patientPhone, patientAddress, patientGender) {
+        document.getElementById('main-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-      const form = document.getElementById('main-form');
-      form.action = `/auth/availability/edit/${id}`;
+        document.getElementById('slotId').value = id;
+        document.getElementById('date').value = date;
+        document.getElementById('startTime').value = startTime;
+        document.getElementById('endTime').value = endTime;
+        document.getElementById('patientName').value = patientName;
+        document.getElementById('patientGender').value = patientGender;
+        document.getElementById('patientBirth').value = patientBirth;
+        document.getElementById('symptoms').value = symptoms;
+        document.getElementById('patientEmail').value = patientEmail;
+        document.getElementById('patientPhone').value = patientPhone;
+        document.getElementById('patientAddress').value = patientAddress;
 
-      const submitBtn = form.querySelector('button[type="submit"]');
-      submitBtn.textContent = 'Lưu chỉnh sửa';
-    }
 
-    window.addEventListener('DOMContentLoaded', () => {
-    const slotId = document.getElementById('slotId').value;
-    const submitBtn = document.querySelector('#main-form button[type="submit"]');
-    if (!slotId) {
-      submitBtn.textContent = 'Thêm lịch khám';
-      document.getElementById('main-form').action = '/auth/availability#main-form';
-    }
-    });
-  </script>
-</body>
-</html>
+        const form = document.getElementById('main-form');
+        form.action = `/auth/availability/edit/${id}`;
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.textContent = 'Lưu chỉnh sửa';
+      }
+
+      window.addEventListener('DOMContentLoaded', () => {
+        const errorEl = document.getElementById('error-message');
+        const target = errorEl;
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        const slotId = document.getElementById('slotId').value;
+        const submitBtn = document.querySelector('#main-form button[type="submit"]');
+        if (!slotId) {
+          submitBtn.textContent = 'Thêm lịch khám';
+          document.getElementById('main-form').action = '/auth/availability';
+        }
+      });
+
+      setTimeout(() => {
+        const successDiv = document.querySelector('.alert-danger');
+        if (successDiv) {
+          successDiv.style.display = 'none';
+        }
+      }, 1000);
+    </script>
+  </body>
+  </html>
