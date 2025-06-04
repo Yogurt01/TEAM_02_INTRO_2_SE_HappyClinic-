@@ -6,37 +6,56 @@
     <title>Thanh Toán VietQR</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 min-h-screen">
     <%- include('partials/navbar') %>
-    <div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-2xl shadow-lg space-y-6">
-    <h2 class="text-2xl font-bold text-center text-blue-600">Tạo mã QR VietQR nhanh</h2>
 
-    <form action="/payment/generate" method="POST" class="space-y-4">
-        <div>
-        <label class="block text-sm font-medium text-gray-700">Số tiền (VNĐ):</label>
-        <input type="number" name="amount" required 
-                class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <div class="container mx-auto p-6">
+        <h2 class="text-2xl font-semibold mb-6">Danh sách hóa đơn thanh toán của: <%= email %></h2>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+                <thead class="bg-blue-600 text-white">
+                    <tr>
+                        <th class="py-3 px-4 text-left">Ngày</th>
+                        <th class="py-3 px-4 text-left">Tên</th>
+                        <th class="py-3 px-4 text-left">Số tiền (VND)</th>
+                        <th class="py-3 px-4 text-left">Phương thức</th>
+                        <th class="py-3 px-4 text-left">Trạng thái</th>
+                        <th class="py-3 px-4 text-left">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (payments.length === 0) { %>
+                    <tr>
+                        <td colspan="6" class="py-4 px-4 text-center text-gray-500">Chưa có hóa đơn nào.</td>
+                    </tr>
+                    <% } else { %>
+                    <% payments.forEach(payment => { %>
+                        <tr class="border-b hover:bg-gray-100 transition">
+                            <td class="py-3 px-4"><%= payment.date.toLocaleDateString() %></td>
+                            <td class="py-3 px-4"><%= payment.username %></td>
+                            <td class="py-3 px-4"><%= payment.amount %></td>
+                            <td class="py-3 px-4"><%= payment.paymentMethod %></td>
+                            <td class="py-3 px-4"><%= payment.status %></td>
+                            <td class="py-3 px-4">
+                                <% if (payment.status === 'Unpaid') { %>
+                                <form action="/payment/generate-qr" method="POST" class="inline">
+                                    <input type="hidden" name="paymentId" value="<%= payment._id %>"/>
+                                    <input type="hidden" name="amount" value="<%= payment.amount %>"/>
+                                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded">
+                                        Thanh toán
+                                    </button>
+                                </form>
+                                <% } else { %>
+                                <span class="text-green-600 font-semibold">Đã thanh toán</span>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                    <% } %>
+                </tbody>
+            </table>
         </div>
-
-        <div>
-        <label class="block text-sm font-medium text-gray-700">Nội dung:</label>
-        <input type="text" name="memo" required 
-                class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-
-        <button type="submit" 
-                class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200">
-        Tạo QR
-        </button>
-    </form>
-
-    <% if (qrUrl) { %>
-    <div class="text-center">
-        <h3 class="text-lg font-semibold text-green-600 mt-6">Mã QR của bạn:</h3>
-        <img src="<%= qrUrl %>" alt="QR thanh toán" class="mx-auto mt-4 border border-gray-300 rounded-md shadow-sm">
     </div>
-    <% } %>
-    </div>
-
 </body>
 </html>
