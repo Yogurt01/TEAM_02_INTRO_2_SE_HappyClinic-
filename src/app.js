@@ -7,6 +7,7 @@ const dashboardRoutes = require('./routes/dashboardRoutes')
 const cookieParser = require('cookie-parser');
 const session = require("express-session");
 const passport = require("passport");
+const availabilityRoutes = require('./routes/availabilityRoutes');
 require('dotenv')
 
 const app = express();
@@ -42,6 +43,7 @@ app.get('/', (req, res) => {
   res.redirect('/auth/login');
 });
 app.use('/auth', authRoutes);
+app.use('/auth', availabilityRoutes);
 app.use('/', dashboardRoutes); 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

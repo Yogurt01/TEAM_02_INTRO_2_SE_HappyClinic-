@@ -5,9 +5,10 @@ const availabilitySchema = new mongoose.Schema({
   startTime: { type: String, required: true },     // hh:mm
   endTime: { type: String, required: true },       // hh:mm
   patientName: { type: String, required: true },
-  patientAge: { type: Number, required: true },
+  patientBirth: { type: String, required: true },
   symptoms: { type: String, required: true },
-  isChecked: { type: Boolean, default: false },    // trạng thái đã khám
+  isChecked: { type: Boolean, default: false }, 
+  patientCode: {type: String, required: true}
 });
 
 module.exports = mongoose.model('Availability', availabilitySchema);
