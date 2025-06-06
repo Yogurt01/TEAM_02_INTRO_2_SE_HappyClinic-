@@ -8,27 +8,27 @@ router.get('/availability', authenticateToken, availabilityController.getAvailab
 
 router.post('/availability', authenticateToken, availabilityController.postAvailability);
 
-router.post('/availability/check/:id', authenticateToken, async (req, res) => {
+router.post('/availability/check/:appointmentCode', authenticateToken, async (req, res) => {
   try {
-    await availabilityController.markChecked(req.params.id);
+    await availabilityController.markChecked(req.params.appointmentCode);
     res.redirect('/auth/availability');
   } catch (err) {
     res.status(500).send("Error marking slot as checked");
   }
 });
 
-router.post('/availability/delete/:id', authenticateToken, async (req, res) => {
+router.post('/availability/delete/:appointmentCode', authenticateToken, async (req, res) => {
   try {
-    await availabilityController.deleteAvailability(req.params.id);
+    await availabilityController.deleteAvailability(req.params.appointmentCode);
     res.redirect('/auth/availability');
   } catch (err) {
     res.status(500).send("Error deleting slot");
   }
 });
 
-router.post('/availability/edit/:id', authenticateToken, async (req, res) => {
+router.post('/availability/edit/:appointmentCode', authenticateToken, async (req, res) => {
   try {
-    await availabilityController.editAvailability(req.params.id, req.body);
+    await availabilityController.editAvailability(req.params.appointmentCode, req.body);
     res.redirect('/auth/availability?success=1&filterStatus=all');
   } catch (err) {
     console.error(err);

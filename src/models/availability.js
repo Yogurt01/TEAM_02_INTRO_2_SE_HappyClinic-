@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
 const availabilitySchema = new mongoose.Schema({
+  appointmentCode: { type: String, required: true, unique: true },
   date: { type: String, required: true },          // yyyy-mm-dd
   startTime: { type: String, required: true },     // hh:mm
   endTime: { type: String, required: true },       // hh:mm
