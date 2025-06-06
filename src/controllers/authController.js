@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const otpGenerator = require('otp-generator');
 const otpStore = require('../models/otpStore')
 const nodemailer = require('nodemailer');
+const generatePassword = require('generate-password');
 require('dotenv')
 exports.getLogin = (req, res) => {
     res.render('login', { error: null });
@@ -96,3 +97,41 @@ exports.logout = (req, res) => {
     res.clearCookie('token'); // Xóa token trong cookie
     res.redirect('/');
 };
+exports.googleLogin = async (req, res) => {
+  try {
+    const { user } = req; 
+    console.log('user',user)
+    const token = jwt.generateToken(user);
+    res.cookie('token', token, { httpOnly: true });
+    // Check if email exists
+    const email =
+        user.email ||                         // already set on user
+        user.emails?.[0]?.value ||            // from Google profile
+        user._json?.email;
+    console.log('email',email)
+    let existingUser = await User.findOne({ email: email });
+
+    if (!existingUser) {
+      // User not found, add to db
+      const password = generatePassword.generate({
+        length: 10,
+        numbers: true
+      });
+      existingUser = new User({
+        id: user.id,
+        username: email,
+        email: email,
+        password: password
+      });
+
+      await existingUser.save();
+    }
+
+    // Generate token for the user found or created
+    res.render('dashboard', { user: existingUser });
+
+  } catch (err) {
+    console.error(err);
+    res.redirect('/'); // or render an error page
+  }
+}

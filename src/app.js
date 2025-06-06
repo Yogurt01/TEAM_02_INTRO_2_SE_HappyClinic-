@@ -2,14 +2,18 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const connectDB = require('./config/db')
 const authController = require('./controllers/authController')
-const authRoutes = require('./routes/authRoutes')
-const dashboardRoutes = require('./routes/dashboardRoutes')
 const cookieParser = require('cookie-parser');
 const session = require("express-session");
 const passport = require("passport");
 const availabilityRoutes = require('./routes/availabilityRoutes');
-require('dotenv')
 
+require('dotenv').config();
+
+
+const authRoutes = require('./routes/authRoutes')
+const dashboardRoutes = require('./routes/dashboardRoutes')
+const profileRoutes = require('./routes/profileRoutes'); //profile
+const paymentRoutes = require('./routes/paymentRoutes')
 const app = express();
 
 app.set('view engine', 'ejs')
@@ -37,13 +41,31 @@ app.use(session({
   cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }  // 1 day in milliseconds
 }));
 
+app.use((req, res, next) => {
+  const token = req.cookies.token;
+  if (token) {
+    try {
+      // verifyToken trả về payload như { id, username }
+      const payload = require('./config/jwt').verifyToken(token);
+      res.locals.user = payload;  
+    } catch (err) {
+      res.locals.user = null;
+    }
+  } else {
+    res.locals.user = null;
+  }
+  next();
+});
 
 connectDB()
 app.get('/', (req, res) => {
   res.redirect('/auth/login');
 });
 app.use('/auth', authRoutes);
+
 app.use('/auth', availabilityRoutes);
+app.use('/profile', profileRoutes); //profile
+app.use('/payment', paymentRoutes)
 app.use('/', dashboardRoutes); 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
