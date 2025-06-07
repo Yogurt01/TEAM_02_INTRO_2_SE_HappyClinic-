@@ -19,4 +19,8 @@ const appointmentSchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model('appointments', appointmentSchema);
+// Kiểm tra xem model 'appointments' đã tồn tại chưa
+const Appointment = mongoose.models.appointments || mongoose.model('appointments', appointmentSchema);
+
+// module.exports = mongoose.model('appointments', appointmentSchema);
+module.exports = Appointment;

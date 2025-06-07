@@ -14,6 +14,7 @@ const authRoutes = require('./routes/authRoutes')
 const dashboardRoutes = require('./routes/dashboardRoutes')
 const profileRoutes = require('./routes/profileRoutes'); //profile
 const paymentRoutes = require('./routes/paymentRoutes')
+const appointmentRoutes = require('./routes/appointmentRoutes'); // Appointment booking online routes
 const app = express();
 
 app.set('view engine', 'ejs')
@@ -40,6 +41,14 @@ app.use(session({
   saveUninitialized: true,
   cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }  // 1 day in milliseconds
 }));
+
+// Middleware kiểm tra đăng nhập cho các route liên quan đến đặt lịch khám
+app.use('/appointments', (req, res, next) => {
+  if (!res.locals.user) {
+    return res.redirect('/auth/login'); // Nếu người dùng chưa đăng nhập, chuyển hướng đến đăng nhập
+  }
+  next();
+});
 
 app.use((req, res, next) => {
   const token = req.cookies.token;
@@ -71,3 +80,8 @@ const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });
+
+
+
+
+

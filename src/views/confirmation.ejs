@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Xác nhận lịch khám | Happy Clinic</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <%- include('partials/navbar') %>
+
+  <div class="max-w-3xl mx-auto mt-8">
+    <!-- Khung chính cho thông báo xác nhận -->
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+      <div class="bg-green-600 px-6 py-4">
+        <h2 class="text-2xl font-semibold text-white">Xác nhận lịch khám</h2>
+      </div>
+
+      <div class="p-6 space-y-6">
+        <h3 class="text-xl font-semibold">Cảm ơn bạn đã đặt lịch khám!</h3>
+        <p>Lịch khám của bạn đã được xác nhận. Bạn sẽ nhận được thông báo qua email và số điện thoại.</p>
+
+        <div class="mt-4">
+          <a href="/dashboard" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded shadow">
+            Quay lại trang chủ
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
