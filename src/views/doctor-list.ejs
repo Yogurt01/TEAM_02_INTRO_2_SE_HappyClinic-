@@ -1,0 +1,34 @@
+<h1>Tìm kiếm bác sĩ</h1>
+
+<form method="get" action="/doctorSearch">
+  <label>Chuyên khoa:</label>
+  <input type="text" name="specialty" value="<%= filter.specialty || '' %>">
+
+  <label>Địa điểm:</label>
+  <input type="text" name="location" value="<%= filter.location || '' %>">
+
+  <label>Trạng thái:</label>
+  <select name="available">
+    <option value="">Tất cả</option>
+    <option value="true" <%= filter.available === 'true' ? 'selected' : '' %>>Đang làm</option>
+    <option value="false" <%= filter.available === 'false' ? 'selected' : '' %>>Nghỉ</option>
+  </select>
+
+  <button type="submit">Tìm</button>
+</form>
+
+<hr>
+
+<h2>Danh sách bác sĩ</h2>
+<ul>
+  <% doctors.forEach(doc => { %>
+    <li>
+      <strong><%= doc.name %></strong> - <%= doc.specialty %> - <%= doc.location %> -
+      <%= doc.available ? "Đang làm" : "Nghỉ" %>
+    </li>
+  <% }) %>
+</ul>
+
+<% if (error) { %>
+  <p style="color:red"><%= error %></p>
+<% } %>

@@ -7,6 +7,7 @@ const session = require("express-session");
 const passport = require("passport");
 const availabilityRoutes = require('./routes/availabilityRoutes');
 
+
 require('dotenv').config();
 
 
@@ -14,6 +15,7 @@ const authRoutes = require('./routes/authRoutes')
 const dashboardRoutes = require('./routes/dashboardRoutes')
 const profileRoutes = require('./routes/profileRoutes'); //profile
 const paymentRoutes = require('./routes/paymentRoutes')
+const doctorSearchRoutes = require('./routes/doctorSearch');
 const app = express();
 
 app.set('view engine', 'ejs')
@@ -66,6 +68,7 @@ app.use('/auth', authRoutes);
 app.use('/auth', availabilityRoutes);
 app.use('/profile', profileRoutes); //profile
 app.use('/payment', paymentRoutes)
+app.use('/', doctorSearchRoutes);
 app.use('/', dashboardRoutes); 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
