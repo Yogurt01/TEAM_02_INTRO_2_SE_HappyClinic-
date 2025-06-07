@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen">
+  <!-- Navbar chung -->
   <%- include('partials/navbar') %>
 
   <div class="max-w-3xl mx-auto mt-8">
@@ -28,6 +29,7 @@
           </div>
         <% } %>
 
+        <!-- Form thêm lịch khám -->
         <form action="/appointments" method="POST" class="space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Tên bệnh nhân -->
@@ -50,7 +52,7 @@
               <label class="block text-gray-700 font-medium">Chọn bác sĩ</label>
               <input type="text" name="doctor" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" required />
             </div>
-            <!-- Chọn khoa -->
+            <!-- Khoa -->
             <div>
               <label class="block text-gray-700 font-medium">Khoa</label>
               <input type="text" name="department" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" />
@@ -80,6 +82,84 @@
         </form>
       </div>
     </div>
+
+    <!-- Bảng lịch khám đã đăng ký -->
+    <h2 class="mt-10 text-xl font-semibold" style="border-bottom: 2px solid #3498db; padding-bottom: 5px; color: #2c3e50;">Lịch khám đã đăng ký</h2>
+
+    <!-- Lọc trạng thái lịch khám -->
+    <form id="filterForm" method="GET" action="/auth/availability#filterForm" class="filter-form" style="text-align: right;">
+      <label for="filterStatus">Lọc theo trạng thái khám: </label>
+      <select name="filterStatus" id="filterStatus" onchange="this.form.submit()">
+        <option value="all" <%= filterStatus === 'all' ? 'selected' : '' %>>Tất cả</option>
+        <option value="checked" <%= filterStatus === 'checked' ? 'selected' : '' %>>Đã khám</option>
+        <option value="unchecked" <%= filterStatus === 'unchecked' ? 'selected' : '' %>>Chưa khám</option>
+      </select>
+    </form>
+
+    <!-- Bảng hiển thị lịch khám -->
+    <table class="w-full mt-6">
+      <thead>
+        <tr>
+          <th>Mã bệnh nhân</th>
+          <th>Ngày khám</th>
+          <th>Giờ bắt đầu</th>
+          <th>Giờ kết thúc</th>
+          <th>Tên bệnh nhân</th>
+          <th>Triệu chứng</th>
+          <th>Trạng thái khám</th>
+          <th>Đánh dấu đã khám</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% slots.forEach(slot => { %>
+          <tr>
+            <td><%= slot.patientCode %></td>
+            <td><%= slot.date %></td>
+            <td><%= slot.startTime %></td>
+            <td><%= slot.endTime %></td>
+            <td><%= slot.patientName %></td>
+            <td><%= slot.symptoms %></td>
+            <td class="<%= slot.isChecked ? 'text-green-600' : 'text-red-600' %>">
+              <%= slot.isChecked ? 'Đã khám' : 'Chưa khám' %>
+            </td>
+            <td>
+              <% if (!slot.isChecked) { %>
+                <form method="POST" action="/auth/availability/check/<%= slot.appointmentCode %>">
+                  <button type="submit" class="bg-green-500 text-white py-1 px-3 rounded">Đánh dấu đã khám</button>
+                </form>
+              <% } else { %>
+                <span>✓</span>
+              <% } %>
+            </td>
+            <td>
+              <form method="POST" action="/auth/availability/delete/<%= slot.appointmentCode %>" onsubmit="return confirm('Bạn có chắc chắn muốn xóa lịch khám này không?');" style="display:inline;">
+                <button type="submit" class="bg-red-500 text-white py-1 px-3 rounded">Xóa</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
   </div>
 </body>
 </html>
+<script>
+  // Hàm để chỉnh sửa lịch khám
+  function editSlot(appointmentCode, date, startTime, endTime, patientName, patientBirth, symptoms, email, phone, address) {
+    // Hiển thị form chỉnh sửa với thông tin hiện tại
+    document.getElementById('editAppointmentCode').value = appointmentCode;
+    document.getElementById('editDate').value = date;
+    document.getElementById('editStartTime').value = startTime;
+    document.getElementById('editEndTime').value = endTime;
+    document.getElementById('editPatientName').value = patientName;
+    document.getElementById('editPatientBirth').value = patientBirth;
+    document.getElementById('editSymptoms').value = symptoms;
+    document.getElementById('editEmail').value = email;
+    document.getElementById('editPhone').value = phone;
+    document.getElementById('editAddress').value = address;
+
+    // Hiển thị modal chỉnh sửa
+    document.getElementById('editModal').classList.remove('hidden');
+  }
+</script>
