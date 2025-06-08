@@ -6,7 +6,8 @@ const cookieParser = require('cookie-parser');
 const session = require("express-session");
 const passport = require("passport");
 const availabilityRoutes = require('./routes/availabilityRoutes');
-
+const passportConfig = require('./config/passport');
+passportConfig();
 require('dotenv').config();
 
 
@@ -16,6 +17,7 @@ const profileRoutes = require('./routes/profileRoutes'); //profile
 const paymentRoutes = require('./routes/paymentRoutes')
 const appointmentRoutes = require('./routes/appointmentRoutes'); // Appointment booking online routes
 const invoiceRoutes = require('./routes/invoiceRoutes');  // Đảm bảo import đúng route
+
 
 const app = express();
 
