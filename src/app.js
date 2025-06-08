@@ -15,6 +15,8 @@ const dashboardRoutes = require('./routes/dashboardRoutes')
 const profileRoutes = require('./routes/profileRoutes'); //profile
 const paymentRoutes = require('./routes/paymentRoutes')
 const appointmentRoutes = require('./routes/appointmentRoutes'); // Appointment booking online routes
+const invoiceRoutes = require('./routes/invoiceRoutes');  // Đảm bảo import đúng route
+
 const app = express();
 
 app.set('view engine', 'ejs')
@@ -76,7 +78,8 @@ app.use('/auth', availabilityRoutes);
 app.use('/profile', profileRoutes); //profile
 app.use('/payment', paymentRoutes)
 app.use('/', dashboardRoutes); 
-app.use('/appointments', appointmentRoutes); // Appointment booking online routes
+app.use('/appointment', appointmentRoutes); // Appointment booking online routes
+app.use('/invoice', invoiceRoutes);  // Sử dụng route '/invoices' cho chức năng hóa đơn và thanh toán
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);

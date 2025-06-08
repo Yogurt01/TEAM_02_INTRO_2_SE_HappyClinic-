@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lịch sử thanh toán | Happy Clinic</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <!-- Navbar chung -->
+  <%- include('partials/navbar') %>
+
+  <div class="max-w-3xl mx-auto mt-8">
+    <!-- Khung chính cho danh sách hóa đơn -->
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+      <div class="bg-blue-600 px-6 py-4">
+        <h2 class="text-2xl font-semibold text-white">Lịch sử thanh toán</h2>
+      </div>
+
+      <div class="p-6 space-y-6">
+        <table class="w-full mt-4">
+          <thead>
+            <tr>
+              <th>Mã Hóa Đơn</th>
+              <th>Ngày Lập</th>
+              <th>Số Tiền</th>
+              <th>Trạng Thái</th>
+              <th>Hành Động</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% invoices.forEach(invoice => { %>
+              <tr>
+                <td><%= invoice._id %></td>
+                <td><%= invoice.dateIssued.toLocaleDateString() %></td>
+                <td><%= invoice.amount %> VND</td>
+                <td>
+                  <%= invoice.status === 'Paid' ? 'Đã Thanh Toán' : 'Chưa Thanh Toán' %>
+                </td>
+                <td>
+                  <% if (invoice.status === 'Unpaid') { %>
+                    <form action="/invoices/pay/<%= invoice._id %>" method="POST">
+                      <button type="submit" class="bg-green-500 text-white py-1 px-3 rounded">Thanh Toán</button>
+                    </form>
+                  <% } else { %>
+                    <span>✓</span>
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
