@@ -76,7 +76,7 @@ app.use('/auth', availabilityRoutes);
 app.use('/profile', profileRoutes); //profile
 app.use('/payment', paymentRoutes)
 app.use('/', dashboardRoutes); 
-app.use('/appointments', appointmentRoutes); // Appointment booking online routes
+app.use('/appointment', appointmentRoutes); // Appointment booking online routes
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
