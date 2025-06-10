@@ -8,6 +8,8 @@ const passport = require("passport");
 const availabilityRoutes = require('./routes/availabilityRoutes');
 const medicalRecordRoutes = require('./routes/medicalRecordsRoutes');
 
+const passportConfig = require('./config/passport');
+passportConfig();
 require('dotenv').config();
 
 
@@ -15,6 +17,7 @@ const authRoutes = require('./routes/authRoutes')
 const dashboardRoutes = require('./routes/dashboardRoutes')
 const profileRoutes = require('./routes/profileRoutes'); //profile
 const paymentRoutes = require('./routes/paymentRoutes')
+
 const app = express();
 
 app.set('view engine', 'ejs')
