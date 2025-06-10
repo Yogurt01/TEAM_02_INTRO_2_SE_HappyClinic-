@@ -17,22 +17,14 @@
       <a href="/dashboard">TRANG CHỦ</a> &raquo; <span>QUẢN LÝ LỊCH KHÁM</span>
     </div>
     <h1 style="text-align: center; color: #2c3e50; margin-bottom: 30px; font-size: 35px; font-weight: bold;">Doctor Availability Management</h1>
-
-
-
+    
     <div class="form-container-availability">
       <% if (error) { %>
         <div id="error-message" class="alert alert-danger" role="alert">
           <%= error %>
         </div>
       <% } %>
-
-      <% if (success) { %>
-        <div class="alert alert-danger">
-          Thao tác thành công!
-        </div>
-      <% } %>
-
+      
       <h2 style="margin-top: 30px ;border-bottom: 2px solid #3498db; padding-bottom: 5px ;color: #2c3e50; font-size: 25px; font-weight: bold;">Đăng ký lịch khám và thông tin bệnh nhân</h2>
       <form id="main-form" method="POST" action="/auth/availability#main-form" class="availability-form">
         <input type="hidden" name="id" id="slotId" value="">
@@ -109,6 +101,7 @@
             <th>Trạng thái khám</th>
             <th>Đánh dấu đã khám</th>
             <th>Hành động</th>
+            <th>Hồ sơ bệnh án</th>
           </tr>
         </thead>
         <tbody>
@@ -151,6 +144,9 @@
                 <form id="delete-form" method="POST" action="/auth/availability/delete/<%= slot.appointmentCode %>#delete-form" onsubmit="return confirm('Bạn có chắc chắn muốn xóa lịch khám này không?');" style="display:inline;">
                   <button type="submit" class="action-btn delete-btn">Xóa</button>
                 </form>
+              </td>
+              <td>
+                <a href="/auth/medicalRecord/<%= slot.patientCode %>" class="view-btn">Xem</a>
               </td>
             </tr>
           <% }) %>

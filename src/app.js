@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const session = require("express-session");
 const passport = require("passport");
 const availabilityRoutes = require('./routes/availabilityRoutes');
+const medicalRecordRoutes = require('./routes/medicalRecordsRoutes');
 
 require('dotenv').config();
 
@@ -64,6 +65,7 @@ app.get('/', (req, res) => {
 app.use('/auth', authRoutes);
 
 app.use('/auth', availabilityRoutes);
+app.use('/auth/medicalRecord', medicalRecordRoutes);
 app.use('/profile', profileRoutes); //profile
 app.use('/payment', paymentRoutes)
 app.use('/', dashboardRoutes); 

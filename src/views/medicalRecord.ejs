@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hồ sơ bệnh án</title>
+  <link rel="stylesheet" href="/styles/availability.css" />
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .container { display: flex; gap: 20px; }
+    .sidebar {
+      flex: 0 0 30%;
+      background: #f7f7f7;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .main-content { flex: 1; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      vertical-align: top;
+    }
+    textarea { width: 100%; resize: vertical; }
+    .save-btn {
+      padding: 6px 12px;
+      background-color: #2d89ef;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .alert {
+      margin-bottom: 10px;
+      padding: 8px;
+      border-radius: 5px;
+    }
+    .alert-success { background-color: #d4edda; }
+    .alert-danger { background-color: #f8d7da; }
+  </style>
+</head>
+<body>
+	
+  <div class="breadcrumb">
+    <a href="/dashboard">TRANG CHỦ</a> &raquo;
+    <a href="/auth/availability">ĐĂNG KÝ LỊCH KHÁM</a> &raquo;
+    <span>HỒ SƠ CHI TIẾT</span>
+  </div>
+
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h3>Thông tin bệnh nhân</h3>
+        <% if (patient) { %>
+          <p><strong>Mã BN:</strong> <%= patient.code %></p>
+          <p><strong>Họ tên:</strong> <%= patient.fullName || patient.name || 'Không rõ' %></p>
+          <p><strong>Ngày sinh:</strong> <%= patient.dob ? new Date(patient.dob).toLocaleDateString() : 'Không rõ' %></p>
+          <p><strong>Giới tính:</strong> <%= patient.gender || 'Không rõ' %></p>
+          <p><strong>Điện thoại:</strong> <%= patient.phone || 'Không rõ' %></p>
+          <p><strong>Email:</strong> <%= patient.email || 'Không rõ' %></p>
+          <p><strong>Địa chỉ:</strong> <%= patient.address || 'Không rõ' %></p>
+        <% } else { %>
+          <p>Không có thông tin bệnh nhân.</p>
+        <% } %>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content">
+      <h2>Hồ sơ bệnh án</h2>
+
+      <% if (message) { %>
+        <div class="alert alert-success"><%= message %></div>
+      <% } %>
+      <% if (error) { %>
+        <div class="alert alert-danger"><%= error %></div>
+      <% } %>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Ngày khám</th>
+            <th>Khoa</th>
+            <th>Chẩn đoán</th>
+            <th>Triệu chứng</th>
+            <th>Ghi chú</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% records.forEach(rec => { %>
+            <tr>
+              <% if (!rec.isChecked) { %>
+                <!-- Hồ sơ đang khám: cho chỉnh sửa -->
+                <form method="POST" action="/auth/medicalRecord/update">
+                  <td><%= new Date(rec.date).toLocaleDateString() %></td>
+                  <td><%= rec.department %></td>
+                  <td><textarea name="diagnosis"><%= rec.diagnosis %></textarea></td>
+                  <td><textarea name="symptoms" readonly><%= rec.symptoms %></textarea></td>
+                  <td><textarea name="note"><%= rec.note %></textarea></td>
+                  <td>
+                    <input type="hidden" name="appointmentCode" value="<%= rec.appointmentCode %>">
+                    <input type="hidden" name="patientCode" value="<%= rec.patientCode %>">
+                    <button class="save-btn" type="submit">Lưu</button>
+                  </td>
+                </form>
+              <% } else { %>
+                <!-- Hồ sơ đã khám: chỉ đọc -->
+                <td><%= new Date(rec.date).toLocaleDateString() %></td>
+                <td><%= rec.department %></td>
+                <td><textarea readonly><%= rec.diagnosis %></textarea></td>
+                <td><textarea readonly><%= rec.symptoms %></textarea></td>
+                <td><textarea readonly><%= rec.note %></textarea></td>
+                <td><em>Đã khám</em></td>
+              <% } %>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
