@@ -6,8 +6,13 @@ const authenticateToken = require('../middlewares/authMiddlesware')
 router.get('/', authenticateToken, (req, res) => {
     res.render('adminManager', { user: req.user });
 });
-router.get('/manage-users', adminController.postUserManager);
+//Users Management Routes
+router.get('/users', adminController.postUserManager);
 router.post('/ban/:userId', adminController.banUser);
 router.post('/unban/:userId', adminController.unbanUser);
 
+//Payment Management Routes
+router.get('/payments', adminController.postPaymentManagement);
+router.post('/payment/confirm/:paymentId', adminController.confirmPayment);
+router.post('/payment/cancel/:paymentId', adminController.cancelPayment);
 module.exports = router;

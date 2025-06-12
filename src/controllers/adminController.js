@@ -1,5 +1,5 @@
 const User = require('../models/user');
-
+const Payment = require('../models/payment')
 // GET all users
 exports.getAllUsers = async (req, res) => {
   try {
@@ -28,3 +28,24 @@ exports.postUserManager = async(req,res)=>{
         res.status(500).send('Error loading user management page.');
     }
 }
+
+exports.postPaymentManagement = async (req, res) => {
+  const payments = await Payment.find();
+  const mapped = payments.map(p => ({
+    _id: p._id,
+    userEmail: p.email,
+    amount: p.amount,
+    status: p.status
+  }));
+  res.render('paymentManager', { payments: mapped });
+};
+
+exports.confirmPayment = async (req, res) => {
+  await Payment.findByIdAndUpdate(req.params.paymentId, { status: 'Paid' });
+  res.redirect('/admin/payments');
+};
+
+exports.cancelPayment = async (req, res) => {
+  await Payment.findByIdAndUpdate(req.params.paymentId, { status: 'Failed' });
+  res.redirect('/admin/payments');
+};
