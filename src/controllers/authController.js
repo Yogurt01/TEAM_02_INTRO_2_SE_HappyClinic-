@@ -87,7 +87,12 @@ exports.postLogin = async (req, res) => {
         // Tạo token và lưu vào cookie
         const token = jwt.generateToken(user);
         res.cookie('token', token, { httpOnly: true });
-        res.redirect('/dashboard');
+        if (user.role === 'patient'){
+            res.redirect('/dashboard');
+        }
+        else if (user.role === 'admin'){
+          res.redirect('/admin')
+        }
     } catch (error) {
         res.render('login', { error: 'An unexpected error occurred. Please try again later.' });
     }

@@ -34,7 +34,8 @@ const userSchema = new mongoose.Schema({
     CCCD: {type:String, required:false},
     role:{type:String,default:'patient'},
     phone: {type:String, required:false, unique:false}, 
-    address: { type: AddressSchema, required: false }
+    address: { type: AddressSchema, required: false },
+    isBanned: {type: String, default: false}
 });
 
 // Hash mật khẩu trước khi lưu
