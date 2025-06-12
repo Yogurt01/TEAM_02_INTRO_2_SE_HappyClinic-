@@ -10,26 +10,21 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-// POST ban a user
 exports.banUser = async (req, res) => {
-  const { userId } = req.params;
-  try {
-    const user = await User.findByIdAndUpdate(userId, { isBanned: true }, { new: true });
-    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-    res.json({ success: true, message: 'User banned', user });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Server error' });
-  }
+  await User.findByIdAndUpdate(req.params.userId, { isBanned: true });
+  res.redirect('/admin/manage-users');
 };
 
-// POST unban a user
 exports.unbanUser = async (req, res) => {
-  const { userId } = req.params;
-  try {
-    const user = await User.findByIdAndUpdate(userId, { isBanned: false }, { new: true });
-    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-    res.json({ success: true, message: 'User unbanned', user });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Server error' });
-  }
+  await User.findByIdAndUpdate(req.params.userId, { isBanned: false });
+  res.redirect('/admin/manage-users');
 };
+
+exports.postUserManager = async(req,res)=>{
+    try {
+        const users = await User.find();
+        res.render('userManagement', { users });
+    } catch (error) {
+        res.status(500).send('Error loading user management page.');
+    }
+}
