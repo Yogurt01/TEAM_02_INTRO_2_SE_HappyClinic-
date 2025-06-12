@@ -44,6 +44,8 @@ exports.postPaymentManagement = async (req, res) => {
 
 exports.confirmPayment = async (req, res) => {
     await Payment.findByIdAndUpdate(req.params.paymentId, { status: 'Paid' });
+    const payment = await Payment.findOne({_id: req.params.paymentId})
+    console.log(payment)
     const transporter = nodemailer.createTransport({
             service: 'gmail',
                 auth: {
@@ -53,7 +55,7 @@ exports.confirmPayment = async (req, res) => {
     });
     const mailOptions = {
         from: process.env.EMAIL_USER,
-        to: userEmail,
+        to: payment.email,
         subject: 'Xác nhận thanh toán',
         text: `Chào bạn,\n\nChúng tôi xác nhận rằng bạn đã thanh toán thành công số tiền ${payment.amount} VND.\n\nCảm ơn bạn đã sử dụng dịch vụ của chúng tôi.\n\nTrân trọng,\nHappyClinic`
     };
