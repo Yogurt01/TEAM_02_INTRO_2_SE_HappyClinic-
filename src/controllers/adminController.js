@@ -1,5 +1,7 @@
 const User = require('../models/user');
 const Payment = require('../models/payment')
+const nodemailer = require('nodemailer')
+require('dotenv')
 // GET all users
 exports.getAllUsers = async (req, res) => {
   try {
@@ -41,8 +43,22 @@ exports.postPaymentManagement = async (req, res) => {
 };
 
 exports.confirmPayment = async (req, res) => {
-  await Payment.findByIdAndUpdate(req.params.paymentId, { status: 'Paid' });
-  res.redirect('/admin/payments');
+    await Payment.findByIdAndUpdate(req.params.paymentId, { status: 'Paid' });
+    const transporter = nodemailer.createTransport({
+            service: 'gmail',
+                auth: {
+                user: process.env.EMAIL_USER, // email
+                pass: process.env.EMAIL_PASS, // email password
+                },
+    });
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: userEmail,
+        subject: 'Xác nhận thanh toán',
+        text: `Chào bạn,\n\nChúng tôi xác nhận rằng bạn đã thanh toán thành công số tiền ${payment.amount} VND.\n\nCảm ơn bạn đã sử dụng dịch vụ của chúng tôi.\n\nTrân trọng,\nHappyClinic`
+    };
+    await transporter.sendMail(mailOptions);
+    res.redirect('/admin/payments');
 };
 
 exports.cancelPayment = async (req, res) => {
