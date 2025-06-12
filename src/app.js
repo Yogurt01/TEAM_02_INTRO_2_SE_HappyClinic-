@@ -66,7 +66,6 @@ app.get('/', (req, res) => {
   res.redirect('/auth/login');
 });
 app.use('/auth', authRoutes);
-
 app.use('/availability', availabilityRoutes);
 app.use('/medicalRecord', medicalRecordRoutes);
 app.use('/profile', profileRoutes); //profile
