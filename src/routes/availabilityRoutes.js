@@ -4,11 +4,11 @@ const router = express.Router();
 const availabilityController = require('../controllers/availabilityController');
 
 
-router.get('/availability', authenticateToken, availabilityController.getAvailability);
+router.get('/', authenticateToken, availabilityController.getAvailability);
 
-router.post('/availability', authenticateToken, availabilityController.postAvailability);
+router.post('/', authenticateToken, availabilityController.postAvailability);
 
-router.post('/availability/check/:appointmentCode', authenticateToken, async (req, res) => {
+router.post('/check/:appointmentCode', authenticateToken, async (req, res) => {
   try {
     await availabilityController.markChecked(req.params.appointmentCode);
     res.redirect('/auth/availability');

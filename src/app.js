@@ -7,7 +7,7 @@ const session = require("express-session");
 const passport = require("passport");
 const availabilityRoutes = require('./routes/availabilityRoutes');
 const medicalRecordRoutes = require('./routes/medicalRecordsRoutes');
-
+const adminRoutes = require('./routes/adminRoutes');
 const passportConfig = require('./config/passport');
 passportConfig();
 require('dotenv').config();
@@ -67,10 +67,11 @@ app.get('/', (req, res) => {
 });
 app.use('/auth', authRoutes);
 
-app.use('/auth', availabilityRoutes);
-app.use('/auth/medicalRecord', medicalRecordRoutes);
+app.use('/availability', availabilityRoutes);
+app.use('/medicalRecord', medicalRecordRoutes);
 app.use('/profile', profileRoutes); //profile
 app.use('/payment', paymentRoutes)
+app.use('/admin', adminRoutes);
 app.use('/', dashboardRoutes); 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

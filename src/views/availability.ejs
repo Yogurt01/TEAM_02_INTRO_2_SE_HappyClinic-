@@ -26,7 +26,7 @@
       <% } %>
       
       <h2 style="margin-top: 30px ;border-bottom: 2px solid #3498db; padding-bottom: 5px ;color: #2c3e50; font-size: 25px; font-weight: bold;">Đăng ký lịch khám và thông tin bệnh nhân</h2>
-      <form id="main-form" method="POST" action="/auth/availability#main-form" class="availability-form">
+      <form id="main-form" method="POST" action="/availability#main-form" class="availability-form">
         <input type="hidden" name="id" id="slotId" value="">
         <div>
           <label for="date">Ngày khám</label>
@@ -80,7 +80,7 @@
 
       <h2 style="margin-top: 30px ;border-bottom: 2px solid #3498db; padding-bottom: 5px ;color: #2c3e50; font-size: 25px; font-weight: bold;">Lịch khám đã đăng ký</h2>
       <!-- Filter form -->
-      <form id="filterForm" method="GET" action="/auth/availability#filterForm" class="filter-form" style="text-align: right;">
+      <form id="filterForm" method="GET" action="/availability#filterForm" class="filter-form" style="text-align: right;">
         <label for="filterStatus">Lọc theo trạng thái khám: </label>
         <select name="filterStatus" id="filterStatus" onchange="this.form.submit()">
           <option value="all" <%= filterStatus === 'all' ? 'selected' : '' %>>Tất cả</option>
@@ -130,7 +130,7 @@
               </td>
               <td>
                 <% if (!slot.isChecked) { %>
-                  <form id="check-form" method="POST" action="/auth/availability/check/<%= slot.appointmentCode %>#check-form">
+                  <form id="check-form" method="POST" action="/availability/check/<%= slot.appointmentCode %>#check-form">
                     <button type="submit" class="action-btn check-btn">Đánh dấu đã khám</button>
                   </form>
                 <% } else { %>
@@ -141,12 +141,12 @@
                 <button type="button" class="action-btn edit-btn"onclick="editSlot('<%= slot.appointmentCode %>', '<%= slot.date %>', '<%= slot.startTime %>', '<%= slot.endTime %>', '<%= slot.patientName %>', '<%= slot.patientBirth %>', '<%= slot.symptoms %>', '<%= slot.patient.email %>', '<%= slot.patient.phone %>', '<%= slot.patient.address %>', '<%= slot.patient.gender %>')">
                   Sửa
                 </button>
-                <form id="delete-form" method="POST" action="/auth/availability/delete/<%= slot.appointmentCode %>#delete-form" onsubmit="return confirm('Bạn có chắc chắn muốn xóa lịch khám này không?');" style="display:inline;">
+                <form id="delete-form" method="POST" action="/availability/delete/<%= slot.appointmentCode %>#delete-form" onsubmit="return confirm('Bạn có chắc chắn muốn xóa lịch khám này không?');" style="display:inline;">
                   <button type="submit" class="action-btn delete-btn">Xóa</button>
                 </form>
               </td>
               <td>
-                <a href="/auth/medicalRecord/<%= slot.patientCode %>" class="view-btn">Xem</a>
+                <a href="/medicalRecord/<%= slot.patientCode %>" class="view-btn">Xem</a>
               </td>
             </tr>
           <% }) %>
