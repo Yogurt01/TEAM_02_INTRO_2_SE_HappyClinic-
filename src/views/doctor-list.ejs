@@ -1,34 +1,100 @@
-<h1>Tìm kiếm bác sĩ</h1>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tìm kiếm bác sĩ | Happy Clinic</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <%- include('partials/navbar') %>
 
-<form method="get" action="/doctorSearch">
-  <label>Chuyên khoa:</label>
-  <input type="text" name="specialty" value="<%= filter.specialty || '' %>">
+  <div class="max-w-4xl mx-auto mt-8">
+    <!-- Khung tìm kiếm -->
+    <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+      <h1 class="text-2xl font-semibold text-blue-600 mb-4">Tìm kiếm bác sĩ</h1>
 
-  <label>Địa điểm:</label>
-  <input type="text" name="location" value="<%= filter.location || '' %>">
+      <form method="get" action="/doctorSearch" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-gray-700 font-medium mb-1">Chuyên khoa</label>
+          <input
+            type="text"
+            name="specialty"
+            value="<%= filter.specialty || '' %>"
+            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+            placeholder="Ví dụ: Nội tiết, Nhi khoa"
+          />
+        </div>
 
-  <label>Trạng thái:</label>
-  <select name="available">
-    <option value="">Tất cả</option>
-    <option value="true" <%= filter.available === 'true' ? 'selected' : '' %>>Đang làm</option>
-    <option value="false" <%= filter.available === 'false' ? 'selected' : '' %>>Nghỉ</option>
-  </select>
+        <div>
+          <label class="block text-gray-700 font-medium mb-1">Địa điểm</label>
+          <input
+            type="text"
+            name="location"
+            value="<%= filter.location || '' %>"
+            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+            placeholder="Ví dụ: TP. Hồ Chí Minh"
+          />
+        </div>
 
-  <button type="submit">Tìm</button>
-</form>
+        <div>
+          <label class="block text-gray-700 font-medium mb-1">Trạng thái</label>
+          <select
+            name="available"
+            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+          >
+            <option value="">Tất cả</option>
+            <option value="true" <%= filter.available === 'true' ? 'selected' : '' %>>Đang làm</option>
+            <option value="false" <%= filter.available === 'false' ? 'selected' : '' %>>Nghỉ</option>
+          </select>
+        </div>
 
-<hr>
+        <!-- Nút tìm kiếm -->
+        <div class="md:col-span-3 text-right mt-2">
+          <button
+            type="submit"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded shadow"
+          >
+            🔍 Tìm kiếm
+          </button>
+        </div>
+      </form>
+    </div>
 
-<h2>Danh sách bác sĩ</h2>
-<ul>
-  <% doctors.forEach(doc => { %>
-    <li>
-      <strong><%= doc.name %></strong> - <%= doc.specialty %> - <%= doc.location %> -
-      <%= doc.available ? "Đang làm" : "Nghỉ" %>
-    </li>
-  <% }) %>
-</ul>
+    <!-- Danh sách bác sĩ -->
+    <div class="bg-white shadow-md rounded-lg p-6">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">Danh sách bác sĩ</h2>
 
-<% if (error) { %>
-  <p style="color:red"><%= error %></p>
-<% } %>
+      <% if (doctors.length > 0) { %>
+        <ul class="divide-y divide-gray-200">
+          <% doctors.forEach(doc => { %>
+            <li class="py-3">
+              <div class="flex flex-col md:flex-row md:justify-between">
+                <div>
+                  <span class="font-medium text-blue-700"><%= doc.name %></span> –
+                  <span><%= doc.specialty %></span> –
+                  <span><%= doc.location %></span>
+                </div>
+                <div class="mt-1 md:mt-0">
+                  <span class="px-3 py-1 rounded-full text-sm font-medium 
+                    <%= doc.available ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' %>">
+                    <%= doc.available ? "Đang làm" : "Nghỉ" %>
+                  </span>
+                </div>
+              </div>
+            </li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <p class="text-gray-500">Không tìm thấy bác sĩ phù hợp.</p>
+      <% } %>
+
+      <% if (error) { %>
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mt-4">
+          <%= error %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</body>
+</html>
