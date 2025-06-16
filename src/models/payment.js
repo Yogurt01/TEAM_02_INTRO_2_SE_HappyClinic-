@@ -18,6 +18,7 @@ const paymentSchema = new mongoose.Schema({
         default: 'Unpaid',
         required: true
         },
-    timestamps: true
+  },{
+    timestamps:true
 });
 module.exports = mongoose.model('payment', paymentSchema);

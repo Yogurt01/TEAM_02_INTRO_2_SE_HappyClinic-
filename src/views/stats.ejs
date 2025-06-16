@@ -34,8 +34,21 @@
       <div class="bg-white rounded-xl p-6 shadow hover:shadow-md">
         <div class="text-4xl mb-2">💳</div>
         <h2 class="text-lg font-semibold mb-2">Payments</h2>
-        <p class="text-2xl font-bold text-blue-600"><%= stats.payments %></p>
+        <p class="text-gray-700 text-xl font-semibold">
+            Revenue: <%= (stats.payments / 1_000_000).toFixed(2) %>M
+        </p>
       </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+        <div class="bg-white p-4 rounded shadow">
+            <img src="<%= charts.userChart %>" alt="User Chart" />
+        </div>
+        <div class="bg-white p-4 rounded shadow">
+            <img src="<%= charts.appointmentChart %>" alt="Appointment Chart" />
+        </div>
+        <div class="bg-white p-4 rounded shadow">
+            <img src="<%= charts.paymentChart %>" alt="Payment Chart" />
+        </div>
     </div>
   </div>
 </body>
