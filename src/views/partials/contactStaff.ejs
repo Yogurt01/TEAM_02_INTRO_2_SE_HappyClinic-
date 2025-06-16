@@ -1,0 +1,104 @@
+
+<style>
+  #contact-toggle-btn {
+    transition: all 0.3s;
+  }
+  #contact-staff-widget {
+    transition: transform 0.3s ease-in-out;
+  }
+</style>
+
+<!-- Nút bật/tắt -->
+<button id="contact-toggle-btn" style="background-color: #3498db;" class="fixed bottom-4 right-4 text-white px-4 py-2 rounded-full shadow-lg z-50 hover:bg-green-700">
+  💬 Hỗ trợ
+</button>
+
+<!-- Widget chat -->
+<div id="contact-staff-widget" class="fixed bottom-20 right-4 w-96 shadow-lg border border-gray-300 bg-white rounded-lg text-sm z-50 hidden">
+  <div style="background-color: #3498db;" class="text-white px-4 py-2 rounded-t-lg font-semibold flex justify-between items-center">
+    <span>Phản hồi người dùng</span>
+    <button onclick="toggleChatWidget()" class="text-white hover:text-gray-200">&times;</button>
+  </div>
+  <div class="p-2 max-h-[420px] overflow-y-auto">
+    <div class="flex space-x-2">
+      <!-- Danh sách người dùng -->
+      <ul id="session-list" class="w-1/3 border bg-gray-100 rounded p-1 h-64 overflow-y-auto"></ul>
+      <!-- Chat box -->
+      <div class="w-2/3 flex flex-col">
+        <div id="staff-chat-box" class="border bg-white rounded p-1 h-52 overflow-y-auto mb-1"></div>
+        <div class="flex">
+          <input id="staff-input" type="text" class="flex-grow border rounded px-1 py-1" placeholder="Nhập phản hồi..." />
+          <button onclick="sendStaffReply()" style="background-color: #3498db;" class="ml-1 text-white px-3 py-1 rounded">Gửi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentSessionId = null;
+
+  function toggleChatWidget() {
+    const widget = document.getElementById('contact-staff-widget');
+    const btn = document.getElementById('contact-toggle-btn');
+    widget.classList.toggle('hidden');
+  }
+
+  async function loadSessions() {
+    const res = await fetch('/contact/sessions');
+    const sessions = await res.json();
+    const list = document.getElementById('session-list');
+    list.innerHTML = '';
+
+    sessions.forEach(session => {
+      const li = document.createElement('li');
+      li.className = 'cursor-pointer hover:underline mb-1';
+      li.textContent = session.name || 'Ẩn danh';
+      li.onclick = () => loadMessages(session._id);
+      list.appendChild(li);
+    });
+  }
+
+  async function loadMessages(sessionId) {
+    currentSessionId = sessionId;
+    const res = await fetch(`/contact/messages/${sessionId}`);
+    const messages = await res.json();
+    const box = document.getElementById('staff-chat-box');
+    box.innerHTML = '';
+
+    messages.forEach(msg => {
+      const div = document.createElement('div');
+      div.className = msg.sender === 'staff' ? 'text-right text-green-600 mb-1' : 'text-left text-blue-600 mb-1';
+      div.textContent = msg.content;
+      box.appendChild(div);
+    });
+
+    box.scrollTop = box.scrollHeight;
+  }
+
+  async function sendStaffReply() {
+    const input = document.getElementById('staff-input');
+    const content = input.value.trim();
+    if (!content || !currentSessionId) return;
+
+    await fetch('/contact/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sender: 'staff', content, sessionId: currentSessionId })
+    });
+
+    input.value = '';
+    loadMessages(currentSessionId);
+  }
+
+  setInterval(() => {
+    if (currentSessionId) {
+      loadMessages(currentSessionId);
+    }
+    loadSessions();
+  }, 3000);
+
+  loadSessions();
+  document.getElementById('contact-toggle-btn').addEventListener('click', toggleChatWidget);
+
+</script>

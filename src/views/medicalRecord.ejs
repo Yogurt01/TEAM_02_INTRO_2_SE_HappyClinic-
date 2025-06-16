@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <title>Hồ sơ bệnh án</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/styles/availability.css" />
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
+    body { font-family: 'Roboto', sans-serif; padding: 0px; }
     .container { display: flex; gap: 20px; }
     .sidebar {
       flex: 0 0 30%;
@@ -43,25 +44,25 @@
   </style>
 </head>
 <body>
-	
+	<%- include('partials/navbar') %>
   <div class="breadcrumb">
     <a href="/dashboard">TRANG CHỦ</a> &raquo;
-    <a href="/auth/availability">ĐĂNG KÝ LỊCH KHÁM</a> &raquo;
+    <a href="/availability">ĐĂNG KÝ LỊCH KHÁM</a> &raquo;
     <span>HỒ SƠ CHI TIẾT</span>
   </div>
 
   <div class="container">
     <!-- Sidebar -->
     <div class="sidebar">
-      <h3>Thông tin bệnh nhân</h3>
+      <h2 style="margin-top: 10px ;border-bottom: 2px solid #3498db; padding-bottom: 5px ;color: #2c3e50; font-size: 25px; font-weight: bold;">Thông tin bệnh nhân</h2>
         <% if (patient) { %>
-          <p><strong>Mã BN:</strong> <%= patient.code %></p>
-          <p><strong>Họ tên:</strong> <%= patient.fullName || patient.name || 'Không rõ' %></p>
-          <p><strong>Ngày sinh:</strong> <%= patient.dob ? new Date(patient.dob).toLocaleDateString() : 'Không rõ' %></p>
-          <p><strong>Giới tính:</strong> <%= patient.gender || 'Không rõ' %></p>
-          <p><strong>Điện thoại:</strong> <%= patient.phone || 'Không rõ' %></p>
-          <p><strong>Email:</strong> <%= patient.email || 'Không rõ' %></p>
-          <p><strong>Địa chỉ:</strong> <%= patient.address || 'Không rõ' %></p>
+          <p stype="font-size: 15px"><strong>Mã BN:</strong> <%= patient.code %></p>
+          <p stype="font-size: 15px"><strong>Họ tên:</strong> <%= patient.fullName || patient.name || 'Không rõ' %></p>
+          <p stype="font-size: 15px"><strong>Ngày sinh:</strong> <%= patient.dob ? new Date(patient.dob).toLocaleDateString() : 'Không rõ' %></p>
+          <p stype="font-size: 15px"><strong>Giới tính:</strong> <%= patient.gender || 'Không rõ' %></p>
+          <p stype="font-size: 15px"><strong>Điện thoại:</strong> <%= patient.phone || 'Không rõ' %></p>
+          <p stype="font-size: 15px"><strong>Email:</strong> <%= patient.email || 'Không rõ' %></p>
+          <p stype="font-size: 15px"><strong>Địa chỉ:</strong> <%= patient.address || 'Không rõ' %></p>
         <% } else { %>
           <p>Không có thông tin bệnh nhân.</p>
         <% } %>
@@ -69,7 +70,7 @@
 
     <!-- Main content -->
     <div class="main-content">
-      <h2>Hồ sơ bệnh án</h2>
+      <h2 style="margin-top: 30px ;border-bottom: 2px solid #3498db; padding-bottom: 5px ;color: #2c3e50; font-size: 25px; font-weight: bold;">Hồ sơ bệnh án</h2>
 
       <% if (message) { %>
         <div class="alert alert-success"><%= message %></div>
@@ -121,5 +122,6 @@
       </table>
     </div>
   </div>
+<%- include('partials/contact') %>
 </body>
 </html>

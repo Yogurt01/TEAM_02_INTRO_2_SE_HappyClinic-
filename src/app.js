@@ -9,6 +9,7 @@ const availabilityRoutes = require('./routes/availabilityRoutes');
 const medicalRecordRoutes = require('./routes/medicalRecordsRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const passportConfig = require('./config/passport');
+const contactRoutes = require('./routes/contactRoutes');
 passportConfig();
 require('dotenv').config();
 
@@ -72,6 +73,7 @@ app.use('/profile', profileRoutes); //profile
 app.use('/payment', paymentRoutes)
 app.use('/admin', adminRoutes);
 app.use('/', dashboardRoutes); 
+app.use('/contact', contactRoutes);
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
