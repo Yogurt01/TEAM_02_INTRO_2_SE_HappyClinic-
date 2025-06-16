@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Hỗ trợ | Happy Clinic</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <%- include('partials/navbar') %>
+
+  <div class="max-w-2xl mx-auto mt-10 bg-white p-6 rounded shadow">
+    <h1 class="text-2xl font-bold text-blue-600 mb-4">🆘 Gửi câu hỏi hỗ trợ</h1>
+
+    <% if (success) { %>
+      <div class="bg-green-100 text-green-800 p-3 rounded mb-4"><%= success %></div>
+    <% } %>
+    <% if (error) { %>
+      <div class="bg-red-100 text-red-800 p-3 rounded mb-4"><%= error %></div>
+    <% } %>
+
+    <form action="/help" method="POST" class="space-y-4">
+      <div>
+        <label class="block font-medium text-gray-700">Tên của bạn</label>
+        <input name="name" type="text" value="<%= formData.name || '' %>" class="w-full border rounded px-3 py-2" required>
+      </div>
+
+      <div>
+        <label class="block font-medium text-gray-700">Email</label>
+        <input name="email" type="email" value="<%= formData.email || '' %>" class="w-full border rounded px-3 py-2" required>
+      </div>
+
+      <div>
+        <label class="block font-medium text-gray-700">Số điện thoại</label>
+        <input name="phone" type="tel" value="<%= formData.phone || '' %>" class="w-full border rounded px-3 py-2" required>
+      </div>
+
+      <div>
+        <label class="block font-medium text-gray-700">Nội dung câu hỏi</label>
+        <textarea name="question" rows="4" class="w-full border rounded px-3 py-2" required><%= formData.question || '' %></textarea>
+      </div>
+
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        📩 Gửi câu hỏi
+      </button>
+    </form>
+  </div>
+</body>
+</html>
