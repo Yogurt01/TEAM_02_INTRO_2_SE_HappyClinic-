@@ -22,7 +22,6 @@ const paymentRoutes = require('./routes/paymentRoutes')
 const doctorSearchRoutes = require('./routes/doctorSearch');
 const faqsRoutes = require('./routes/faqsRoutes');
 const helpRoutes = require('./routes/helpRoutes');
-const adminHelpRoutes = require('./routes/adminHelpRoutes');
 const app = express();
 
 app.set('view engine', 'ejs')
@@ -78,12 +77,10 @@ app.use('/payment', paymentRoutes)
 app.use('/admin', adminRoutes);
 app.use('/announcement', announcementRoutes);
 app.use('/contact', contactRoutes);
-app.use('/', doctorSearchRoutes);
-app.use('/', dashboardRoutes);
-app.use('/', faqsRoutes);
+app.use('/doctorSearch', doctorSearchRoutes);
+app.use('/faqs', faqsRoutes);
 app.use('/help', helpRoutes);
-app.use('/', adminHelpRoutes);
-
+app.use('/', dashboardRoutes);
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);

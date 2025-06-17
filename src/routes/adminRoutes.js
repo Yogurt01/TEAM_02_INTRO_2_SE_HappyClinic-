@@ -3,6 +3,7 @@ const router = express.Router();
 const adminController = require('../controllers/adminController');
 const stats = require('../controllers/statsController')
 const authenticateToken = require('../middlewares/authMiddlesware')
+const adminHelpController = require('../controllers/adminHelpController');
 // Protect these routes with admin-only middleware in real app
 router.get('/', authenticateToken, (req, res) => {
     res.render('adminManager', { user: req.user });
@@ -19,4 +20,8 @@ router.post('/payment/cancel/:paymentId', adminController.cancelPayment);
 
 //Anilyzer Routes
 router.get('/anylyzer', stats.anylyzeStats);
+//Help Requests Management Routes
+router.get('/help-requests', adminHelpController.listRequests);
+router.post('/help-requests/:id/answer', adminHelpController.submitAnswer);
+router.get('/help-requests/:id/edit', adminHelpController.showEditForm);
 module.exports = router;
