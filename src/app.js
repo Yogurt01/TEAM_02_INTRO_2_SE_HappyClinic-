@@ -10,6 +10,7 @@ const medicalRecordRoutes = require('./routes/medicalRecordsRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const passportConfig = require('./config/passport');
 const contactRoutes = require('./routes/contactRoutes');
+const announcementRoutes = require('./routes/announcementRoutes');
 passportConfig();
 require('dotenv').config();
 
@@ -75,7 +76,7 @@ app.use('/medicalRecord', medicalRecordRoutes);
 app.use('/profile', profileRoutes); //profile
 app.use('/payment', paymentRoutes)
 app.use('/admin', adminRoutes);
-
+app.use('/announcement', announcementRoutes);
 app.use('/contact', contactRoutes);
 app.use('/', doctorSearchRoutes);
 app.use('/', dashboardRoutes);
