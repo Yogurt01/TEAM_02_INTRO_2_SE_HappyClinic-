@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trợ lý ảo | Happy Clinic</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <!-- Navbar chung -->
+  <%- include('partials/navbar') %>
+
+  <div class="max-w-2xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-6">
+    <h1 class="text-2xl font-semibold mb-4">Trợ lý ảo – Hỏi nhanh</h1>
+
+    <!-- Chat window -->
+    <div id="chat-window"
+         class="h-64 overflow-y-auto border border-gray-300 rounded p-4 mb-4 space-y-3 bg-gray-50">
+      <!-- Tin nhắn user/bot sẽ được append tại đây -->
+    </div>
+
+    <!-- Form gửi câu hỏi -->
+    <form id="chat-form" class="flex space-x-2">
+      <input id="chat-input"
+             type="text"
+             placeholder="Nhập câu hỏi..."
+             class="flex-1 border border-gray-300 rounded px-3 py-2
+                    focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"/>
+      <button type="submit"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded">
+        Gửi
+      </button>
+    </form>
+  </div>
+
+  <script>
+    const form  = document.getElementById('chat-form');
+    const input = document.getElementById('chat-input');
+    const win   = document.getElementById('chat-window');
+
+    // Thêm message vào chat window
+    function appendMessage(role, text) {
+      const wrapper = document.createElement('div');
+      wrapper.className = role === 'user' ? 'text-right' : 'text-left';
+
+      const bubble = document.createElement('span');
+      bubble.className = `
+        inline-block p-2 rounded 
+        ${role === 'user'
+          ? 'bg-blue-100 text-blue-800'
+          : 'bg-gray-200 text-gray-900'}
+      `;
+      bubble.textContent = text;
+
+      wrapper.appendChild(bubble);
+      win.appendChild(wrapper);
+      win.scrollTop = win.scrollHeight;
+    }
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      // Hiển thị message của user
+      appendMessage('user', msg);
+      input.value = '';
+
+      try {
+        // Gửi đến endpoint proxy của bạn
+        const res = await fetch('/chat/api', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: msg })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.answer) {
+          appendMessage('bot', data.answer);
+        } else {
+          appendMessage('bot', data.error || 'Bot chưa trả lời được.');
+        }
+      } catch (err) {
+        console.error('Fetch error:', err);
+        appendMessage('bot', 'Lỗi kết nối đến dịch vụ Chatbot.');
+      }
+    });
+  </script>
+</body>
+</html>

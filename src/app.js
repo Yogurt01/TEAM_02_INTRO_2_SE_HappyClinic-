@@ -18,6 +18,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/authRoutes')
 const dashboardRoutes = require('./routes/dashboardRoutes')
 const profileRoutes = require('./routes/profileRoutes'); //profile
+const chatRoutes    = require('./routes/chatRoutes');
 const paymentRoutes = require('./routes/paymentRoutes')
 const doctorSearchRoutes = require('./routes/doctorSearch');
 const faqsRoutes = require('./routes/faqsRoutes');
@@ -73,6 +74,7 @@ app.use('/auth', authRoutes);
 app.use('/availability', availabilityRoutes);
 app.use('/medicalRecord', medicalRecordRoutes);
 app.use('/profile', profileRoutes); //profile
+app.use('/chat', chatRoutes);
 app.use('/payment', paymentRoutes)
 app.use('/admin', adminRoutes);
 app.use('/announcement', announcementRoutes);
