@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hỗ trợ khách hàng - Quản trị</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    #contact-toggle-btn {
+      transition: all 0.3s;
+    }
+    #contact-staff-widget {
+      transition: transform 0.3s ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-gray-200 font-sans relative overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-r from-gray-100 via-white to-gray-100 -z-10"></div>
+
+  <%- include('partials/manager') %>
+
+  <div class="max-w-7xl mx-auto p-6 grid grid-cols-1 md:grid-cols-6 gap-8 items-start">
+    <div class="text-gray-800 md:col-span-2 space-y-3 mt-6">
+      <h2 class="text-2xl font-bold mb-4 text-[#3498db]">TRUNG TÂM HỖ TRỢ TRỰC TUYẾN</h2>
+      <p>Không gian nhân viên trả lời câu hỏi từ khách hàng theo thời gian thực.</p>
+    </div>
+
+    <div class="bg-[#3498db] rounded-xl shadow-lg p-6 md:col-span-4 relative">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Trò chuyện với khách hàng</h2>
+      <div class="flex gap-4 h-[500px]">
+        <div class="w-1/3 h-full">
+          <label class="block mb-1 text-sm">Danh sách phiên trò chuyện:</label>
+          <div id="sessionList" class="space-y-2 h-[90%] overflow-y-auto border rounded p-2 bg-gray-50"></div>
+        </div>
+
+        <div class="w-2/3 h-full flex flex-col border rounded overflow-hidden">
+          <div id="chat-messages" class="h-96 overflow-y-auto px-3 py-2 bg-gray-50 space-y-2 flex-1"></div>
+          <div class="flex items-center border-t px-2 py-2 bg-white">
+            <input type="text" id="chat-input" placeholder="Nhập phản hồi..." class="flex-grow border rounded px-2 py-1 mr-2" />
+            <button onclick="sendMessage()" class="bg-[#3498db] text-white px-4 py-1 rounded hover:bg-blue-700">Gửi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<script>
+  let currentSessionId = localStorage.getItem('currentSessionId') || null;
+
+  async function loadSessions() {
+    const res = await fetch('/chatSupport/sessions');
+    const sessions = await res.json();
+    const listContainer = document.getElementById('sessionList');
+    if (!listContainer) return;
+
+    listContainer.innerHTML = '';
+
+    // Kiểm tra nếu currentSessionId còn tồn tại
+    const foundSession = sessions.find(s => s._id === currentSessionId);
+
+    if (!currentSessionId && sessions.length > 0) {
+      // Nếu chưa chọn session nào → chọn mặc định là phiên đầu tiên
+      currentSessionId = sessions[0]._id;
+      localStorage.setItem('currentSessionId', currentSessionId);
+      await fetchMessages();
+    } else if (!foundSession && currentSessionId) {
+      // Nếu phiên cũ đã bị mất → reset
+      currentSessionId = null;
+      localStorage.removeItem('currentSessionId');
+      document.getElementById('chat-messages').innerHTML = `<div class="text-center text-gray-500 mt-4">Phiên trò chuyện đã kết thúc.</div>`;
+    }
+
+    sessions.forEach(s => {
+			const div = document.createElement('div');
+			div.dataset.sessionId = s._id;
+
+			const isActive = s._id === currentSessionId;
+			div.className = `
+				cursor-pointer px-4 py-2 rounded-lg border shadow-sm transition text-sm
+				${isActive ? 'bg-blue-100 border-blue-500' : 'bg-white hover:bg-blue-50 border-gray-300'}
+			`.trim();
+
+			// Lưu tên cố định nếu chưa lưu
+			if (!localStorage.getItem(`sessionName_${s._id}`)) {
+				localStorage.setItem(`sessionName_${s._id}`, s.name || 'Ẩn danh');
+			}
+
+			// Hiển thị tên từ localStorage
+			div.innerHTML = `
+				<div class="font-semibold text-gray-800 flex justify-between items-center">
+					<span>👤 ${localStorage.getItem(`sessionName_${s._id}`)}</span>
+					<span class="text-xs text-gray-500">
+						${s.createdAt ? new Date(s.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) : ''}
+					</span>
+				</div>
+			`;
+
+			div.addEventListener('click', async () => {
+				if (currentSessionId !== s._id) {
+					currentSessionId = s._id;
+					localStorage.setItem('currentSessionId', currentSessionId);
+					await fetchMessages();
+					updateActiveSessionStyle();
+				}
+			});
+
+			listContainer.appendChild(div);
+		});
+
+    updateActiveSessionStyle();
+  }
+
+  function updateActiveSessionStyle() {
+    const sessionDivs = document.querySelectorAll('#sessionList > div');
+    sessionDivs.forEach(div => {
+      const isActive = div.dataset.sessionId === currentSessionId;
+      div.className = `
+        cursor-pointer px-4 py-2 rounded-lg border shadow-sm transition text-sm
+        ${isActive ? 'bg-blue-100 border-blue-500' : 'bg-white hover:bg-blue-50 border-gray-300'}
+      `.trim();
+    });
+  }
+
+  async function fetchMessages() {
+    if (!currentSessionId) return;
+    const res = await fetch(`/chatSupport/messages/${currentSessionId}`);
+    const messages = await res.json();
+    const chatBox = document.getElementById('chat-messages');
+    if (!chatBox) return;
+
+    chatBox.innerHTML = '';
+    messages.forEach(msg => {
+      const div = document.createElement('div');
+      div.className = msg.sender === 'user' ? 'text-left' : 'text-right';
+      const bubble = document.createElement('div');
+      bubble.className = msg.sender === 'user'
+        ? 'inline-block bg-gray-200 text-gray-800 px-3 py-2 rounded-lg max-w-xs break-words'
+        : 'inline-block bg-blue-100 text-blue-800 px-3 py-2 rounded-lg max-w-xs break-words';
+      bubble.innerHTML = `<strong>${msg.sender}</strong>: ${msg.content}`;
+      div.appendChild(bubble);
+      chatBox.appendChild(div);
+    });
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  async function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const content = input.value.trim();
+    if (!content || !currentSessionId) return;
+
+    await fetch('/chatSupport/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sessionId: currentSessionId,
+        content: content,
+        sender: 'admin'
+      })
+    });
+
+    input.value = '';
+    await fetchMessages();
+  }
+
+  // Cập nhật tự động mỗi 3 giây
+  setInterval(() => {
+    loadSessions();
+    if (currentSessionId) fetchMessages();
+  }, 3000);
+
+  // Lần đầu load
+  loadSessions();
+</script>
+
+
+</body>
+</html>

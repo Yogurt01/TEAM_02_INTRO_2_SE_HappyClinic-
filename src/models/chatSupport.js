@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const contactSchema = new mongoose.Schema({
+const chatSupportSchema = new mongoose.Schema({
   sender: String,
   content: String,
   sessionId: String,
@@ -10,4 +10,4 @@ const contactSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Contact', contactSchema);
+module.exports = mongoose.model('ChatSupport', chatSupportSchema);

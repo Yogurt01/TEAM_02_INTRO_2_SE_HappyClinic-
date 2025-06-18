@@ -38,7 +38,7 @@
   sessionStorage.setItem('chatName', name);
 
   async function fetchMessages() {
-    const res = await fetch(`/contact/messages/${sessionId}`);
+    const res = await fetch(`/chatSupport/messages/${sessionId}`);
     const messages = await res.json();
     const chatBox = document.getElementById('chat-messages');
     chatBox.innerHTML = '';
@@ -58,7 +58,7 @@
     const content = input.value.trim();
     if (!content) return;
 
-    await fetch('/contact/send', {
+    await fetch('/chatSupport/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ sender: 'user', content, sessionId })
@@ -70,7 +70,7 @@
 
   window.addEventListener("beforeunload", async function () {
     if (!sessionId) return;
-    await fetch(`/contact/clear/${sessionId}`, { method: 'DELETE' });
+    await fetch(`/chatSupport/clear/${sessionId}`, { method: 'DELETE' });
   });
 
   setInterval(fetchMessages, 3000);
