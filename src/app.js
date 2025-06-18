@@ -9,8 +9,13 @@ const availabilityRoutes = require('./routes/availabilityRoutes');
 const medicalRecordRoutes = require('./routes/medicalRecordsRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const passportConfig = require('./config/passport');
+
 const chatSupportRoutes = require('./routes/chatSupportRoutes');
 const contactRouter = require('./routes/contact');
+
+const contactRoutes = require('./routes/contactRoutes');
+const announcementRoutes = require('./routes/announcementRoutes');
+
 passportConfig();
 require('dotenv').config();
 
@@ -22,7 +27,6 @@ const paymentRoutes = require('./routes/paymentRoutes')
 const doctorSearchRoutes = require('./routes/doctorSearch');
 const faqsRoutes = require('./routes/faqsRoutes');
 const helpRoutes = require('./routes/helpRoutes');
-const adminHelpRoutes = require('./routes/adminHelpRoutes');
 const app = express();
 
 app.set('view engine', 'ejs')
@@ -76,14 +80,13 @@ app.use('/medicalRecord', medicalRecordRoutes);
 app.use('/profile', profileRoutes); //profile
 app.use('/payment', paymentRoutes)
 app.use('/admin', adminRoutes);
-
 app.use('/chatSupport', chatSupportRoutes);
-app.use('/', doctorSearchRoutes);
-app.use('/', dashboardRoutes);
-app.use('/', faqsRoutes);
-app.use('/help', helpRoutes);
-app.use('/', adminHelpRoutes);
 app.use('/contact', contactRouter);
+app.use('/announcement', announcementRoutes);
+app.use('/doctorSearch', doctorSearchRoutes);
+app.use('/faqs', faqsRoutes);
+app.use('/help', helpRoutes);
+app.use('/', dashboardRoutes);
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);

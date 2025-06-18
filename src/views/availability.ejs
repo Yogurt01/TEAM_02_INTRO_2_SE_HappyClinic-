@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Doctor Availability Management</title>
+    <title>Quản lý lịch khám</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,12 +12,16 @@
 
   </head>
   <body>
-    <%- include('partials/navbar') %>
+    <% if (user?.role === 'admin') { %>
+      <%- include('partials/manager') %>
+    <% } else { %>
+      <%- include('partials/navbar') %>
+    <% } %>
 
     <div class="breadcrumb">
       <a href="/dashboard">TRANG CHỦ</a> &raquo; <span>QUẢN LÝ LỊCH KHÁM</span>
     </div>
-    <h1 style="text-align: center; color: #2c3e50; margin-bottom: 30px; font-size: 35px; font-weight: bold;">Doctor Availability Management</h1>
+    <h1 style="text-align: center; color: #2c3e50; margin-bottom: 30px; font-size: 35px; font-weight: bold;"> Quản lý lịch khám</h1>
     
     <div class="form-container-availability">
       <% if (error) { %>
@@ -173,7 +177,7 @@
 
 
         const form = document.getElementById('main-form');
-        form.action = `/auth/availability/edit/${id}`;
+        form.action = `/availability/edit/${id}`;
 
         const submitBtn = form.querySelector('button[type="submit"]');
         submitBtn.textContent = 'Lưu chỉnh sửa';
@@ -190,7 +194,7 @@
         const submitBtn = document.querySelector('#main-form button[type="submit"]');
         if (!slotId) {
           submitBtn.textContent = 'Thêm lịch khám';
-          document.getElementById('main-form').action = '/auth/availability';
+          document.getElementById('main-form').action = '/availability';
         }
       });
 

@@ -1,0 +1,99 @@
+<div class="max-w-3xl mx-auto bg-white shadow-xl rounded-2xl p-8 mt-8">
+  <h2 class="text-3xl font-bold mb-6 text-blue-700 flex items-center gap-2">
+    📝 <%= editMode ? "Chỉnh sửa Thông Báo" : "Đăng Thông Báo Mới" %>
+  </h2>
+
+  <form method="POST" action="<%= editMode ? '/announcement/edit/' + announcement._id : '/announcement/add' %>" class="space-y-6">
+
+    <!-- Tiêu đề -->
+    <div>
+      <label class="block text-gray-800 font-medium mb-1">Tiêu đề <span class="text-red-500">*</span></label>
+      <input
+        type="text"
+        name="title"
+        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+        placeholder="Nhập tiêu đề thông báo"
+        value="<%= announcement?.title || '' %>"
+        required
+      />
+    </div>
+
+    <!-- Nội dung -->
+    <div>
+      <label class="block text-gray-800 font-medium mb-1">Nội dung <span class="text-red-500">*</span></label>
+      <textarea
+        name="content"
+        class="w-full p-3 border border-gray-300 rounded-lg h-40 resize-y focus:ring-blue-500 focus:border-blue-500"
+        placeholder="Nhập nội dung chi tiết"
+        required
+      ><%= announcement?.content || '' %></textarea>
+    </div>
+
+    <!-- Danh mục và Người đăng -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label class="block text-gray-800 font-medium mb-1">Danh mục <span class="text-red-500">*</span></label>
+        <select
+          name="category"
+          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+          required
+        >
+          <option value="event" <%= announcement?.category === 'event' ? 'selected' : '' %>>Sự kiện</option>
+          <option value="service" <%= announcement?.category === 'service' ? 'selected' : '' %>>Dịch vụ</option>
+          <option value="promotion" <%= announcement?.category === 'promotion' ? 'selected' : '' %>>Khuyến mãi</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-gray-800 font-medium mb-1">Người đăng <span class="text-red-500">*</span></label>
+        <input
+          type="text"
+          name="author"
+          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+          placeholder="Nhập tên người đăng"
+          value="<%= announcement?.author || '' %>"
+          required
+        />
+      </div>
+    </div>
+
+    <!-- Ảnh và Link -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label class="block text-gray-800 font-medium mb-1">Link hình ảnh</label>
+        <input
+          type="url"
+          name="imageUrl"
+          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+          placeholder="https://..."
+          value="<%= announcement?.imageUrl || '' %>"
+        />
+      </div>
+
+      <div>
+        <label class="block text-gray-800 font-medium mb-1">Link chi tiết</label>
+        <input
+          type="url"
+          name="link"
+          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+          placeholder="https://..."
+          value="<%= announcement?.link || '' %>"
+        />
+      </div>
+    </div>
+
+    <!-- Nút hành động -->
+    <div class="flex items-center justify-between pt-4 border-t border-gray-200 mt-6">
+      <a href="/announcement" class="text-blue-600 hover:underline text-sm flex items-center gap-1">
+        ← Quay về danh sách
+      </a>
+      <button
+        type="submit"
+        class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+      >
+        <%= editMode ? "💾 Lưu chỉnh sửa" : "📰 Đăng tin" %>
+      </button>
+    </div>
+
+  </form>
+</div>

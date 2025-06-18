@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tin tức & Thông báo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <% if (user?.role === 'admin') { %>
+    <%- include('partials/manager') %>
+  <% } else { %>
+    <%- include('partials/navbar') %>
+  <% } %>
+
+  <div class="max-w-5xl mx-auto py-10 px-4">
+    <h1 class="text-3xl font-bold text-center text-blue-700 mb-8">Tin tức & Thông báo</h1>
+
+    <!-- Tabs -->
+    <div class="flex justify-center mb-6 space-x-4">
+      <button onclick="showTab('news')" id="tab-news" class="tab-btn bg-blue-600 text-white px-4 py-2 rounded">Tin tức</button>
+      <button onclick="showTab('notices')" id="tab-notices" class="tab-btn bg-gray-300 text-black px-4 py-2 rounded">Thông báo</button>
+    </div>
+
+    <!-- Nút thêm -->
+    <% if (user?.role === 'admin' || user?.role === 'staff') { %>
+      <div class="text-right mb-4">
+        <a href="/announcement/add" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">+ Thêm bài viết</a>
+      </div>
+    <% } %>
+
+    <!-- Tin tức -->
+    <div id="news-tab" class="tab-content">
+      <% if (news.length === 0) { %>
+        <p class="text-center text-gray-500">Chưa có tin tức nào.</p>
+      <% } else { %>
+        <% news.forEach(n => { %>
+          <div class="border p-4 rounded-lg shadow mb-4 bg-white">
+            <div class="flex justify-between">
+              <h2 class="text-xl font-semibold"><%= n.title %></h2>
+              <span class="bg-blue-200 text-blue-700 px-2 py-1 rounded text-xs uppercase"><%= n.category %></span>
+            </div>
+            <p class="text-sm text-gray-500 mb-2"><%= new Date(n.date).toLocaleDateString() %> - <%= n.author %></p>
+
+            <% if (n.imageUrl) { %>
+              <a href="<%= n.link || '#' %>" target="_blank">
+                <img src="<%= n.imageUrl %>" class="w-full h-48 object-cover rounded mb-3 hover:opacity-90 transition" />
+              </a>
+            <% } %>
+
+            <details>
+              <summary class="cursor-pointer text-blue-600 hover:underline">Xem chi tiết</summary>
+              <p class="mt-2 text-gray-700"><%= n.content %></p>
+              <% if (n.link) { %>
+                <p class="mt-2"><a href="<%= n.link %>" target="_blank" class="text-blue-500 hover:underline">🔗 Xem thêm</a></p>
+              <% } %>
+            </details>
+
+            <% if (user?.role === 'admin' || user?.role === 'staff') { %>
+              <div class="mt-2 text-right space-x-2">
+                <a href="/announcement/edit/<%= n._id %>" class="text-yellow-600 hover:underline">Sửa</a>
+                <form action="/announcement/delete/<%= n._id %>" method="POST" class="inline">
+                  <button type="submit" class="text-red-600 hover:underline">Xóa</button>
+                </form>
+              </div>
+            <% } %>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+
+    <!-- Thông báo -->
+    <div id="notices-tab" class="tab-content hidden">
+      <% if (notices.length === 0) { %>
+        <p class="text-center text-gray-500">Chưa có thông báo nào.</p>
+      <% } else { %>
+        <% notices.forEach(n => { %>
+          <div class="border p-4 rounded-lg shadow mb-4 bg-white">
+            <div class="flex justify-between">
+              <h2 class="text-xl font-semibold"><%= n.title %></h2>
+              <span class="bg-blue-200 text-blue-700 px-2 py-1 rounded text-xs uppercase"><%= n.category %></span>
+            </div>
+            <p class="text-sm text-gray-500 mb-2"><%= new Date(n.date).toLocaleDateString() %> - <%= n.author %></p>
+
+            <% if (n.imageUrl) { %>
+              <a href="<%= n.link || '#' %>" target="_blank">
+                <img src="<%= n.imageUrl %>" class="w-full h-48 object-cover rounded mb-3 hover:opacity-90 transition" />
+              </a>
+            <% } %>
+
+            <details>
+              <summary class="cursor-pointer text-blue-600 hover:underline">Xem nội dung</summary>
+              <p class="mt-2 text-gray-700"><%= n.content %></p>
+              <% if (n.link) { %>
+                <p class="mt-2"><a href="<%= n.link %>" target="_blank" class="text-blue-500 hover:underline">🔗 Xem chi tiết</a></p>
+              <% } %>
+            </details>
+
+            <% if (user?.role === 'admin' || user?.role === 'staff') { %>
+              <div class="mt-2 text-right space-x-2">
+                <a href="/announcement/edit/<%= n._id %>" class="text-yellow-600 hover:underline">Sửa</a>
+                <form action="/announcement/delete/<%= n._id %>" method="POST" class="inline">
+                  <button type="submit" class="text-red-600 hover:underline">Xóa</button>
+                </form>
+              </div>
+            <% } %>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+
+  <script>
+    function showTab(tab) {
+      // Ẩn cả hai
+      document.getElementById('news-tab').classList.add('hidden');
+      document.getElementById('notices-tab').classList.add('hidden');
+
+      // Hiện tab được chọn
+      document.getElementById(`${tab}-tab`).classList.remove('hidden');
+
+      // Đổi màu button
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'text-white');
+        btn.classList.add('bg-gray-300', 'text-black');
+      });
+
+      const activeBtn = document.getElementById(`tab-${tab}`);
+      activeBtn.classList.remove('bg-gray-300', 'text-black');
+      activeBtn.classList.add('bg-blue-600', 'text-white');
+    }
+  </script>
+  <%- include('partials/contact') %>
+</body>
+</html>

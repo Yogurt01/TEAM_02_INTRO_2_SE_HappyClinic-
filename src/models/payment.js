@@ -17,6 +17,8 @@ const paymentSchema = new mongoose.Schema({
         enum: ['Unpaid', 'Paid', 'Pending', 'Failed'], 
         default: 'Unpaid',
         required: true
-        }
+        },
+  },{
+    timestamps:true
 });
 module.exports = mongoose.model('payment', paymentSchema);

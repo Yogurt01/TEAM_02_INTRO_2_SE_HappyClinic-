@@ -5,12 +5,6 @@ const otp = require('../controllers/otpController')
 const router = express.Router();
 const passport = require("passport");
 
-const jwt = require('../config/jwt');
-const availabilityController = require('../controllers/availabilityController');
-
-
-
-
 router.get("/google", 
   passport.authenticate("google", { scope: ["profile", "email"] })
 );

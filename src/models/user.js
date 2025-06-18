@@ -36,7 +36,8 @@ const userSchema = new mongoose.Schema({
     phone: {type:String, required:false, unique:false}, 
     address: { type: AddressSchema, required: false },
     isBanned: {type: Boolean, default: false}
-});
+  },
+  {timestamps:true});
 
 // Hash mật khẩu trước khi lưu
 userSchema.pre('save', async function (next) {

@@ -9,7 +9,8 @@ exports.generateToken = (user) => {
     const payload = {
         id: user.id , // or user._id if you're storing in DB
         username: fullName,
-        email: email
+        email: email,
+        role: user.role
     };
 
     return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
