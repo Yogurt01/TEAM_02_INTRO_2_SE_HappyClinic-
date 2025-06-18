@@ -1,10 +1,10 @@
-const Contact = require('../models/contact');
+const ChatSupport = require('../models/chatSupport');
 
 // Lấy tất cả tin nhắn của một sessionId (dành cho staff)
 exports.getMessagesBySession = async (req, res) => {
   const { sessionId } = req.params;
   try {
-    const messages = await Contact.find({ sessionId }).sort({ timestamp: 1 });
+    const messages = await ChatSupport.find({ sessionId }).sort({ timestamp: 1 });
     res.json(messages);
   } catch (err) {
     res.status(500).json({ error: 'Không thể lấy tin nhắn' });
@@ -27,7 +27,7 @@ exports.sendMessage = async (req, res) => {
       timestamp: new Date()
     };
 
-    const msg = new Contact(newMessage);
+    const msg = new ChatSupport(newMessage);
     await msg.save();
     res.status(201).json(msg);
   } catch (err) {
@@ -41,7 +41,7 @@ exports.sendMessage = async (req, res) => {
 exports.clearMessagesBySession = async (req, res) => {
   const { sessionId } = req.params;
   try {
-    await Contact.deleteMany({ sessionId });
+    await ChatSupport.deleteMany({ sessionId });
     res.status(200).json({ success: true });
   } catch (err) {
     res.status(500).json({ error: 'Không thể xóa tin nhắn' });
@@ -49,26 +49,29 @@ exports.clearMessagesBySession = async (req, res) => {
 };
 
 exports.getSessions = async (req, res) => {
-  const sessions = await Contact.aggregate([
-    {
-      $match: { sender: 'user' }
-    },
+  const sessions = await ChatSupport.aggregate([
     {
       $sort: { timestamp: -1 }
     },
     {
       $group: {
-        _id: '$sessionId'
+        _id: '$sessionId',
+        lastTimestamp: { $first: '$timestamp' },
+        lastSender: { $first: '$sender' }
       }
+    },
+    {
+      $sort: { lastTimestamp: -1 }
     }
   ]);
 
   // Gán tên giả kiểu "Người dùng 1", "Người dùng 2", ...
   const namedSessions = sessions.map((s, i) => ({
     _id: s._id,
-    name: `Người dùng ${i + 1}`
+    name: `Người dùng ${i + 1}`,
+    createdAt: s.lastTimestamp,
+    lastMessageTimestamp: s.lastTimestamp
   }));
 
   res.json(namedSessions);
 };
-
