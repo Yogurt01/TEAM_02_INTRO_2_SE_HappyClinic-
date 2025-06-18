@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chi tiết Lịch hẹn</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <%- include('partials/manager') %>
+
+  <div class="max-w-3xl mx-auto mt-8">
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+      <div class="bg-blue-600 px-6 py-4">
+        <h2 class="text-2xl font-semibold text-white">Chi tiết Lịch hẹn</h2>
+      </div>
+
+      <div class="p-6 space-y-6">
+        <form action="/appointments/<%= appointment._id %>/update" method="POST" class="space-y-6">
+
+          <div>
+            <label class="block text-gray-700 font-medium">Tên người đặt</label>
+            <input type="text" name="username" value="<%= appointment.username %>" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required />
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-medium">Email</label>
+            <input type="email" name="email" value="<%= appointment.email %>" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required />
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-medium">Số điện thoại</label>
+            <input type="text" name="phone" value="<%= appointment.phone %>" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required />
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-medium">Bác sĩ</label>
+            <input type="text" name="doctor" value="<%= appointment.doctor %>" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required />
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-medium">Khoa</label>
+            <input type="text" name="department" value="<%= appointment.department %>" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" />
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-medium">Ngày khám</label>
+            <input type="date" name="date" value="<%= appointment.date.toISOString().split('T')[0] %>" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required />
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-medium">Giờ khám</label>
+            <input type="text" name="time" value="<%= appointment.time %>" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required />
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-medium">Ghi chú</label>
+            <input type="text" name="note" value="<%= appointment.note %>" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" />
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-medium">Giá khám</label>
+            <input type="text" name="price" value="<%= appointment.price %>" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required />
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-medium">Trạng thái</label>
+            <select name="status" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+              <option value="Scheduled" <%= appointment.status === 'Scheduled' ? 'selected' : '' %>>Đã đặt</option>
+              <option value="Completed" <%= appointment.status === 'Completed' ? 'selected' : '' %>>Hoàn tất</option>
+              <option value="Cancelled" <%= appointment.status === 'Cancelled' ? 'selected' : '' %>>Đã huỷ</option>
+            </select>
+          </div>
+
+          <div class="flex justify-between pt-4">
+            <a href="/appointments" class="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded shadow">← Quay lại</a>
+
+            <div class="flex space-x-3">
+              <form action="/appointments/<%= appointment._id %>/delete" method="POST">
+                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded shadow">Xoá</button>
+              </form>
+              <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded shadow">Cập nhật</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <%- include('partials/contact') %>
+</body>
+</html>

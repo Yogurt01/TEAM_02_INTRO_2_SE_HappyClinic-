@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const Payment = require('../models/payment')
 const nodemailer = require('nodemailer')
+const Appointment = require('../models/appointment')
 require('dotenv')
 // GET all users
 exports.getAllUsers = async (req, res) => {
@@ -67,3 +68,57 @@ exports.cancelPayment = async (req, res) => {
   await Payment.findByIdAndUpdate(req.params.paymentId, { status: 'Failed' });
   res.redirect('/admin/payments');
 };
+
+// GET: List all appointments
+exports.getAllAppointments = async (req, res) => {
+  try {
+    const appointments = await Appointment.find().sort({ date: -1 });
+    res.render('appointmentManager', { appointments });
+  } catch (err) {
+    res.status(500).send('Lỗi khi tải danh sách lịch hẹn');
+  }
+};
+
+// GET: Show details for one appointment (form for CRUD)
+exports.getAppointmentDetail = async (req, res) => {
+  try {
+    const appointment = await Appointment.findById(req.params.id);
+    if (!appointment) {
+      return res.status(404).send('Không tìm thấy lịch hẹn');
+    }
+    res.render('appointmentDetails', { appointment, error: null, success: null });
+  } catch (err) {
+    res.status(500).send('Lỗi khi tải chi tiết lịch hẹn');
+  }
+};
+
+// POST: Update appointment
+exports.updateAppointment = async (req, res) => {
+  try {
+    await Appointment.findByIdAndUpdate(req.params.id, req.body);
+    res.redirect(`/appointment/${req.params.id}`);
+  } catch (err) {
+    res.status(500).send('Lỗi khi cập nhật lịch hẹn');
+  }
+};
+
+// POST: Delete appointment
+exports.deleteAppointment = async (req, res) => {
+  try {
+    await Appointment.findByIdAndDelete(req.params.id);
+    res.redirect('/appointment');
+  } catch (err) {
+    res.status(500).send('Lỗi khi xoá lịch hẹn');
+  }
+};
+
+// POST: Create new appointment (optional)
+exports.createAppointment = async (req, res) => {
+  try {
+    await Appointment.create(req.body);
+    res.redirect('/appointments');
+  } catch (err) {
+    res.status(500).send('Lỗi khi tạo lịch hẹn');
+  }
+};
+
