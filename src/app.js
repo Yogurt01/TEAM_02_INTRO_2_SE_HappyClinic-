@@ -11,9 +11,8 @@ const adminRoutes = require('./routes/adminRoutes');
 const passportConfig = require('./config/passport');
 
 const chatSupportRoutes = require('./routes/chatSupportRoutes');
-const contactRouter = require('./routes/contact');
+const contactRouter = require('./routes/contactRoutes');
 
-const contactRoutes = require('./routes/contactRoutes');
 const announcementRoutes = require('./routes/announcementRoutes');
 
 passportConfig();
