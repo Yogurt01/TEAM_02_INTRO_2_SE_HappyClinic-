@@ -17,7 +17,11 @@ router.post('/unban/:userId', adminController.unbanUser);
 router.get('/payments', adminController.postPaymentManagement);
 router.post('/payment/confirm/:paymentId', adminController.confirmPayment);
 router.post('/payment/cancel/:paymentId', adminController.cancelPayment);
-
+//Appointment Management Routes
+router.get('/appointment', adminController.getAllAppointments);
+router.get('/appointment/:id', adminController.getAppointmentDetail);
+router.post('/appointment/:id/update', adminController.updateAppointment);
+router.post('/appointment/:id/delete', adminController.deleteAppointment);
 //Anilyzer Routes
 router.get('/anylyzer', stats.anylyzeStats);
 //Help Requests Management Routes
