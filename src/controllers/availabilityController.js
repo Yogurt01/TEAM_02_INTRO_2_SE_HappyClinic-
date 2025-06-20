@@ -150,7 +150,7 @@ exports.postAvailability = async (req, res) => {
       symptoms
     });
 
-    res.redirect('/vailability?success=1');
+    res.redirect('/availability?success=1');
   } catch (err) {
     console.error(err);
     const slots = await Availability.find({}).lean();
