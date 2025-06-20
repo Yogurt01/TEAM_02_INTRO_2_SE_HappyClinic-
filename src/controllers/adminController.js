@@ -15,12 +15,12 @@ exports.getAllUsers = async (req, res) => {
 
 exports.banUser = async (req, res) => {
   await User.findByIdAndUpdate(req.params.userId, { isBanned: true });
-  res.redirect('/admin/manage-users');
+  res.redirect('/admin/users');
 };
 
 exports.unbanUser = async (req, res) => {
   await User.findByIdAndUpdate(req.params.userId, { isBanned: false });
-  res.redirect('/admin/manage-users');
+  res.redirect('/admin/users');
 };
 
 exports.postUserManager = async(req,res)=>{

@@ -135,7 +135,7 @@ exports.googleLogin = async (req, res) => {
 
       await existingUser.save();
     }
-    if (existingUser.isBanned === false){
+    if (existingUser.isBanned === true){
             return res.render('login', { error: 'Your account is banned! Please contact admin for more information' });
           }
     // Generate token for the user found or created
