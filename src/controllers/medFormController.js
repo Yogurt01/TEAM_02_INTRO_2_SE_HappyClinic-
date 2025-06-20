@@ -1,5 +1,25 @@
 const Appointment = require('../models/appointment');
 const MedicalForm = require('../models/medForm');
+const Payment = require('../controllers/paymentController')
+
+async function createPaymentByEmail(email, paymentMethod = 'Internet Banking') {
+  const medForm = await MedForm.findOne({ email }).sort({ date: -1 });
+  if (!medForm) {
+    throw new Error('Không tìm thấy phiếu khám bệnh với email này.');
+  }
+
+  const payment = new Payment({
+    username: medForm.username,
+    email: medForm.email,
+    amount: medForm.price,
+    paymentMethod,
+    status: 'Unpaid',
+    appointmentId: medForm._id
+  });
+
+  await payment.save();
+  return payment;
+}
 
 // GET: Render form create từ appointment
 exports.renderCreateForm = async (req, res) => {
@@ -40,7 +60,8 @@ exports.createMedicalForm = async (req, res) => {
     });
 
     await newForm.save();
-    res.redirect('/api/medical-forms'); // Hoặc /dashboard
+    createPaymentByEmail(patientName)
+    res.redirect('/doctor/today');
   } catch (err) {
     console.error(err);
     res.status(500).send('Lỗi khi tạo phiếu khám bệnh');

@@ -1,32 +1,4 @@
 const Payment = require('../models/payment');
-const Appointment = require('../models/Appointment');
-
-// Tạo payment dựa trên email (tự tìm appointment gần nhất)
-exports.createPaymentByEmail = async (req, res) => {
-  try {
-    const { email, paymentMethod } = req.body;
-
-    const appointment = await Appointment.findOne({ email }).sort({ date: -1 });
-    if (!appointment) {
-      return res.status(404).json({ message: 'Không tìm thấy lịch hẹn với email này.' });
-    }
-
-    const payment = new Payment({
-      username: appointment.username,
-      email: appointment.email,
-      amount: appointment.price,
-      paymentMethod,
-      status: 'Unpaid',
-      appointmentId: appointment._id
-    });
-
-    await payment.save();
-    res.status(201).json(payment);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Lỗi server', error });
-  }
-};
 
 // Lấy danh sách payment theo email
 exports.listPaymentsOfUser = async (req, res) => {
