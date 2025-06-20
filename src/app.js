@@ -26,6 +26,7 @@ const paymentRoutes = require('./routes/paymentRoutes')
 const doctorSearchRoutes = require('./routes/doctorSearch');
 const faqsRoutes = require('./routes/faqsRoutes');
 const helpRoutes = require('./routes/helpRoutes');
+const docAppoint = require('./routes/doctorAppointmentRoutes')
 const app = express();
 
 app.set('view engine', 'ejs')
@@ -83,6 +84,7 @@ app.use('/chatSupport', chatSupportRoutes);
 app.use('/contact', contactRouter);
 app.use('/announcement', announcementRoutes);
 app.use('/doctorSearch', doctorSearchRoutes);
+app.use('/doctor', docAppoint)
 app.use('/faqs', faqsRoutes);
 app.use('/help', helpRoutes);
 app.use('/', dashboardRoutes);
