@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@tailwindcss/vite": "^4.1.10",
     "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
     "chalk": "^5.4.1",
@@ -23,7 +24,8 @@
     "nodemailer": "^6.10.0",
     "otp-generator": "^4.0.1",
     "passport": "^0.7.0",
-    "passport-google-oauth20": "^2.0.0"
+    "passport-google-oauth20": "^2.0.0",
+    "tailwindcss": "^4.1.10"
   },
   "type": "commonjs",
   "description": ""
