@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <nav class="bg-gray-800 p-4">
   <ul class="flex space-x-6">
     <li><a href="/" class="text-white hover:text-yellow-300">Home</a></li>
@@ -14,3 +15,162 @@
     <li><a href="/appointment" class="text-white hover:text-yellow-300">Appointment</a></li>
   </ul>
 </nav>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../../output.css">
+  <title>Document</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sevillana&display=swap');
+    
+    /* Header with background image */
+    .header {
+      background-image: url('./../image/horizontal.png');
+      background-size: cover;
+      background-position: center;
+      height: 250px; /* Adjusted height */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 2.5rem; /* Adjust font size for better fit */
+      color: white;
+      font-family: 'Sevillana', cursive;
+      font-weight: bold;
+    }
+
+    /* Add styling for navbar */
+    nav {
+      background-color: #2C3E50; /* Navbar background color */
+    }
+
+    nav ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      padding: 10px 0;
+      margin: 0;
+    }
+
+    nav ul li {
+      margin: 0 15px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: bold;
+      padding: 5px 10px;
+      transition: background-color 0.3s;
+    }
+
+    nav ul li a:hover {
+      background-color: #f15a24; /* Hover effect for navbar items */
+      border-radius: 5px;
+    }
+
+    /* Footer styling */
+    .footer {
+      background-color: #2C3E50;
+      color: white;
+      padding: 20px;
+    }
+
+    .footer ul {
+      display: flex;
+      justify-content: space-evenly;
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer ul li a {
+      color: white;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer ul li a:hover {
+      color: #F39C12;
+    }
+
+    /* Ensure content isn't hidden under fixed navbar */
+    body {
+      margin-top: 300px;
+    }
+
+  </style>
+</head>
+<body>
+  <!-- Header Section -->
+  <header class="header">
+    <h1>Health Blog</h1>
+  </header>
+
+  <!-- Navbar Section -->
+  <nav class="bg-gray-800 p-4 fixed top-0 left-0 right-0 z-[999]">
+    <ul class="flex space-x-6 gap-10 text-2xl">
+      <li class="border border-red-500 bg-blue-600"><a href="/" class="text-white hover:text-yellow-300">Home</a></li>
+      <li class="border border-red-500"><a href="/about" class="text-white hover:text-yellow-300">About</a></li>
+      <li><a href="/profile" class="text-white hover:text-yellow-300">Profile</a></li>
+      <li><a href="/auth/availability" class="text-white hover:text-yellow-300">Availability</a></li>
+      <li><a href="/payment" class="text-white hover:text-yellow-300">Payment</a></li>
+      <li><a href="/appointment" class="text-white hover:text-yellow-300">Appointment</a></li>
+      <li><a href="/blog" class="text-white hover:text-yellow-300">Blog</a></li>
+    </ul>
+  </nav>
+
+<!-- Body Section -->
+<section class="py-12 bg-white pt-[100px]">
+  <div class="space-y-6 flex-col gap-4">
+    <div class="flex space-x-4 border border-gray-300 p-4 rounded-lg shadow-md">
+      <div class="w-3/4 flex flex-col justify-center">
+        <h3 class="text-lg font-semibold">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h3>
+        <p class="text-sm text-gray-500">4 giờ trước</p>
+      </div>
+      <img src="./assets/image_new/k2.jpg" alt="Lorem ipsum" class="w-1/4 h-24 object-cover rounded-md">
+    </div>
+
+    <div class="flex space-x-4 border border-gray-300 p-4 rounded-lg shadow-md">
+      <div class="w-3/4 flex flex-col justify-center">
+        <h3 class="text-lg font-semibold">Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</h3>
+        <p class="text-sm text-gray-500">6 giờ trước</p>
+      </div>
+      <img src="./assets/image_new/m5.jpg" alt="Lorem ipsum" class="w-1/4 h-24 object-cover rounded-md">
+    </div>
+
+    <!-- Nội dung giả: Lorem ipsum -->
+    <div class="flex space-x-4 border border-gray-300 p-4 rounded-lg shadow-md">
+      <div class="w-3/4 flex flex-col justify-center">
+        <h3 class="text-lg font-semibold">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</h3>
+        <p class="text-sm text-gray-500">8 giờ trước</p>
+      </div>
+      <img src="./assets/image_new/t.jpg" alt="Lorem ipsum" class="w-1/4 h-24 object-cover rounded-md">
+    </div>
+
+    <div class="flex space-x-4 border border-gray-300 p-4 rounded-lg shadow-md">
+      <div class="w-3/4 flex flex-col justify-center">
+        <h3 class="text-lg font-semibold">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur</h3>
+        <p class="text-sm text-gray-500">10 giờ trước</p>
+      </div>
+      <img src="./assets/image_new/k.jpg" alt="Lorem ipsum" class="w-1/4 h-24 object-cover rounded-md">
+    </div>
+  </div>
+</section>
+
+  <!-- Footer Section -->
+  <footer class="footer">
+    <ul>
+      <li><a href="/privacy" class="text-white hover:text-yellow-300">Privacy Policy</a></li>
+      <li><a href="/terms" class="text-white hover:text-yellow-300">Terms of Service</a></li>
+      <li><a href="/contact" class="text-white hover:text-yellow-300">Contact Us</a></li>
+    </ul>
+  </footer>
+</body>
+</html>
+>>>>>>> ea634c2f2bd039e244454bd75521dfdd58fc5ea3

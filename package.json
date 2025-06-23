@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@tailwindcss/cli": "^4.1.10",
     "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
     "cookie-parser": "^1.4.7",
@@ -12,7 +13,8 @@
     "mongoose": "^8.15.1",
     "otp-generator": "^4.0.1",
     "passport": "^0.7.0",
-    "passport-google-oauth20": "^2.0.0"
+    "passport-google-oauth20": "^2.0.0",
+    "tailwindcss": "^4.1.10"
   },
   "name": "team_02_intro_2_se_happyclinic-",
   "version": "1.0.0",

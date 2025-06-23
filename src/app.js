@@ -1,3 +1,5 @@
+//tailwind.config.js
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const connectDB = require('./config/db')
@@ -18,7 +20,6 @@ const announcementRoutes = require('./routes/announcementRoutes');
 passportConfig();
 require('dotenv').config();
 
-
 const authRoutes = require('./routes/authRoutes')
 const dashboardRoutes = require('./routes/dashboardRoutes')
 const profileRoutes = require('./routes/profileRoutes'); //profile
@@ -28,6 +29,7 @@ const faqsRoutes = require('./routes/faqsRoutes');
 const helpRoutes = require('./routes/helpRoutes');
 const docAppoint = require('./routes/doctorAppointmentRoutes')
 const appointmentRoutes = require('./routes/appointmentRoutes'); // Appointment booking online routes
+const blogRoutes = require('./routes/blogRoutes'); // Added this line
 const app = express();
 
 app.set('view engine', 'ejs')
@@ -46,6 +48,9 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Use blog routes
+app.use('/blog', blogRoutes); // This line is correct now after importing
 
 // Express session
 app.use(session({
@@ -102,8 +107,3 @@ const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });
-
-
-
-
-
