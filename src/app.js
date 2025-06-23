@@ -6,7 +6,16 @@ const cookieParser = require('cookie-parser');
 const session = require("express-session");
 const passport = require("passport");
 const availabilityRoutes = require('./routes/availabilityRoutes');
+const medicalRecordRoutes = require('./routes/medicalRecordsRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const passportConfig = require('./config/passport');
 
+const chatSupportRoutes = require('./routes/chatSupportRoutes');
+const contactRouter = require('./routes/contactRoutes');
+
+const announcementRoutes = require('./routes/announcementRoutes');
+
+passportConfig();
 require('dotenv').config();
 
 
@@ -14,6 +23,10 @@ const authRoutes = require('./routes/authRoutes')
 const dashboardRoutes = require('./routes/dashboardRoutes')
 const profileRoutes = require('./routes/profileRoutes'); //profile
 const paymentRoutes = require('./routes/paymentRoutes')
+const doctorSearchRoutes = require('./routes/doctorSearch');
+const faqsRoutes = require('./routes/faqsRoutes');
+const helpRoutes = require('./routes/helpRoutes');
+const docAppoint = require('./routes/doctorAppointmentRoutes')
 const appointmentRoutes = require('./routes/appointmentRoutes'); // Appointment booking online routes
 const app = express();
 
@@ -71,11 +84,19 @@ app.get('/', (req, res) => {
   res.redirect('/auth/login');
 });
 app.use('/auth', authRoutes);
-
-app.use('/auth', availabilityRoutes);
+app.use('/availability', availabilityRoutes);
+app.use('/medicalRecord', medicalRecordRoutes);
 app.use('/profile', profileRoutes); //profile
 app.use('/payment', paymentRoutes)
-app.use('/', dashboardRoutes); 
+app.use('/admin', adminRoutes);
+app.use('/chatSupport', chatSupportRoutes);
+app.use('/contact', contactRouter);
+app.use('/announcement', announcementRoutes);
+app.use('/doctorSearch', doctorSearchRoutes);
+app.use('/doctor', docAppoint)
+app.use('/faqs', faqsRoutes);
+app.use('/help', helpRoutes);
+app.use('/', dashboardRoutes);
 app.use('/appointment', appointmentRoutes); // Appointment booking online routes
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

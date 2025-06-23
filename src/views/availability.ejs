@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Doctor Availability Management</title>
+    <title>Quản lý lịch khám</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,29 +12,26 @@
 
   </head>
   <body>
-    <%- include('partials/navbar') %>
+    <% if (user?.role === 'admin') { %>
+      <%- include('partials/manager') %>
+    <% } else { %>
+      <%- include('partials/navbar') %>
+    <% } %>
+
     <div class="breadcrumb">
       <a href="/dashboard">TRANG CHỦ</a> &raquo; <span>QUẢN LÝ LỊCH KHÁM</span>
     </div>
-    <h1 style="text-align: center; color: #2c3e50; margin-bottom: 30px; font-size: 35px; font-weight: bold;">Doctor Availability Management</h1>
-
-
-
+    <h1 style="text-align: center; color: #2c3e50; margin-bottom: 30px; font-size: 35px; font-weight: bold;"> Quản lý lịch khám</h1>
+    
     <div class="form-container-availability">
       <% if (error) { %>
         <div id="error-message" class="alert alert-danger" role="alert">
           <%= error %>
         </div>
       <% } %>
-
-      <% if (success) { %>
-        <div class="alert alert-danger">
-          Thao tác thành công!
-        </div>
-      <% } %>
-
+      
       <h2 style="margin-top: 30px ;border-bottom: 2px solid #3498db; padding-bottom: 5px ;color: #2c3e50; font-size: 25px; font-weight: bold;">Đăng ký lịch khám và thông tin bệnh nhân</h2>
-      <form id="main-form" method="POST" action="/auth/availability#main-form" class="availability-form">
+      <form id="main-form" method="POST" action="/availability#main-form" class="availability-form">
         <input type="hidden" name="id" id="slotId" value="">
         <div>
           <label for="date">Ngày khám</label>
@@ -88,7 +85,7 @@
 
       <h2 style="margin-top: 30px ;border-bottom: 2px solid #3498db; padding-bottom: 5px ;color: #2c3e50; font-size: 25px; font-weight: bold;">Lịch khám đã đăng ký</h2>
       <!-- Filter form -->
-      <form id="filterForm" method="GET" action="/auth/availability#filterForm" class="filter-form" style="text-align: right;">
+      <form id="filterForm" method="GET" action="/availability#filterForm" class="filter-form" style="text-align: right;">
         <label for="filterStatus">Lọc theo trạng thái khám: </label>
         <select name="filterStatus" id="filterStatus" onchange="this.form.submit()">
           <option value="all" <%= filterStatus === 'all' ? 'selected' : '' %>>Tất cả</option>
@@ -109,6 +106,7 @@
             <th>Trạng thái khám</th>
             <th>Đánh dấu đã khám</th>
             <th>Hành động</th>
+            <th>Hồ sơ bệnh án</th>
           </tr>
         </thead>
         <tbody>
@@ -137,7 +135,7 @@
               </td>
               <td>
                 <% if (!slot.isChecked) { %>
-                  <form id="check-form" method="POST" action="/auth/availability/check/<%= slot.appointmentCode %>#check-form">
+                  <form id="check-form" method="POST" action="/availability/check/<%= slot.appointmentCode %>#check-form">
                     <button type="submit" class="action-btn check-btn">Đánh dấu đã khám</button>
                   </form>
                 <% } else { %>
@@ -148,9 +146,12 @@
                 <button type="button" class="action-btn edit-btn"onclick="editSlot('<%= slot.appointmentCode %>', '<%= slot.date %>', '<%= slot.startTime %>', '<%= slot.endTime %>', '<%= slot.patientName %>', '<%= slot.patientBirth %>', '<%= slot.symptoms %>', '<%= slot.patient.email %>', '<%= slot.patient.phone %>', '<%= slot.patient.address %>', '<%= slot.patient.gender %>')">
                   Sửa
                 </button>
-                <form id="delete-form" method="POST" action="/auth/availability/delete/<%= slot.appointmentCode %>#delete-form" onsubmit="return confirm('Bạn có chắc chắn muốn xóa lịch khám này không?');" style="display:inline;">
+                <form id="delete-form" method="POST" action="/availability/delete/<%= slot.appointmentCode %>#delete-form" onsubmit="return confirm('Bạn có chắc chắn muốn xóa lịch khám này không?');" style="display:inline;">
                   <button type="submit" class="action-btn delete-btn">Xóa</button>
                 </form>
+              </td>
+              <td>
+                <a href="/medicalRecord/<%= slot.patientCode %>" class="view-btn">Xem</a>
               </td>
             </tr>
           <% }) %>
@@ -176,7 +177,7 @@
 
 
         const form = document.getElementById('main-form');
-        form.action = `/auth/availability/edit/${id}`;
+        form.action = `/availability/edit/${id}`;
 
         const submitBtn = form.querySelector('button[type="submit"]');
         submitBtn.textContent = 'Lưu chỉnh sửa';
@@ -193,7 +194,7 @@
         const submitBtn = document.querySelector('#main-form button[type="submit"]');
         if (!slotId) {
           submitBtn.textContent = 'Thêm lịch khám';
-          document.getElementById('main-form').action = '/auth/availability';
+          document.getElementById('main-form').action = '/availability';
         }
       });
 
@@ -204,5 +205,6 @@
         }
       }, 1000);
     </script>
+  <%- include('partials/chatSupport') %>
   </body>
   </html>

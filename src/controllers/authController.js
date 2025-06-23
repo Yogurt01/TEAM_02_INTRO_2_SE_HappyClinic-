@@ -87,7 +87,16 @@ exports.postLogin = async (req, res) => {
         // Tạo token và lưu vào cookie
         const token = jwt.generateToken(user);
         res.cookie('token', token, { httpOnly: true });
-        res.redirect('/dashboard');
+        if (user.role === 'admin'){
+          res.redirect('/admin')
+        }
+        else{
+          if (user.isBanned === false){
+            return res.render('login', { error: 'Your account is banned! Please contact admin for more information' });
+          }
+          res.redirect('/dashboard');
+        }
+        
     } catch (error) {
         res.render('login', { error: 'An unexpected error occurred. Please try again later.' });
     }
@@ -126,7 +135,9 @@ exports.googleLogin = async (req, res) => {
 
       await existingUser.save();
     }
-
+    if (existingUser.isBanned === true){
+            return res.render('login', { error: 'Your account is banned! Please contact admin for more information' });
+          }
     // Generate token for the user found or created
     res.render('dashboard', { user: existingUser });
 

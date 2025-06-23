@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Chỉnh sửa câu trả lời</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div class="max-w-2xl mx-auto mt-10 bg-white p-6 rounded shadow">
+    
+    <!-- Nút quay lại -->
+    <a href="/admin/help-requests" class="text-sm text-blue-600 hover:underline block mb-4">
+      ← Quay lại danh sách câu hỏi
+    </a>
+
+    <h1 class="text-xl font-bold mb-4 text-gray-800">Chỉnh sửa câu trả lời</h1>
+
+    <p><strong>Câu hỏi:</strong> <%= request.question %></p>
+
+    <form action="/admin/help-requests/<%= request._id %>/answer" method="POST" class="mt-4 space-y-4">
+      <textarea name="answer" required
+        class="w-full border border-gray-300 rounded px-3 py-2 h-32"><%= request.answer %></textarea>
+
+      <div class="flex space-x-3">
+        <button type="submit"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+          Cập nhật câu trả lời
+        </button>
+        
+        <!-- Nút Hủy -->
+        <a href="/admin/help-requests"
+          class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded">
+          Hủy
+        </a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

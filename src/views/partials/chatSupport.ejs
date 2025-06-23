@@ -1,0 +1,78 @@
+<!-- Nút bật chat -->
+<button id="chat-toggle-btn" onclick="toggleChat()" class="fixed bottom-4 right-4 bg-[#3498db] text-white px-4 py-2 rounded-full shadow-md z-40">
+  💬 Hỗ trợ
+</button>
+
+<!-- Dòng liên hệ khẩn cấp (tách riêng khung chat) -->
+<div id="emergency-line" class="hidden fixed bottom-[300px] right-4 bg-red-600 text-white text-sm px-4 py-2 rounded-md shadow-md z-50 animate-bounce">
+  📞 <a href="tel:123456789" class="underline hover:text-yellow-200 font-semibold">LH khẩn cấp: 123456789</a>
+</div>
+
+<!-- Khung chat -->
+<div id="chatbox" class="fixed bottom-4 right-4 w-80 bg-white shadow-xl rounded-lg border z-50 hidden overflow-hidden text-sm">
+  <div class="bg-[#3498db] text-white px-4 py-2 font-semibold flex justify-between items-center">
+    <h2>Hỗ trợ trực tuyến</h2>
+    <button onclick="toggleChat()" class="text-white text-xl hover:text-gray-200">&times;</button>
+  </div>
+  <div id="chat-messages" class="h-44 overflow-y-auto px-3 py-2 bg-gray-50"></div>
+  <div class="flex items-center border-t px-2 py-2 bg-white">
+    <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." class="flex-grow border rounded px-2 py-1 mr-2" />
+    <button onclick="sendMessage()" class="bg-[#3498db] text-white px-3 py-1 rounded hover:opacity-90">Gửi</button>
+  </div>
+
+<script>
+  function toggleChat() {
+    const box = document.getElementById('chatbox');
+    const emergency = document.getElementById('emergency-line');
+
+    const isHidden = box.classList.contains('hidden');
+    box.classList.toggle('hidden', !isHidden);
+    emergency.classList.toggle('hidden', !isHidden);
+  }
+
+
+  const sessionId = sessionStorage.getItem('chatSessionId') || crypto.randomUUID();
+  sessionStorage.setItem('chatSessionId', sessionId);
+
+  const name = sessionStorage.getItem('chatName') || `Người dùng ${Math.floor(Math.random() * 1000)}`;
+  sessionStorage.setItem('chatName', name);
+
+  async function fetchMessages() {
+    const res = await fetch(`/chatSupport/messages/${sessionId}`);
+    const messages = await res.json();
+    const chatBox = document.getElementById('chat-messages');
+    chatBox.innerHTML = '';
+
+    messages.forEach(msg => {
+      const div = document.createElement('div');
+      div.className = msg.sender === 'user' ? 'text-right text-blue-600 mb-1' : 'text-left text-green-600 mb-1';
+      div.textContent = msg.content;
+      chatBox.appendChild(div);
+    });
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  async function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const content = input.value.trim();
+    if (!content) return;
+
+    await fetch('/chatSupport/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sender: 'user', content, sessionId })
+    });
+
+    input.value = '';
+    fetchMessages();
+  }
+
+  window.addEventListener("beforeunload", async function () {
+    if (!sessionId) return;
+    await fetch(`/chatSupport/clear/${sessionId}`, { method: 'DELETE' });
+  });
+
+  setInterval(fetchMessages, 3000);
+  fetchMessages();
+</script>

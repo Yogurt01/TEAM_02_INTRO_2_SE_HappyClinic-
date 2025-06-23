@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hỗ trợ trực tuyến</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans relative overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-r from-blue-100 via-white to-blue-100 -z-10"></div>
+
+  <%- include('partials/navbar') %>
+
+  <div class="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-6 gap-8 items-start">
+  <!-- Cột trái: Thông tin phòng khám (không khung) -->
+  <div class="text-gray-700 md:col-span-2 space-y-3 mt-6">
+    <h2 class="text-2xl font-bold mb-4" style="color: #3498db">PHÒNG KHÁM ĐA KHOA<br>QUỐC TẾ HAPPY CLINIC</h2>
+
+    <p class="flex items-start gap-4 mb-3">
+      <img src="https://cdn-icons-png.flaticon.com/512/6186/6186091.png" alt="Vị trí" class="w-6 h-6 mt-1" />
+      <span>522-524-526 Nguyễn Chí Thanh,<br> Phường 7, Quận 10, TP.Hồ Chí Minh, Việt Nam</span>
+    </p>
+
+    <p class="flex items-start gap-4 mb-2">
+      <img src="https://cdn-icons-png.flaticon.com/128/6811/6811501.png" alt="Vị trí" class="w-6 h-6 mt-1" />
+      <span>123456789</span>
+    </p>
+    <p class="flex items-start gap-4 mb-2">
+      <img src="https://cdn-icons-png.flaticon.com/512/542/542689.png" alt="Vị trí" class="w-6 h-6 mt-1" />
+      <span>happyclinic@gmail.com</span>
+    </p>
+
+    <p class="flex items-start gap-4 mb-2">
+      <img src="https://cdn-icons-png.flaticon.com/128/3240/3240587.png" alt="Vị trí" class="w-6 h-6 mt-1" />
+      <span>6:00 – 20:00 (các ngày trong tuần)<br>6:00 – 12:00 (Chủ nhật)</span>
+    </p>
+
+    <!-- Mạng xã hội -->
+    <div class="mt-4 flex gap-6">
+      <a href="https://www.facebook.com/happyclinic" target="_blank" class="hover:opacity-80 p-1">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Facebook_icon.svg" alt="Facebook" class="h-8 w-8 rounded shadow" />
+      </a>
+      <a href="https://zalo.me/123456789" target="_blank" class="hover:opacity-80 p-1">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_of_Zalo.svg" alt="Zalo" class="h-8 w-8 rounded shadow" />
+      </a>
+      <a href="https://youtube.com/@happyclinic" target="_blank" class="hover:opacity-80 p-1">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/YouTube_social_white_squircle_%282017%29.svg" 
+            alt="YouTube" class="h-8 w-8 rounded shadow" />
+      </a>
+
+    </div>
+  </div>
+
+  <!-- Cột phải: khung trắng chứa khung chat -->
+  <div class="bg-[#3498db] rounded-xl shadow-md p-6 text-gray-700 relative md:col-span-4">
+		<h2 class="text-2xl font-bold mb-4 text-white">LIÊN HỆ TRỰC TUYẾN</h2>
+    <p class="mb-4 text-white">Bạn cần được hỗ trợ? Hãy nhắn cho chúng tôi ngay qua khung chat bên dưới.</p>
+
+   <!-- Nhúng khung chat ngay bên trong khung trắng -->
+	<div class="w-full border rounded-md overflow-hidden">
+		<div id="chatbox" class="w-full bg-white text-base text-gray-700"> 
+			<div id="chat-messages" class="h-96 overflow-y-auto px-3 py-2 bg-gray-50 space-y-2"></div> 
+			<div class="flex items-center border-t px-2 py-2 bg-white">
+				<input type="text" id="chat-input" placeholder="Nhập tin nhắn..." class="flex-grow border rounded px-2 py-1 mr-2" />
+				<button onclick="sendMessage()" class="bg-[#3498db] text-white px-3 py-1 rounded hover:opacity-90">Gửi</button>
+			</div>
+		</div>
+	</div>
+
+
+    <!-- Gắn script xử lý -->
+    <script>
+      const sessionId = sessionStorage.getItem('chatSessionId') || crypto.randomUUID();
+      sessionStorage.setItem('chatSessionId', sessionId);
+
+      const name = sessionStorage.getItem('chatName') || `Người dùng ${Math.floor(Math.random() * 1000)}`;
+      sessionStorage.setItem('chatName', name);
+
+      async function fetchMessages() {
+        const res = await fetch(`/chatSupport/messages/${sessionId}`);
+        const messages = await res.json();
+        const chatBox = document.getElementById('chat-messages');
+        chatBox.innerHTML = '';
+
+        messages.forEach(msg => {
+          const div = document.createElement('div');
+          div.className =
+						msg.sender === 'user'
+							? 'text-right'
+							: 'text-left';
+
+					const bubble = document.createElement('div');
+					bubble.className =
+						msg.sender === 'user'
+							? 'inline-block bg-blue-100 text-blue-800 px-3 py-2 rounded-lg max-w-xs break-words'
+							: 'inline-block bg-green-100 text-green-800 px-3 py-2 rounded-lg max-w-xs break-words';
+
+					bubble.textContent = msg.content;
+					div.appendChild(bubble);
+
+          chatBox.appendChild(div);
+        });
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      async function sendMessage() {
+        const input = document.getElementById('chat-input');
+        const content = input.value.trim();
+        if (!content) return;
+
+        await fetch('/chatSupport/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sender: 'user', content, sessionId })
+        });
+
+        input.value = '';
+        fetchMessages();
+      }
+
+      window.addEventListener("beforeunload", async function () {
+        if (!sessionId) return;
+        await fetch(`/chatSupport/clear/${sessionId}`, { method: 'DELETE' });
+      });
+
+      setInterval(fetchMessages, 3000);
+      fetchMessages();
+    </script>
+  </div>
+</div>
+
+</body>
+</html>

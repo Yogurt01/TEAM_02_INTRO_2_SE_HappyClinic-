@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lập Phiếu Khám Bệnh</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+    <%- include('partials/navbar') %>
+  <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
+    <h1 class="text-2xl font-bold mb-4">Lập Phiếu Khám Bệnh</h1>
+
+    <form method="POST" action="/medical-form/create">
+      <!-- Ngày khám ẩn -->
+      <input type="hidden" name="examinationDate" value="<%= appointment.date.toISOString().split('T')[0] %>" />
+
+      <!-- Họ tên bệnh nhân -->
+      <div class="mb-4">
+        <label class="block text-gray-700 font-medium">Họ tên bệnh nhân</label>
+        <input type="text" name="patientName" value="<%= appointment.username %>" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
+      </div>
+
+      <!-- Triệu chứng -->
+      <div class="mb-4">
+        <label class="block text-gray-700 font-medium">Triệu chứng</label>
+        <input type="text" name="symptoms" placeholder="VD: Ho, sốt, mệt mỏi..." class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
+      </div>
+
+      <!-- Dự đoán bệnh -->
+      <div class="mb-4">
+        <label class="block text-gray-700 font-medium">Dự đoán loại bệnh</label>
+        <input type="text" name="predictedDisease" placeholder="VD: Cảm cúm, Viêm họng..." class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
+      </div>
+
+      <!-- Thuốc kê đơn -->
+      <div class="mb-4">
+        <label class="block text-gray-700 font-medium mb-2">Thuốc kê đơn</label>
+        <div id="medicine-list">
+          <div class="grid grid-cols-4 gap-2 mb-2">
+            <input type="text" name="medicines.name" placeholder="Tên thuốc" class="border border-gray-300 px-3 py-2 rounded-md" required>
+            <input type="text" name="medicines.unit" placeholder="Đơn vị" class="border border-gray-300 px-3 py-2 rounded-md" required>
+            <input type="number" name="medicines.quantity" placeholder="Số lượng" class="border border-gray-300 px-3 py-2 rounded-md" required>
+            <input type="text" name="medicines.usage" placeholder="Cách dùng" class="border border-gray-300 px-3 py-2 rounded-md" required>
+          </div>
+        </div>
+        <button type="button" onclick="addMedicineRow()" class="text-blue-600 hover:underline mt-1">+ Thêm thuốc</button>
+      </div>
+
+      <!-- Nút submit -->
+      <div class="mt-6">
+        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition">Lưu Phiếu Khám</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function addMedicineRow() {
+      const container = document.getElementById('medicine-list');
+      const row = document.createElement('div');
+      row.className = 'grid grid-cols-4 gap-2 mb-2';
+      row.innerHTML = `
+        <input type="text" name="medicines.name" placeholder="Tên thuốc" class="border border-gray-300 px-3 py-2 rounded-md" required>
+        <input type="text" name="medicines.unit" placeholder="Đơn vị" class="border border-gray-300 px-3 py-2 rounded-md" required>
+        <input type="number" name="medicines.quantity" placeholder="Số lượng" class="border border-gray-300 px-3 py-2 rounded-md" required>
+        <input type="text" name="medicines.usage" placeholder="Cách dùng" class="border border-gray-300 px-3 py-2 rounded-md" required>
+      `;
+      container.appendChild(row);
+    }
+  </script>
+</body>
+</html>
