@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tìm kiếm bệnh nhân | Happy Clinic</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <%- include('partials/navbar') %>
+
+  <div class="max-w-6xl mx-auto mt-8">
+    <!-- Khung tìm kiếm -->
+    <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+      <h1 class="text-2xl font-semibold text-blue-600 mb-4">Tìm kiếm bệnh nhân</h1>
+
+      <form method="get" action="/patientSearch" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-gray-700 font-medium mb-1">Mã BN</label>
+          <input
+            type="text"
+            name="code"
+            value="<%= filter.code || '' %>"
+            class="w-full border border-gray-300 rounded-md px-3 py-2"
+            placeholder="Nhập mã bệnh nhân..."
+          />
+        </div>
+
+        <div class="md:col-span-3 text-right mt-2">
+          <button
+            type="submit"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded shadow"
+          >
+            🔍 Tìm kiếm
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Danh sách bệnh nhân -->
+    <div class="bg-white shadow-md rounded-lg p-6">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">Danh sách bệnh nhân</h2>
+
+      <% if (patients.length > 0) { %>
+        <div class="overflow-x-auto">
+          <table class="min-w-full border text-sm">
+            <thead class="bg-gray-200">
+              <tr>
+                <th class="border px-4 py-2">Mã BN</th>
+                <th class="border px-4 py-2">Họ tên</th>
+                <th class="border px-4 py-2">Giới tính</th>
+                <th class="border px-4 py-2">Ngày sinh</th>
+                <th class="border px-4 py-2">SĐT</th>
+                <th class="border px-4 py-2">Email</th>
+                <th class="border px-4 py-2">Lịch sử khám</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% patients.forEach(p => { %>
+                <tr class="hover:bg-gray-100">
+                  <td class="border px-4 py-2"><%= p.code %></td>
+                  <td class="border px-4 py-2"><%= p.fullName %></td>
+                  <td class="border px-4 py-2"><%= p.gender %></td>
+                  <td class="border px-4 py-2"><%= p.dob %></td>
+                  <td class="border px-4 py-2"><%= p.phone %></td>
+                  <td class="border px-4 py-2"><%= p.email %></td>
+                  <td class="border px-4 py-2 text-center">
+                    <a
+                      href="/patientSearch/<%= p.code %>"
+                      class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded text-sm"
+                    >
+                      Xem
+                    </a>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Phân trang -->
+        <% if (totalPages > 1) { %>
+          <div class="mt-6 flex justify-center items-center space-x-2 text-sm">
+            <% if (page > 1) { %>
+              <a href="?code=<%= filter.code || '' %>&page=<%= page - 1 %>" class="px-3 py-1 border rounded hover:bg-gray-200">
+                ← Trước
+              </a>
+            <% } %>
+
+            <% for (let p = 1; p <= totalPages; p++) { %>
+              <a href="?code=<%= filter.code || '' %>&page=<%= p %>" class="px-3 py-1 border rounded 
+                <%= p === page ? 'bg-blue-600 text-white' : 'hover:bg-gray-200' %>">
+                <%= p %>
+              </a>
+            <% } %>
+
+            <% if (page < totalPages) { %>
+              <a href="?code=<%= filter.code || '' %>&page=<%= page + 1 %>" class="px-3 py-1 border rounded hover:bg-gray-200">
+                Sau →
+              </a>
+            <% } %>
+          </div>
+        <% } %>
+
+      <% } else { %>
+        <p class="text-gray-500">Không tìm thấy bệnh nhân nào.</p>
+      <% } %>
+    </div>
+  </div>
+
+  <%- include('partials/chatSupport') %>
+</body>
+</html>
