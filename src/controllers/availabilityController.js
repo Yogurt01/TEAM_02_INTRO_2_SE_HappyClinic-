@@ -6,214 +6,93 @@ const MedicalRecord = require('../models/medicalRecord');
 
 exports.getAvailability = async (req, res) => {
   try {
+    let filterDate;
+    if (typeof req.query.filterDate === 'undefined') {
+      // Lần đầu truy cập: mặc định hôm nay
+      filterDate = new Date().toISOString().slice(0, 10);
+    } else {
+      // Nếu đã lọc (kể cả lọc rỗng), giữ nguyên giá trị
+      filterDate = req.query.filterDate;
+    }
 
-    //await syncAppointmentsToAvailability();
-    const filterStatus = req.query.filterStatus || 'all';
+    const filterEmail = req.query.filterEmail || '';
+
+    await syncAppointmentsToAvailability();
     let query = {};
-    if (filterStatus === 'checked') query.isChecked = true;
-    else if (filterStatus === 'unchecked') query.isChecked = false;
+    if (filterDate) {
+      query.date = filterDate;
+    }
 
-    /*const slots = await Availability.find(query)
-    
-      .sort({ date: 1, startTime: 1 }) // Sắp xếp theo ngày tăng dần, rồi theo giờ bắt đầu tăng dần
-      .lean();
-    */
-    const slots = await getPopulatedSlots(query);
+
+    // Nếu có filter theo email bệnh nhân
+    let patientMap = {};
+    if (filterEmail) {
+      const patients = await Patient.find({ email: filterEmail }).lean();
+      const patientCodes = patients.map(p => p.code);
+      if (patientCodes.length > 0) {
+        query.patientCode = { $in: patientCodes };
+        patientMap = Object.fromEntries(patients.map(p => [p.code, p]));
+      } else {
+        // Không tìm thấy ai, trả về danh sách trống
+        return res.render('availability', {
+          slots: [],
+          filterDate,
+          filterEmail,
+          error: null,
+        });
+      }
+    }
+
+    // Lấy danh sách lịch khám kèm thông tin bệnh nhân
+    const rawSlots = await Availability.find(query).sort({ date: 1, startTime: 1 }).lean();
+
+    // Gắn thêm thông tin bệnh nhân nếu có filterEmail
+    const slots = await Promise.all(rawSlots.map(async slot => {
+      // Lấy thông tin bệnh nhân từ map hoặc DB
+      const patient = patientMap[slot.patientCode] || await Patient.findOne({ code: slot.patientCode }).lean();
+
+      // Lấy thông tin bác sĩ từ bảng Appointment (dựa trên email + phone + date + time)
+      //let doctorName = 'Không rõ';
+      if (patient) {
+        const appointment = await Appointment.findOne({
+          email: patient.email,
+          phone: patient.phone,
+          date: new Date(slot.date),
+          time: slot.startTime
+        }).lean();
+
+        //doctorName = appointment?.doctor || 'Không rõ';
+      }
+
+      return {
+        ...slot,
+        patient,
+        //doctorName
+      };
+    }));
+
+
 
     res.render('availability', {
       slots,
-      filterStatus,
-      error: null,
-      slotId: null,
-      success: req.query.success || null,
+      filterDate,
+      filterEmail,
+      error: null
     });
+
   } catch (err) {
     console.error(err);
     res.render('availability', {
       slots: [],
-      filterStatus: 'all',
-      error: 'Lỗi khi tải dữ liệu lịch khám',
-      success: null,
+      filterDate: new Date().toISOString().slice(0, 10),
+      filterEmail: '',
+      error: 'Lỗi khi tải dữ liệu lịch khám'
     });
   }
 };
 
-// Thêm lịch khám mới
-exports.postAvailability = async (req, res) => {
-  try {
-    const { 
-      date, 
-      startTime,
-      endTime, 
-      patientName, 
-      patientBirth, 
-      patientGender,
-      symptoms, 
-      patientEmail, 
-      patientPhone, 
-      patientAddress 
-    } = req.body;
-
-    if (!date || !startTime || !endTime || timeToMinutes(startTime) >= timeToMinutes(endTime)) {
-      return res.render('availability', {
-        slots: await getPopulatedSlots(),
-        filterStatus: 'all',
-        error: 'Dữ liệu không hợp lệ: ngày, thời gian bắt đầu và kết thúc',
-        slotId: null
-        });
-    }
-
-    // Kiểm tra trùng lịch khám
-    const overlappingSlot = await Availability.findOne({
-      date,
-      $or: [
-        { startTime: { $lt: endTime }, endTime: { $gt: startTime } }
-      ]
-    });
-
-    if (overlappingSlot) {
-      return res.render('availability', {
-        slots: await getPopulatedSlots(),
-        filterStatus: 'all',
-        error: 'Khung giờ bị trùng với lịch khám đã có',
-        slotId: null
-      });
-    }
 
 
-    // Kiểm tra bệnh nhân có tồn tại chưa
-    let existingPatient = await Patient.findOne({ fullName: patientName, phone: patientPhone, dob: patientBirth, email: patientEmail });
-    let patientCode;
-
-    if (!existingPatient) {
-      // Nếu chưa có → tạo mã mới
-      const newCode = await generateCode(Patient, 'BN', 4);
-
-      // Thêm vào bảng Patient
-      const newPatient = await Patient.create({
-        code: newCode,
-        fullName: patientName,
-        phone: patientPhone,
-        address: patientAddress,
-        email: patientEmail,
-        dob: patientBirth,
-        gender: patientGender    
-      });
-
-      patientCode = newPatient.code;
-    } else {
-      // Nếu có rồi → dùng code hiện có
-      patientCode = existingPatient.code;
-    }
-
-    //Tạo mã lịch đăng ký khám
-    const appointmentCode = await generateCode(Availability, 'AP', 4, 'appointmentCode');
-    // Tạo lịch khám'
-    await Availability.create({
-      date,
-      startTime,
-      endTime,
-      patientName,
-      patientBirth,
-      patientGender,
-      symptoms,
-      patientEmail,
-      patientPhone,
-      patientAddress,
-      isChecked: false,
-      patientCode,
-      appointmentCode
-    });
-
-    // Chuyển sang Appointment
-    await Appointment.create({
-      username: patientName,
-      email: patientEmail,
-      phone: patientPhone,
-      doctor: req.user?.fullName || 'Bác sĩ không rõ',  // Cần có thông tin bác sĩ từ session hoặc login
-      department: req.user?.department || '',           // Nếu có
-      date: new Date(date),
-      time: startTime,
-      note: symptoms,
-      price: '500000',                                  // Gán cứng, hoặc cấu hình/phân loại theo bác sĩ/khoa
-      status: 'Scheduled'
-    });
-
-    await MedicalRecord.create({
-      code: await generateCode(MedicalRecord, 'BA', 4), 
-      patientCode,
-      appointmentCode,
-      department: 'Chưa xác định',//doctor.department, 
-      date: new Date(), 
-      diagnosis: 'Chưa xác định', 
-      note: 'Chưa xác định',       
-      symptoms
-    });
-
-    res.redirect('/availability?success=1');
-  } catch (err) {
-    console.error(err);
-    const slots = await Availability.find({}).lean();
-    res.render('availability', {
-      slots,
-      filterStatus: 'all',  
-      error: 'Lỗi khi thêm lịch khám',
-    });
-  }
-};
-
-// Đánh dấu đã khám
-exports.markChecked = async (appointmentCode) => {
-  await Availability.findOneAndUpdate({ appointmentCode }, { isChecked: true });
-};
-
-exports.deleteAvailability = async (appointmentCode) => {
-  const result = await Availability.findOneAndDelete({ appointmentCode });
-  if (!result) {
-    console.warn("Không tìm thấy lịch khám với mã: ", appointmentCode);
-    throw new Error("Không tìm thấy lịch khám");
-  }
-};
-
-
-// Sửa lịch khám
-exports.editAvailability = async (appointmentCode, data) => {
-  const { date, startTime, endTime, patientName, patientGender, patientBirth, symptoms, patientEmail, patientPhone, patientAddress } = data;
-
-  if (!date || !startTime || !endTime || startTime >= endTime) {
-    throw new Error("Dữ liệu không hợp lệ");
-  }
-
-  const slot = await Availability.findOne({ appointmentCode }).lean();
-  if (!slot || !slot.patientCode) {
-    throw new Error("Không tìm thấy lịch khám hoặc mã bệnh nhân");
-  }
-
-  await Promise.all([
-    Availability.findOneAndUpdate(
-      { appointmentCode }, 
-      {
-        date,
-        startTime,
-        endTime,
-        patientName,
-        patientBirth,
-        symptoms
-      }
-    ),
-    Patient.findOneAndUpdate(
-      { code: slot.patientCode },
-      {
-        fullName: patientName,
-        gender: patientGender,
-        dob: patientBirth,
-        email: patientEmail,
-        phone: patientPhone,
-        address: patientAddress
-      }
-    )
-  ]);
-};
 
 async function generateCode(model, prefix, padLength, codeField = 'code') {
   let codeNumber = 1;
@@ -233,75 +112,86 @@ async function generateCode(model, prefix, padLength, codeField = 'code') {
   return prefix + codeNumber.toString().padStart(padLength, '0');
 }
 
-function timeToMinutes(t) {
-  const [hours, minutes] = t.split(':').map(Number);
-  return hours * 60 + minutes;
-}
 
-async function getPopulatedSlots(filter = {}) {
-  const rawSlots = await Availability.find(filter).lean();
-  return await Promise.all(rawSlots.map(async slot => {
-    const patient = await Patient.findOne({ code: slot.patientCode }).lean();
-    return { ...slot, patient };
-  }));
-}
 
 async function syncAppointmentsToAvailability() {
   try {
-    const appointments = await Appointment.find().lean();
+    const appointments = await Appointment.find({ status: 'Scheduled' }).lean();
 
     for (const appt of appointments) {
       const apptDate = appt.date.toISOString().slice(0, 10);
-      const existing = await Availability.findOne({
-        date: apptDate,
-        startTime: appt.time,
-        $or: [
-          { patientEmail: appt.email },
-          { patientPhone: appt.phone }
-        ]
-      });
+      const apptTime = appt.time;
 
-      if (!existing) {
-        // Tìm hoặc tạo bệnh nhân
-        let patient = await Patient.findOne({ email: appt.email, phone: appt.phone }).lean();
-        let patientCode = patient?.code;
+      let patient = await Patient.findOne({
+        email: appt.email,
+        phone: appt.phone
+      }).lean();
 
-        if (!patient) {
-          patientCode = await generateCode(Patient, 'BN', 4);
-          patient = await Patient.create({
-            code: patientCode,
-            fullName: appt.username,
-            phone: appt.phone,
-            email: appt.email,
-            gender: 'Chưa rõ',
-            dob: '2000-01-01',
-            address: 'Chưa rõ'
-          });
-        }
+      let patientCode = patient?.code;
 
-        await Availability.create({
+      let exists = false;
+
+      if (patient) {
+        exists = await Availability.exists({
           date: apptDate,
-          startTime: appt.time,
-          endTime: addMinutes(appt.time, 30),
-          patientName: appt.username,
-          patientBirth: patient.dob || '2000-01-01',
-          patientGender: patient.gender || 'Chưa rõ',
-          symptoms: appt.note || '',
-          patientEmail: appt.email,
-          patientPhone: appt.phone,
-          patientAddress: patient.address || 'Chưa rõ',
-          isChecked: false,
-          patientCode: patientCode,
-          appointmentCode: await generateCode(Availability, 'AP', 4, 'appointmentCode')
+          startTime: apptTime,
+          patientCode: patient.code
         });
       }
+
+      if (exists) continue;
+
+      // Nếu chưa có bệnh nhân, tạo mới
+      if (!patient) {
+        patientCode = await generateCode(Patient, 'BN', 4);
+        patient = await Patient.create({
+          code: patientCode,
+          fullName: appt.username,
+          phone: appt.phone,
+          email: appt.email,
+          gender: 'Chưa rõ',
+          dob: '2000-01-01',
+          address: 'Chưa rõ'
+        });
+      }
+
+      const appointmentCode = await generateCode(Availability, 'AP', 4, 'appointmentCode');
+
+      await Availability.create({
+        date: apptDate,
+        startTime: apptTime,
+        endTime: addMinutes(apptTime, 30),
+        patientName: appt.username,
+        patientBirth: patient.dob || '2000-01-01',
+        patientGender: patient.gender || 'Chưa rõ',
+        symptoms: appt.note || '',
+        patientEmail: patient.email,
+        patientPhone: patient.phone,
+        patientAddress: patient.address || 'Chưa rõ',
+        isChecked: false,
+        patientCode: patient.code,
+        appointmentCode
+      });
+
+      await MedicalRecord.create({
+        code: await generateCode(MedicalRecord, 'BA', 4),
+        patientCode: patient.code,
+        appointmentCode,
+        department: 'Chưa xác định',
+        date: new Date(),
+        diagnosis: 'Chưa xác định',
+        note: 'Chưa xác định',
+        symptoms: appt.note || ''
+      });
     }
 
-    console.log("Đồng bộ lịch hẹn thành công.");
+    console.log("Đồng bộ thành công: chỉ thêm lịch mới chưa có.");
   } catch (err) {
-    console.error("Lỗi khi đồng bộ lịch hẹn:", err);
+    console.error("Lỗi khi đồng bộ:", err);
   }
 }
+
+
 
 // Hàm thêm: cộng thêm phút vào chuỗi giờ 'HH:mm'
 function addMinutes(time, minsToAdd) {
