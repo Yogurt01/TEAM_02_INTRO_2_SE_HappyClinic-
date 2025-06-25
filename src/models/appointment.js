@@ -10,11 +10,13 @@ const appointmentSchema = new mongoose.Schema({
   time: { type: String, required: true },           // Giờ khám
   note: { type: String },                           // Ghi chú (nếu có)
   price: { type: String, required: true },          // Phí khám (để tính payment)
+  symptoms: { type: String }, // hoặc bất kỳ kiểu nào bạn muốn
   status: {                                         // Trạng thái lịch hẹn
     type: String,
     enum: ['Scheduled', 'Completed', 'Cancelled'],
     default: 'Scheduled'
   }
+  
 }, {
   timestamps: true
 });

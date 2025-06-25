@@ -1,5 +1,12 @@
 const Appointment = require('../models/appointment');
 
+module.exports.renderAppointmentForm = (req, res) => {
+  res.render('appointment', {
+    errors: [],
+    user: req.user
+  });
+};
+
 module.exports.createAppointment = async (req, res) => {
   const { username, email, phone, doctor, department, date, time, symptoms } = req.body;
 
