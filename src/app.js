@@ -28,6 +28,7 @@ const faqsRoutes = require('./routes/faqsRoutes');
 const helpRoutes = require('./routes/helpRoutes');
 const docAppoint = require('./routes/doctorAppointmentRoutes')
 const patientSearchRoutes = require('./routes/patientSearchRoutes');
+const appointmentRoutes = require('./routes/appointment')
 const app = express();
 
 app.set('view engine', 'ejs')
@@ -89,6 +90,7 @@ app.use('/doctor', docAppoint)
 app.use('/faqs', faqsRoutes);
 app.use('/help', helpRoutes);
 app.use('/patientSearch', patientSearchRoutes);
+app.use('/appointment', appointmentRoutes)
 app.use('/', dashboardRoutes);
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
