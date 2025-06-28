@@ -9,7 +9,14 @@
 </head>
 <body class="bg-gray-100 min-h-screen">
   <!-- Navbar chung -->
-  <%- include('partials/navbar') %>
+  <% if (user?.role === 'admin') { %>
+    <%- include('partials/adminNavbar') %>
+  <% } else if (user?.role === 'doctor') { %>
+    <%- include('partials/doctorNavbar') %>
+  <% } else { %>
+    <%- include('partials/patientNavbar') %>
+  <% } %>
+
 
   <div class="max-w-3xl mx-auto mt-8">
     <!-- Khung chính hiển thị thông tin cá nhân -->

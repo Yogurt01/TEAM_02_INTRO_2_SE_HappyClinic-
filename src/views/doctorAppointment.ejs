@@ -6,7 +6,14 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
-    <%- include('partials/navbar') %>
+    <% if (user?.role === 'admin') { %>
+    <%- include('partials/adminNavbar') %>
+  <% } else if (user?.role === 'doctor') { %>
+    <%- include('partials/doctorNavbar') %>
+  <% } else { %>
+    <%- include('partials/patientNavbar') %>
+  <% } %>
+
   <div class="max-w-4xl mx-auto bg-white shadow rounded-lg p-6">
     <h1 class="text-2xl font-bold mb-4">Lịch hẹn hôm nay của Bác sĩ <%= doctor %></h1>
 

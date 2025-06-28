@@ -8,7 +8,11 @@
 </head>
 <body class="bg-gray-100 min-h-screen">
   <!-- Navbar quản lý -->
-  <%- include('partials/manager') %>
+  <% if (user?.role === 'admin') { %>
+    <%- include('partials/adminNavbar') %>
+  <% } else if (user?.role === 'doctor') { %>
+    <%- include('partials/doctorNavbar') %>
+  <% } %>
 
   <div class="max-w-5xl mx-auto mt-10">
     <div class="bg-white shadow-xl rounded-lg">

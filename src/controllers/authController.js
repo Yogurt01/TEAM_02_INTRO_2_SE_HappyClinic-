@@ -76,73 +76,129 @@ exports.postRegister = async (req, res) => {
 };
 
 
-exports.postLogin = async (req, res) => {
-    const { username, password } = req.body;
-    try {
-        const user = await User.findOne({ username });
-        if (!user || !(await user.matchPasswords(password))) {
-            return res.render('login', { error: 'Invalid username or password' });
-        }
+// exports.postLogin = async (req, res) => {
+//     const { username, password } = req.body;
+//     try {
+//         const user = await User.findOne({ username });
+//         if (!user || !(await user.matchPasswords(password))) {
+//             return res.render('login', { error: 'Invalid username or password' });
+//         }
 
-        // Tạo token và lưu vào cookie
-        const token = jwt.generateToken(user);
-        res.cookie('token', token, { httpOnly: true });
-        if (user.role === 'admin'){
-          res.redirect('/admin')
-        }
-        else{
-          if (user.isBanned === false){
-            return res.render('login', { error: 'Your account is banned! Please contact admin for more information' });
-          }
-          res.redirect('/dashboard');
-        }
+//         // Tạo token và lưu vào cookie
+//         const token = jwt.generateToken(user);
+//         res.cookie('token', token, { httpOnly: true });
+//         if (user.role === 'admin'){
+//           res.redirect('/admin')
+//         }
+//         else{
+//           if (user.isBanned === false){
+//             return res.render('login', { error: 'Your account is banned! Please contact admin for more information' });
+//           }
+//           res.redirect('/dashboard');
+//         }
         
-    } catch (error) {
-        res.render('login', { error: 'An unexpected error occurred. Please try again later.' });
+//     } catch (error) {
+//         res.render('login', { error: 'An unexpected error occurred. Please try again later.' });
+//     }
+// };
+
+exports.postLogin = async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const user = await User.findOne({ username });
+    if (!user || !(await user.matchPasswords(password))) {
+      return res.render('login', { error: 'Invalid username or password' });
     }
+
+    if (user.isBanned) {
+      return res.render('login', { error: 'Your account is banned! Please contact admin.' });
+    }
+
+    const token = jwt.generateToken(user);
+    res.cookie('token', token, { httpOnly: true });
+
+    switch (user.role) {
+      case 'admin':  return res.redirect('/dashboard/admin');
+      case 'doctor': return res.redirect('/dashboard/doctor');
+      default:       return res.redirect('/dashboard/patient');
+    }
+  } catch (error) {
+    console.error(error);
+    res.render('login', { error: 'Unexpected error. Please try again later.' });
+  }
 };
 
 exports.logout = (req, res) => {
     res.clearCookie('token'); // Xóa token trong cookie
     res.redirect('/');
 };
+// exports.googleLogin = async (req, res) => {
+//   try {
+//     const { user } = req; 
+//     console.log('user',user)
+//     const token = jwt.generateToken(user);
+//     res.cookie('token', token, { httpOnly: true });
+//     // Check if email exists
+//     const email =
+//         user.email ||                         // already set on user
+//         user.emails?.[0]?.value ||            // from Google profile
+//         user._json?.email;
+//     console.log('email',email)
+//     let existingUser = await User.findOne({ email: email });
+
+//     if (!existingUser) {
+//       // User not found, add to db
+//       const password = generatePassword.generate({
+//         length: 10,
+//         numbers: true
+//       });
+//       existingUser = new User({
+//         id: user.id,
+//         username: email,
+//         email: email,
+//         password: password
+//       });
+
+//       await existingUser.save();
+//     }
+//     if (existingUser.isBanned === true){
+//             return res.render('login', { error: 'Your account is banned! Please contact admin for more information' });
+//           }
+//     // Generate token for the user found or created
+//     res.render('dashboard', { user: existingUser });
+
+//   } catch (err) {
+//     console.error(err);
+//     res.redirect('/'); // or render an error page
+//   }
+// }
+
 exports.googleLogin = async (req, res) => {
   try {
-    const { user } = req; 
-    console.log('user',user)
+    const { user } = req;
     const token = jwt.generateToken(user);
     res.cookie('token', token, { httpOnly: true });
-    // Check if email exists
-    const email =
-        user.email ||                         // already set on user
-        user.emails?.[0]?.value ||            // from Google profile
-        user._json?.email;
-    console.log('email',email)
-    let existingUser = await User.findOne({ email: email });
+
+    const email = user.email || user.emails?.[0]?.value || user._json?.email;
+    let existingUser = await User.findOne({ email });
 
     if (!existingUser) {
-      // User not found, add to db
-      const password = generatePassword.generate({
-        length: 10,
-        numbers: true
-      });
-      existingUser = new User({
-        id: user.id,
-        username: email,
-        email: email,
-        password: password
-      });
-
+      const password = generatePassword.generate({ length: 10, numbers: true });
+      existingUser = new User({ id: user.id, username: email, email, password });
       await existingUser.save();
     }
-    if (existingUser.isBanned === true){
-            return res.render('login', { error: 'Your account is banned! Please contact admin for more information' });
-          }
-    // Generate token for the user found or created
-    res.render('dashboard', { user: existingUser });
 
+    if (existingUser.isBanned) {
+      return res.render('login', { error: 'Your account is banned! Please contact admin for more information' });
+    }
+
+    switch (existingUser.role) {
+      case 'admin':  return res.redirect('/dashboard/admin');
+      case 'doctor': return res.redirect('/dashboard/doctor');
+      default:       return res.redirect('/dashboard/patient');
+    }
   } catch (err) {
     console.error(err);
-    res.redirect('/'); // or render an error page
+    res.redirect('/');
   }
-}
+};
