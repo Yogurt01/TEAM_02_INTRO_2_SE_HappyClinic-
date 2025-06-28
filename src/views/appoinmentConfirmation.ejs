@@ -5,18 +5,21 @@
   <title>Đặt lịch thành công</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
- <%- include('partials/navbar') %>
-  <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center">
-    <h1 class="text-2xl font-bold text-green-600 mb-4">🎉 Đặt lịch thành công!</h1>
-    <p class="text-gray-700 mb-2">Bác sĩ: <strong><%= appointment.doctor %></strong></p>
-    <p class="text-gray-700 mb-2">Ngày: <strong><%= appointment.date.toDateString() %></strong></p>
-    <p class="text-gray-700 mb-2">Giờ: <strong><%= appointment.time %></strong></p>
-    <p class="text-gray-700">Trạng thái: <strong><%= appointment.status %></strong></p>
+<body class="bg-gray-100 min-h-screen">
+  <%- include('partials/navbar') %>
 
-    <a href="/appointment//book" class="inline-block mt-6 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
-      Đặt thêm lịch
-    </a>
+  <div class="flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center">
+      <h1 class="text-2xl font-bold text-green-600 mb-4">🎉 Đặt lịch thành công!</h1>
+      <p class="text-gray-700 mb-2">Bác sĩ: <strong><%= appointment.doctor %></strong></p>
+      <p class="text-gray-700 mb-2">Ngày: <strong><%= appointment.date.toDateString() %></strong></p>
+      <p class="text-gray-700 mb-2">Giờ: <strong><%= appointment.time %></strong></p>
+      <p class="text-gray-700">Trạng thái: <strong><%= appointment.status %></strong></p>
+
+      <a href="/appointment/book" class="inline-block mt-6 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+        Đặt thêm lịch
+      </a>
+    </div>
   </div>
 
 </body>
