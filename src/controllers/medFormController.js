@@ -1,20 +1,31 @@
 const Appointment = require('../models/appointment');
 const MedicalForm = require('../models/medForm');
-const Payment = require('../controllers/paymentController')
+const Payment = require('../models/payment')
+const priceMap = require('../controllers/medicinesPrices');
 
-async function createPaymentByEmail(email, paymentMethod = 'Internet Banking') {
-  const medForm = await MedForm.findOne({ email }).sort({ date: -1 });
+const calculateTotalPrice = (medicines) => {
+  let total = 0;
+  for (const med of medicines) {
+    const pricePerUnit = priceMap[med.name.toLowerCase()] || 0;
+    total += pricePerUnit * med.quantity;
+  }
+  return total;
+};
+async function createPaymentByEmail(email, paymentMethod = 'BankTransfer') {
+  const medForm = await MedicalForm.findOne({ patientEmail: email }).sort({ date: -1 });
   if (!medForm) {
     throw new Error('Không tìm thấy phiếu khám bệnh với email này.');
   }
-
+  console.log(medForm.medicines)
+  const totalPrice = calculateTotalPrice(medForm.medicines) + 20000;
   const payment = new Payment({
-    username: medForm.username,
-    email: medForm.email,
-    amount: medForm.price,
+    username: medForm.patientName,
+    email: medForm.patientEmail,
+    amount: totalPrice,
     paymentMethod,
     status: 'Unpaid',
-    appointmentId: medForm._id
+    appointmentId: medForm._id,
+    date: new Date
   });
 
   await payment.save();
@@ -30,7 +41,7 @@ exports.renderCreateForm = async (req, res) => {
     const appointment = await Appointment.findById(appointmentId);
     if (!appointment) return res.status(404).send('Appointment not found');
 
-    res.render('medicalForms/create', { appointment });
+    res.render('medForm', { appointment });
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
@@ -40,19 +51,31 @@ exports.renderCreateForm = async (req, res) => {
 // POST: Lưu phiếu khám bệnh
 exports.createMedicalForm = async (req, res) => {
   try {
-    const { patientName, examinationDate, symptoms, predictedDisease, medicines } = req.body;
+    const { patientName, patientEmail, examinationDate, symptoms, predictedDisease } = req.body;
 
-    const parsedMedicines = Array.isArray(medicines.name)
-      ? medicines.name.map((_, i) => ({
-          name: medicines.name[i],
-          unit: medicines.unit[i],
-          quantity: parseInt(medicines.quantity[i]),
-          usage: medicines.usage[i]
-        }))
-      : [{ ...medicines, quantity: parseInt(medicines.quantity) }];
+    const rawMedicines = req.body.medicines || [];
+
+    // Convert object to array if needed
+    const medicineArray = Array.isArray(rawMedicines)
+      ? rawMedicines
+      : Object.values(rawMedicines);
+
+    const parsedMedicines = medicineArray
+      .map(med => {
+        const quantity = parseInt(med.quantity);
+        if (!med.name || !med.unit || isNaN(quantity) || !med.usage) return null;
+        return {
+          name: med.name,
+          unit: med.unit,
+          quantity,
+          usage: med.usage,
+        };
+      })
+      .filter(med => med !== null);
 
     const newForm = new MedicalForm({
       patientName,
+      patientEmail,
       examinationDate,
       symptoms,
       predictedDisease,
@@ -60,7 +83,7 @@ exports.createMedicalForm = async (req, res) => {
     });
 
     await newForm.save();
-    createPaymentByEmail(patientName)
+    createPaymentByEmail(patientEmail);
     res.redirect('/doctor/today');
   } catch (err) {
     console.error(err);

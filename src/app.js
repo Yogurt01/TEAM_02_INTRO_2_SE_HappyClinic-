@@ -17,6 +17,8 @@ const announcementRoutes = require('./routes/announcementRoutes');
 
 passportConfig();
 require('dotenv').config();
+const fs = require('fs');
+const path = require('path');
 
 
 const authRoutes = require('./routes/authRoutes')
@@ -29,6 +31,7 @@ const helpRoutes = require('./routes/helpRoutes');
 const docAppoint = require('./routes/doctorAppointmentRoutes')
 const patientSearchRoutes = require('./routes/patientSearchRoutes');
 const appointmentRoutes = require('./routes/appointment')
+const medFormRoutes = require('./routes/medFormRoutes')
 const app = express();
 
 app.set('view engine', 'ejs')
@@ -91,7 +94,13 @@ app.use('/faqs', faqsRoutes);
 app.use('/help', helpRoutes);
 app.use('/patientSearch', patientSearchRoutes);
 app.use('/appointment', appointmentRoutes)
+app.use('/medical-form', medFormRoutes)
 app.use('/', dashboardRoutes);
+app.get('/api/medicines', (req, res) => {
+  const dataPath = path.join(__dirname, 'data', 'medicines.json');
+  const data = fs.readFileSync(dataPath, 'utf-8');
+  res.json(JSON.parse(data));
+});
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);

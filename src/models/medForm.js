@@ -8,11 +8,12 @@ const medicineSchema = new mongoose.Schema({
 });
 
 const medicalFormSchema = new mongoose.Schema({
-  patientName: { type: String, required: true },           // Họ tên
+  patientName: { type: String, required: true },
+  patientEmail:{ type: String, required: true },
   examinationDate: { type: Date, required: true },         // Ngày khám
   symptoms: { type: String, required: true },              // Triệu chứng
   predictedDisease: { type: String, required: true },      // Dự đoán loại bệnh
   medicines: [medicineSchema],                             // Danh sách thuốc
-}, { timestamps: true });
+}, { timestamps: true, collection: 'medForm' });
 
-module.exports = mongoose.model('MedicalForm', medicalFormSchema);
+module.exports = mongoose.model('MedForm', medicalFormSchema);
