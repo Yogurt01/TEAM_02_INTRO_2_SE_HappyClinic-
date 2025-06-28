@@ -35,7 +35,8 @@ const userSchema = new mongoose.Schema({
     role:{type:String,default:'patient'},
     phone: {type:String, required:false, unique:false}, 
     address: { type: AddressSchema, required: false },
-    isBanned: {type: Boolean, default: false}
+    isBanned: {type: Boolean, default: false},
+    limitation: {type: Number, default: 40}
   },
   {timestamps:true});
 
