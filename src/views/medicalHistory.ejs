@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hồ sơ bệnh án | Happy Clinic</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <%- include('partials/navbar') %>
+
+  <div class="max-w-6xl mx-auto mt-10 bg-white shadow-md p-8 rounded-lg">
+    <a href="/patientSearch" class="inline-block mb-4 text-blue-600 hover:underline text-sm">
+    ← Quay lại danh sách
+    </a>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <!-- Thông tin bệnh nhân -->
+      <div class="md:col-span-1 border rounded p-4 bg-gray-50 break-words">
+        <h3 class="text-xl font-semibold border-b pb-2 mb-3 text-blue-700">Thông tin bệnh nhân</h3>
+        <% if (patient) { %>
+          <p><strong>Mã BN:</strong> <%= patient.code %></p>
+          <p><strong>Họ tên:</strong> <%= patient.fullName %></p>
+          <p><strong>Ngày sinh:</strong> <%= patient.dob %></p>
+          <p><strong>Giới tính:</strong> <%= patient.gender %></p>
+          <p><strong>Điện thoại:</strong> <%= patient.phone %></p>
+          <p><strong>Email:</strong> <%= patient.email %></p>
+          <p><strong>Địa chỉ:</strong> <%= patient.address %></p>
+        <% } else { %>
+          <p class="text-red-600">Không tìm thấy thông tin bệnh nhân.</p>
+        <% } %>
+      </div>
+
+      <!-- Hồ sơ bệnh án -->
+      <div class="md:col-span-3">
+        <h3 class="text-xl font-semibold border-b pb-2 mb-4 text-blue-700">Hồ sơ bệnh án</h3>
+        <% if (records.length > 0) { %>
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm text-left border border-gray-300">
+              <thead class="bg-blue-100 text-gray-800 text-center">
+                <tr>
+                  <th class="border px-3 py-2">STT</th>
+                  <th class="border px-3 py-2">Ngày khám</th>
+                  <th class="border px-3 py-2">Loại bệnh</th>
+                  <th class="border px-3 py-2">Triệu chứng</th>
+                  <th class="border px-3 py-2">Khoa</th>
+                  <th class="border px-3 py-2">Ghi chú</th>
+                  <th class="border px-3 py-2">Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% records.forEach((record, index) => { %>
+                  <tr class="hover:bg-gray-50 text-center">
+                    <td class="border px-3 py-2"><%= index + 1 %></td>
+                    <td class="border px-3 py-2"><%= new Date(record.date).toLocaleDateString('vi-VN') %></td>
+                    <td class="border px-3 py-2"><%= record.diagnosis %></td>
+                    <td class="border px-3 py-2"><%= record.symptoms %></td>
+                    <td class="border px-3 py-2"><%= record.department %></td>
+                    <td class="border px-3 py-2"><%= record.note %></td>
+                    <td class="border px-3 py-2">
+                      <span class="px-2 py-1 text-xs rounded font-semibold 
+                        <%= record.isChecked ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' %>">
+                        <%= record.isChecked ? 'Đã khám' : 'Chưa khám' %>
+                      </span>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } else { %>
+          <p class="text-gray-600">Không có hồ sơ bệnh án nào.</p>
+        <% } %>
+      </div>
+    </div>
+
+    <% if (error) { %>
+      <div class="bg-red-100 text-red-700 border border-red-400 px-4 py-3 mt-4 rounded">
+        <%= error %>
+      </div>
+    <% } %>
+  </div>
+
+  <%- include('partials/chatSupport') %>
+</body>
+</html>

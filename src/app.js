@@ -28,6 +28,7 @@ const doctorSearchRoutes = require('./routes/doctorSearch');
 const faqsRoutes = require('./routes/faqsRoutes');
 const helpRoutes = require('./routes/helpRoutes');
 const docAppoint = require('./routes/doctorAppointmentRoutes')
+const patientSearchRoutes = require('./routes/patientSearchRoutes');
 const appointmentRoutes = require('./routes/appointmentRoutes'); // Appointment booking online routes
 const blogRoutes = require('./routes/blogRoutes'); // Added this line
 const app = express();
@@ -60,13 +61,13 @@ app.use(session({
   cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }  // 1 day in milliseconds
 }));
 
-// Middleware kiểm tra đăng nhập cho các route liên quan đến đặt lịch khám
-app.use('/appointments', (req, res, next) => {
-  if (!res.locals.user) {
-    return res.redirect('/auth/login'); // Nếu người dùng chưa đăng nhập, chuyển hướng đến đăng nhập
-  }
-  next();
-});
+// // Middleware kiểm tra đăng nhập cho các route liên quan đến đặt lịch khám
+// app.use('/appointments', (req, res, next) => {
+//   if (!res.locals.user) {
+//     return res.redirect('/auth/login'); // Nếu người dùng chưa đăng nhập, chuyển hướng đến đăng nhập
+//   }
+//   next();
+// });
 
 app.use((req, res, next) => {
   const token = req.cookies.token;
@@ -101,6 +102,7 @@ app.use('/doctorSearch', doctorSearchRoutes);
 app.use('/doctor', docAppoint)
 app.use('/faqs', faqsRoutes);
 app.use('/help', helpRoutes);
+app.use('/patientSearch', patientSearchRoutes);
 app.use('/', dashboardRoutes);
 app.use('/appointment', appointmentRoutes); // Appointment booking online routes
 const PORT = process.env.PORT;

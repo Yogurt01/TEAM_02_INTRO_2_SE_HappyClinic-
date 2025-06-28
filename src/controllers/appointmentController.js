@@ -2,7 +2,8 @@ const Appointment = require('../models/appointment');
 
 module.exports.renderAppointmentForm = (req, res) => {
   res.render('appointment', {
-    errors: [],
+    errors: [],        // bạn có thể bỏ nếu không dùng
+    error: null,       // THÊM DÒNG NÀY
     user: req.user
   });
 };
