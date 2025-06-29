@@ -91,7 +91,7 @@ exports.postLogin = async (req, res) => {
           res.redirect('/admin')
         }
         else{
-          if (user.isBanned === false){
+          if (user.isBanned === true){
             return res.render('login', { error: 'Your account is banned! Please contact admin for more information' });
           }
           res.redirect('/dashboard');

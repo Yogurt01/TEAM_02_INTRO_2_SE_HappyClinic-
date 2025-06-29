@@ -6,7 +6,9 @@ const priceMap = require('../controllers/medicinesPrices');
 const calculateTotalPrice = (medicines) => {
   let total = 0;
   for (const med of medicines) {
+    console.log('med',med)
     const pricePerUnit = priceMap[med.name.toLowerCase()] || 0;
+    console.log("curr", pricePerUnit)
     total += pricePerUnit * med.quantity;
   }
   return total;
@@ -16,7 +18,7 @@ async function createPaymentByEmail(email, paymentMethod = 'BankTransfer') {
   if (!medForm) {
     throw new Error('Không tìm thấy phiếu khám bệnh với email này.');
   }
-  console.log(medForm.medicines)
+  console.log("tất cả các loại thuốc ", medForm.medicines)
   const totalPrice = calculateTotalPrice(medForm.medicines) + 20000;
   const payment = new Payment({
     username: medForm.patientName,
@@ -72,7 +74,7 @@ exports.createMedicalForm = async (req, res) => {
         };
       })
       .filter(med => med !== null);
-
+    console.log("thuôc xs arr ",parsedMedicines)
     const newForm = new MedicalForm({
       patientName,
       patientEmail,
