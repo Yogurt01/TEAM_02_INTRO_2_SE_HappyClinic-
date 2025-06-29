@@ -7,9 +7,11 @@
 </head>
 <body class="bg-gray-100 font-sans">
   <% if (user?.role === 'admin') { %>
-    <%- include('partials/manager') %>
+    <%- include('partials/adminNavbar') %>
+  <% } else if (user?.role === 'doctor') { %>
+    <%- include('partials/doctorNavbar') %>
   <% } else { %>
-    <%- include('partials/navbar') %>
+    <%- include('partials/patientNavbar') %>
   <% } %>
 
   <div class="max-w-5xl mx-auto py-10 px-4">
