@@ -15,6 +15,7 @@ const contactRouter = require('./routes/contactRoutes');
 
 const announcementRoutes = require('./routes/announcementRoutes');
 
+
 passportConfig();
 require('dotenv').config();
 const fs = require('fs');
@@ -22,7 +23,8 @@ const path = require('path');
 
 
 const authRoutes = require('./routes/authRoutes')
-const dashboardRoutes = require('./routes/dashboardRoutes')
+//const dashboardRoutes = require('./routes/dashboardRoutes')
+const dashboardRoutes = require('./routes/dashboardRoutes'); //role based 
 const profileRoutes = require('./routes/profileRoutes'); //profile
 const paymentRoutes = require('./routes/paymentRoutes')
 const doctorSearchRoutes = require('./routes/doctorSearch');
@@ -30,8 +32,9 @@ const faqsRoutes = require('./routes/faqsRoutes');
 const helpRoutes = require('./routes/helpRoutes');
 const docAppoint = require('./routes/doctorAppointmentRoutes')
 const patientSearchRoutes = require('./routes/patientSearchRoutes');
-const appointmentRoutes = require('./routes/appointment')
-const medFormRoutes = require('./routes/medFormRoutes')
+const appointmentRoutes = require('./routes/appointment');
+const medFormRoutes = require('./routes/medFormRoutes');
+const helpRequestRoutes = require('./routes/helpRequestRoutes');
 const app = express();
 
 app.set('view engine', 'ejs')
@@ -95,7 +98,9 @@ app.use('/help', helpRoutes);
 app.use('/patientSearch', patientSearchRoutes);
 app.use('/appointment', appointmentRoutes)
 app.use('/medical-form', medFormRoutes)
-app.use('/', dashboardRoutes);
+//app.use('/', dashboardRoutes);
+app.use('/dashboard', dashboardRoutes); //role based
+app.use('/help-requests', helpRequestRoutes);
 app.get('/api/medicines', (req, res) => {
   const dataPath = path.join(__dirname, 'data', 'medicines.json');
   const data = fs.readFileSync(dataPath, 'utf-8');

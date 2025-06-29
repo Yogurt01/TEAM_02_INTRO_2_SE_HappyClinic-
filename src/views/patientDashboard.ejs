@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Patient Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="font-sans">
+  <% if (user?.role === 'admin') { %>
+    <%- include('partials/adminNavbar') %>
+  <% } else if (user?.role === 'doctor') { %>
+    <%- include('partials/doctorNavbar') %>
+  <% } else { %>
+    <%- include('partials/patientNavbar') %>
+  <% } %>
+
+  <%- include('partials/chatSupport') %>
+</body>
+</html>

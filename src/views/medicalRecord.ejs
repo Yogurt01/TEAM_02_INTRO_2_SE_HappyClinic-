@@ -44,7 +44,14 @@
   </style>
 </head>
 <body>
-	<%- include('partials/navbar') %>
+	<% if (user?.role === 'admin') { %>
+    <%- include('partials/adminNavbar') %>
+  <% } else if (user?.role === 'doctor') { %>
+    <%- include('partials/doctorNavbar') %>
+  <% } else { %>
+    <%- include('partials/patientNavbar') %>
+  <% } %>
+
   <div class="breadcrumb">
     <a href="/dashboard">TRANG CHỦ</a> &raquo;
     <a href="/availability">ĐĂNG KÝ LỊCH KHÁM</a> &raquo;
