@@ -6,7 +6,7 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
-    <% if (user?.role === 'admin') { %>
+  <% if (user?.role === 'admin') { %>
     <%- include('partials/adminNavbar') %>
   <% } else if (user?.role === 'doctor') { %>
     <%- include('partials/doctorNavbar') %>
