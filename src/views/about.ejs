@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Me</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="font-sans bg-gray-100">
+  <% if (user.role === 'admin') { %>
+    <%- include('partials/adminNavbar') %>
+  <% } else if (user.role === 'doctor') { %>
+    <%- include('partials/doctorNavbar') %>
+  <% } else { %>
+    <%- include('partials/patientNavbar') %>
+  <% } %>
+
+  <div class="container mx-auto p-6 bg-white shadow rounded mt-6">
+    <h1 class="text-2xl font-bold mb-4">Thông tin cá nhân</h1>
+    <table class="table-auto w-full">
+      <tbody class="divide-y">
+        <tr>
+          <td class="px-4 py-2 font-semibold">Họ và tên</td>
+          <td class="px-4 py-2"><%= user.fullname || user.username %></td>
+        </tr>
+        <tr>
+          <td class="px-4 py-2 font-semibold">Email</td>
+          <td class="px-4 py-2"><%= user.email %></td>
+        </tr>
+        <tr>
+          <td class="px-4 py-2 font-semibold">Số điện thoại</td>
+          <td class="px-4 py-2"><%= user.phone || 'Chưa cập nhật' %></td>
+        </tr>
+        <tr>
+          <td class="px-4 py-2 font-semibold">Ngày sinh</td>
+          <td class="px-4 py-2"><%= user.birth ? new Date(user.birth).toLocaleDateString() : 'Chưa cập nhật' %></td>
+        </tr>
+        <tr>
+          <td class="px-4 py-2 font-semibold">Giới tính</td>
+          <td class="px-4 py-2"><%= user.gender || 'Chưa cập nhật' %></td>
+        </tr>
+        <tr>
+          <td class="px-4 py-2 font-semibold">CCCD/CMND</td>
+          <td class="px-4 py-2"><%= user.CCCD || 'Chưa cập nhật' %></td>
+        </tr>
+        <tr>
+          <td class="px-4 py-2 font-semibold">Địa chỉ</td>
+          <td class="px-4 py-2">
+            <% if (user.address) { %>
+              <%= user.address.houseNumber %>, <%= user.address.street %>, 
+              <%= user.address.ward %>, <%= user.address.district %>, <%= user.address.city %>
+            <% } else { %>
+              Chưa cập nhật
+            <% } %>
+          </td>
+        </tr>
+        <tr>
+          <td class="px-4 py-2 font-semibold">Vai trò</td>
+          <td class="px-4 py-2"><%= user.role %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
