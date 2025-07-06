@@ -23,7 +23,7 @@ const path = require('path');
 
 
 const authRoutes = require('./routes/authRoutes')
-//const dashboardRoutes = require('./routes/dashboardRoutes')
+// const dashboardRoutes = require('./routes/dashboardRoutes')
 const dashboardRoutes = require('./routes/dashboardRoutes'); //role based 
 const profileRoutes = require('./routes/profileRoutes'); //profile
 const paymentRoutes = require('./routes/paymentRoutes')
@@ -100,8 +100,8 @@ app.use('/help', helpRoutes);
 app.use('/patientSearch', patientSearchRoutes);
 app.use('/appointment', appointmentRoutes)
 app.use('/medical-form', medFormRoutes)
-//app.use('/', dashboardRoutes);
-app.use('/dashboard', dashboardRoutes); //role based
+app.use('/dashboard', dashboardRoutes);
+// app.use('/dashboard', dashboardRoutes); //role based
 app.use('/help-requests', helpRequestRoutes);
 app.use('/about', aboutRoutes);
 

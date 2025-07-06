@@ -117,11 +117,16 @@ exports.postLogin = async (req, res) => {
     const token = jwt.generateToken(user);
     res.cookie('token', token, { httpOnly: true });
 
-    switch (user.role) {
-      case 'admin':  return res.redirect('/dashboard/admin');
-      case 'doctor': return res.redirect('/dashboard/doctor');
-      default:       return res.redirect('/dashboard/patient');
-    }
+    // switch (user.role) {
+    //   case 'admin':  return res.redirect('/dashboard/admin');
+    //   case 'doctor': return res.redirect('/dashboard/doctor');
+    //   default:       return res.redirect('/dashboard/patient');
+    // }
+
+    res.render('dashboard', {user: user, error: null}); // Render dashboard with user data
+
+
+
   } catch (error) {
     console.error(error);
     res.render('login', { error: 'Unexpected error. Please try again later.' });
