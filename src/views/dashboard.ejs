@@ -14,6 +14,85 @@
   <% } else { %>
     <%- include('partials/patientNavbar') %>
   <% } %>
+    <!-- Đây là một dòng comment trong HTML -->
+    <div class="container mx-auto p-6 bg-white shadow rounded mt-6">
+        <h1 class="text-2xl font-bold mb-4">Dashboard</h1>
+        <p class="text-gray-700">Welcome, <%= user.fullname || user.username %>!</p>
+        <p class="text-gray-500">Role: <%= user.role %></p>
+        <p class="text-gray-500">Email: <%= user.email %></p>
+        <% if (user.role === 'admin') { %>
+            <p class="text-gray-500">You have admin privileges.</p>
+        <% } else if (user.role === 'doctor') { %>
+            <p class="text-gray-500">You are logged in as a doctor.</p>
+        <% } else { %>
+            <p class="text-gray-500">You are logged in as a patient.</p>
+        <% } %>
+
+    </div>
+
+    <!-- Footer Diag - Giao diện tương tự ảnh bạn cung cấp -->
+<footer style="background:#204070; color:#fff; padding:40px 0 20px 0; font-family:Arial,sans-serif;">
+    <div style="max-width:1300px; margin:auto; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-start;">
+        <div style="flex:2; min-width:320px; margin-right:30px;">
+            <img src="https://diag.vn/images/logo.svg" alt="Diag Logo" style="height:38px; margin-bottom:22px;"/>
+            <hr style="border:0; border-top:1px solid #466aa6; margin:18px 0 24px 0;">
+            <div style="font-weight:bold; margin-bottom:8px;">CÔNG TY TNHH LAB GROUP INTERNATIONAL VIỆT NAM</div>
+            <div style="font-size:15px; line-height:1.7;">
+                Giấy chứng nhận đăng ký doanh nghiệp số: 0301482205<br>
+                do Sở Kế hoạch và Đầu tư Thành phố Hồ Chí Minh<br>
+                cấp lần đầu ngày 26 tháng 9 năm 2008.<br><br>
+                Giấy phép hoạt động khám bệnh, chữa bệnh số: 06454/HCM-GPHĐ<br>
+                cấp bởi Sở Y tế Thành phố Hồ Chí Minh.<br><br>
+                Địa chỉ:<br>
+                <span style="font-weight:bold;">Phòng khám Đa khoa – Trung tâm Xét nghiệm và Chẩn đoán Y khoa – Medical Diag Center,</span><br>
+                414-420 Đường Cao Thắng, Phường 12, Quận 10, Thành phố Hồ Chí Minh, Việt Nam
+            </div>
+        </div>
+        <div style="flex:1; min-width:160px; margin-right:25px;">
+            <div style="color:#2984ff; font-weight:bold; font-size:20px; margin-bottom:12px;">Diag</div>
+            <div style="margin-bottom:10px;">Tuyển dụng</div>
+            <div style="color:#2984ff; font-weight:bold; font-size:20px; margin:25px 0 12px 0;">Chính sách & điều khoản</div>
+            <div style="margin-bottom:8px;">Chính sách bảo mật</div>
+            <div style="margin-bottom:8px;">Điều khoản sử dụng</div>
+            <div style="margin-bottom:8px;">Chính sách cung cấp dịch vụ</div>
+            <div style="margin-bottom:8px;">Chính sách thanh toán, điều kiện giao dịch & bảo mật thông tin thanh toán</div>
+            <div style="margin-bottom:8px;">Chính sách đổi, huỷ và hoàn phí dịch vụ</div>
+            <div style="margin-bottom:8px;">Chính sách bảo vệ dữ liệu cá nhân (khách hàng)</div>
+        </div>
+        <div style="flex:1; min-width:160px; margin-right:25px;">
+            <div style="color:#2984ff; font-weight:bold; font-size:20px; margin-bottom:12px;">Đối tác y tế</div>
+            <div style="margin-bottom:10px;">Ứng dụng dành cho đối tác</div>
+            <div style="margin-bottom:10px;">Danh sách nhân viên y tế</div>
+            <div style="color:#2984ff; font-weight:bold; font-size:20px; margin:25px 0 12px 0;">Khách hàng</div>
+            <div style="margin-bottom:8px;">Xem kết quả xét nghiệm</div>
+            <div style="margin-bottom:8px;">Tìm điểm lấy mẫu</div>
+        </div>
+        <div style="flex:1; min-width:160px;">
+            <div style="color:#2984ff; font-weight:bold; font-size:20px; margin-bottom:12px;">Theo dõi Diag</div>
+            <!-- Bạn có thể thêm các icon mạng xã hội ở đây nếu muốn -->
+        </div>
+    </div>
+    <div style="position:fixed; right:32px; top:70px; display:flex; flex-direction:column; align-items:center; z-index:1000;">
+        <div style="background:linear-gradient(135deg,#2f6fff 0%,#37aee2 100%); color:#fff; border-radius:50%; width:70px; height:70px; display:flex; justify-content:center; align-items:center; margin-bottom:14px; font-size:23px; font-weight:bold; box-shadow:0 2px 8px #002d6e38;">
+            <span>TƯ VẤN</span>
+        </div>
+        <div style="background:linear-gradient(135deg,#0079ff 0%,#17a4fa 100%); color:#fff; border-radius:50%; width:70px; height:70px; display:flex; justify-content:center; align-items:center; margin-bottom:14px; font-size:20px; font-weight:bold; box-shadow:0 2px 8px #002d6e38;">
+            <span>Zalo</span>
+        </div>
+        <div style="background:linear-gradient(135deg,#1f80ff 0%,#6cd8fd 100%); color:#fff; border-radius:50%; width:70px; height:70px; display:flex; justify-content:center; align-items:center; margin-bottom:14px; font-size:25px; font-weight:bold; box-shadow:0 2px 8px #002d6e38;">
+            <span style="font-size:28px;">💧</span>
+        </div>
+        <div style="background:linear-gradient(135deg,#1b7fe8 0%,#92e2ff 100%); color:#fff; border-radius:50%; width:70px; height:70px; display:flex; justify-content:center; align-items:center; margin-bottom:14px; font-size:25px; font-weight:bold; box-shadow:0 2px 8px #002d6e38;">
+            <span style="font-size:27px;">💬</span>
+        </div>
+        <div style="background:linear-gradient(135deg,#1b7fe8 0%,#92e2ff 100%); color:#fff; border-radius:50%; width:70px; height:70px; display:flex; justify-content:center; align-items:center; font-size:30px; font-weight:bold; box-shadow:0 2px 8px #002d6e38;">
+            <span>🎁</span>
+        </div>
+    </div>
+    <div style="position:fixed; right:130px; bottom:40px; background:#fff; color:#204070; border-radius:32px; box-shadow:0 1px 6px #0002; display:flex; align-items:center; font-size:20px; font-weight:500; padding:8px 18px; z-index:1000;">
+        <span style="font-size:28px; margin-right:10px;">⬆️</span> Lên đầu trang
+    </div>
+</footer>
 
     <%- include('partials/chatSupport') %>
 </body>
