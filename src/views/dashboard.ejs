@@ -6,6 +6,7 @@
     <title>Happy Clinic</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body>
     <% if (user?.role === 'admin') { %>
     <%- include('partials/adminNavbar') %>
@@ -14,27 +15,1237 @@
   <% } else { %>
     <%- include('partials/patientNavbar') %>
   <% } %>
-    <!-- Đây là một dòng comment trong HTML -->
-    <div class="container mx-auto p-6 bg-white shadow rounded mt-6">
-        <h1 class="text-2xl font-bold mb-4">Dashboard</h1>
-        <p class="text-gray-700">Welcome, <%= user.fullname || user.username %>!</p>
-        <p class="text-gray-500">Role: <%= user.role %></p>
-        <p class="text-gray-500">Email: <%= user.email %></p>
-        <% if (user.role === 'admin') { %>
-            <p class="text-gray-500">You have admin privileges.</p>
-        <% } else if (user.role === 'doctor') { %>
-            <p class="text-gray-500">You are logged in as a doctor.</p>
-        <% } else { %>
-            <p class="text-gray-500">You are logged in as a patient.</p>
-        <% } %>
 
+    <!-- Phần thân của trang Dashboard --><!-- Header Diag - Giao diện tương tự ảnh bạn cung cấp -->
+<style>
+.diag-header {
+    background: #0f74fa;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 32px;
+    font-family: Arial, sans-serif;
+    color: #fff;
+    font-size: 18px;
+    min-height: 48px;
+}
+.diag-header .header-left,
+.diag-header .header-center,
+.diag-header .header-right {
+    display: flex;
+    align-items: center;
+}
+.diag-header .header-left {
+    gap: 12px;
+}
+.diag-header .header-center {
+    gap: 16px;
+}
+.diag-header .header-right {
+    gap: 20px;
+}
+.diag-header .social-icon {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 50%;
+    margin-right: 3px;
+    color: #0f74fa;
+    font-size: 17px;
+    transition: box-shadow 0.18s;
+}
+.diag-header .social-icon:hover {
+    box-shadow: 0 2px 8px #002d6e33;
+}
+.diag-header .enterprise-btn {
+    background: #ffe34e;
+    color: #000;
+    font-weight: 600;
+    padding: 3px 22px 3px 15px;
+    border-radius: 22px;
+    font-size: 18px;
+    margin: 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    cursor: pointer;
+}
+.diag-header .enterprise-btn i {
+    font-size: 20px;
+}
+.diag-header .header-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 14px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: 400;
+}
+.diag-header .header-link:last-child {
+    margin-right: 0;
+}
+.diag-header .flag-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 7px;
+    border: 1.5px solid #fff;
+}
+</style>
+
+<div class="diag-header">
+    <div class="header-left">
+        <span style="font-weight:400; font-size:17px; margin-right:7px;">Tìm hiểu thêm:</span>
+        <a class="social-icon" href="#"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/facebook.svg" alt="fb" style="width:16px;height:16px;"></a>
+        <a class="social-icon" href="#"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/tiktok.svg" alt="tiktok" style="width:16px;height:16px;"></a>
+        <a class="social-icon" href="#"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/youtube.svg" alt="yt" style="width:16px;height:16px;"></a>
+        <a class="social-icon" href="#"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/instagram.svg" alt="ig" style="width:16px;height:16px;"></a>
+        <button class="enterprise-btn"><span style="font-size:20px;margin-right:4px;">🏢</span> Doanh nghiệp</button>
     </div>
+    <div class="header-center">
+        <a class="header-link" href="#"><span style="font-size:22px;">📍</span>Điểm khám bệnh</a>
+        <a class="header-link" href="#"><span style="font-size:22px;">🧪</span>Tra cứu kết quả</a>
+        <a class="header-link" href="#"><span style="font-size:21px;">📱</span>Ứng dụng dành cho đối tác</a>
+    </div>
+    <div class="header-right">
+        <a class="header-link" href="tel:19001717"><span style="font-size:22px;opacity:.7;">📞</span>19001717</a>
+        <a class="header-link" href="#"><img class="flag-icon" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="us" />English</a>
+    </div>
+</div>
 
-    <!-- Footer Diag - Giao diện tương tự ảnh bạn cung cấp -->
+    <!-- Đây là một dòng comment trong HTML -->
+<!-- Dashboard UI với icon bác sĩ, bệnh nhân, quản trị viên -->
+<style>
+.med-dashboard {
+  max-width: 520px;
+  margin: 36px auto 0 auto;
+  background: #fafdff;
+  border-radius: 18px;
+  box-shadow: 0 4px 20px #009ed820;
+  padding: 32px 32px 22px 32px;
+  font-family: Arial, sans-serif;
+  position: relative;
+}
+.med-dashboard-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #12406b;
+  margin-bottom: 16px;
+  letter-spacing: 0.01em;
+}
+.med-dashboard-info {
+  font-size: 1.12rem;
+  color: #2d4b61;
+  margin-bottom: 8px;
+  line-height: 1.6;
+  display: flex;
+  align-items: center;
+}
+.med-dashboard-label {
+  font-weight: 500;
+  color: #1585cf;
+  margin-right: 7px;
+}
+.med-dashboard-role {
+  font-size: 1.01rem;
+  color: #179581;
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+.med-dashboard-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 14px 3px 8px;
+  border-radius: 14px;
+  font-size: 0.98rem;
+  font-weight: 600;
+  margin-top: 5px;
+  background: #ebfafd;
+  color: #0ea6e9;
+  margin-right: 6px;
+}
+.med-dashboard-tag.admin {background:#fde3e1;color:#df4739;}
+.med-dashboard-tag.doctor {background:#d6f7ea;color:#21b788;}
+.med-dashboard-tag.patient {background:#e6f4ff;color:#2196f3;}
+.med-dashboard-tag img {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  object-fit: contain;
+  box-shadow: 0 1px 4px #0001;
+}
+</style>
+
+<div class="med-dashboard">
+  <div class="med-dashboard-title">Dashboard</div>
+  <div class="med-dashboard-info">
+    <span class="med-dashboard-label">Xin chào:</span>
+    <%= user.fullname || user.username %>
+  </div>
+  <div class="med-dashboard-info">
+    <span class="med-dashboard-label">Email:</span> <%= user.email %>
+  </div>
+  <div class="med-dashboard-role">
+    <span class="med-dashboard-label">Vai trò:</span>
+    <% if (user.role === 'admin') { %>
+      <span class="med-dashboard-tag admin">
+        <img src="https://img.icons8.com/fluency/48/admin-settings-male.png" alt="Quản trị viên" />
+        Quản trị viên
+      </span>
+    <% } else if (user.role === 'doctor') { %>
+      <span class="med-dashboard-tag doctor">
+        <img src="https://img.icons8.com/fluency/48/doctor-male.png" alt="Bác sĩ" />
+        Bác sĩ
+      </span>
+    <% } else { %>
+      <span class="med-dashboard-tag patient">
+        <img src="https://img.icons8.com/fluency/48/patient-oxygen-mask.png" alt="Bệnh nhân" />
+        Bệnh nhân
+      </span>
+    <% } %>
+  </div>
+  <% if (user.role === 'admin') { %>
+    <div class="med-dashboard-info"><span class="med-dashboard-label">Quyền hạn:</span> Bạn có toàn quyền quản trị hệ thống.</div>
+  <% } else if (user.role === 'doctor') { %>
+    <div class="med-dashboard-info"><span class="med-dashboard-label">Trạng thái:</span> Đăng nhập với tư cách bác sĩ, có thể quản lý hồ sơ bệnh án.</div>
+  <% } else { %>
+    <div class="med-dashboard-info"><span class="med-dashboard-label">Trạng thái:</span> Đăng nhập với tư cách bệnh nhân, có thể xem lịch sử khám và đặt lịch mới.</div>
+  <% } %>
+</div>
+
+
+
+    <!-- Banner Đặt Khám Y Tế hiện đại giống ảnh bạn gửi -->
+<style>
+.med-banner {
+  position: relative;
+  width: 100%;
+  min-height: 350px;
+  background: linear-gradient(120deg, #e9f7fb 60%, #fff 100%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-bottom: 28px;
+}
+.med-banner-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0; top: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.med-banner-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 34px;
+}
+.med-banner-title {
+  font-size: 2.3rem;
+  font-weight: bold;
+  color: #12406b;
+  margin-bottom: 22px;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 8px #fff5;
+}
+.med-banner-search {
+  margin: 0 auto 18px auto;
+  max-width: 540px;
+  display: flex;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 10px #c7eaf524;
+  padding: 8px 16px;
+  align-items: center;
+  font-size: 1.13rem;
+  border: 1.7px solid #e6f2fa;
+}
+.med-banner-search input {
+  border: none;
+  outline: none;
+  font-size: 1.12rem;
+  flex: 1;
+  background: transparent;
+  padding: 6px 10px;
+}
+.med-banner-features {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+  margin: 0 auto 22px auto;
+  max-width: 650px;
+  color: #22984f;
+  font-size: 1.11rem;
+  text-align: left;
+}
+.med-banner-features li {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.med-banner-feature-icon {
+  color: #0bcc28;
+  font-size: 1.2em;
+}
+.med-banner-shortcuts {
+  display: flex;
+  align-items: flex-end;
+  gap: 30px;
+  justify-content: center;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  z-index: 2;
+}
+.med-shortcut-item {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 3px 12px #16b8e11a;
+  padding: 18px 24px 14px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 148px;
+  max-width: 180px;
+  min-height: 110px;
+  transition: box-shadow 0.18s, transform 0.18s;
+  cursor: pointer;
+}
+.med-shortcut-item:hover {
+  box-shadow: 0 8px 30px #16b8e130;
+  transform: translateY(-4px) scale(1.03);
+}
+.med-shortcut-icon {
+  width: 50px; height: 50px;
+  margin-bottom: 8px;
+}
+.med-shortcut-label {
+  color: #15598c;
+  font-size: 1.08rem;
+  font-weight: 500;
+  text-align: center;
+}
+@media (max-width: 1100px) {
+  .med-banner-content {padding-top:12px;}
+  .med-banner-title {font-size:1.25rem;}
+  .med-banner-shortcuts {flex-wrap:wrap; gap:14px;}
+  .med-shortcut-item {min-width:120px; max-width:160px; min-height:85px;}
+}
+</style>
+<div class="med-banner">
+  <!-- Hình nền + bác sĩ (bạn thêm ảnh nếu muốn) -->
+  <div class="med-banner-bg"></div>
+  <div class="med-banner-content">
+    <div class="med-banner-title">Kết nối Người Dân với Cơ sở & Dịch vụ Y tế hàng đầu</div>
+    <form class="med-banner-search">
+      <input type="text" placeholder="Tìm kiếm cơ sở y">
+    </form>
+    <ul class="med-banner-features">
+      <li><span class="med-banner-feature-icon">✔️</span> Đặt khám nhanh - Lấy số thứ tự trực tuyến - Tư vấn sức khỏe từ xa</li>
+      <li><span class="med-banner-feature-icon">✔️</span> Đặt khám theo giờ - Đặt càng sớm để có cơ sở thứ tự thấp nhất</li>
+      <li><span class="med-banner-feature-icon">✔️</span> Được hoàn tiền khi hủy khám - Có cơ hội nhận ưu đãi hoàn tiền</li>
+    </ul>
+    <div class="med-banner-shortcuts">
+      <div class="med-shortcut-item">
+        <img class="med-shortcut-icon" src="https://img.icons8.com/fluency/96/calendar--v2.png" alt="Đặt khám tại cơ sở">
+        <div class="med-shortcut-label">Đặt khám tại cơ sở</div>
+      </div>
+      <div class="med-shortcut-item">
+        <img class="med-shortcut-icon" src="https://img.icons8.com/fluency/96/doctor-male--v2.png" alt="Đặt khám chuyên khoa">
+        <div class="med-shortcut-label">Đặt khám chuyên khoa</div>
+      </div>
+      <div class="med-shortcut-item">
+        <img class="med-shortcut-icon" src="https://img.icons8.com/fluency/96/video-call.png" alt="Gọi video với bác sĩ">
+        <div class="med-shortcut-label">Gọi video với bác sĩ</div>
+      </div>
+      <div class="med-shortcut-item">
+        <img class="med-shortcut-icon" src="https://img.icons8.com/fluency/96/doctor-female.png" alt="Đặt khám theo bác sĩ">
+        <div class="med-shortcut-label">Đặt khám theo bác sĩ</div>
+      </div>
+      <div class="med-shortcut-item">
+        <img class="med-shortcut-icon" src="https://img.icons8.com/fluency/96/shopping-bag-full.png" alt="Mua thuốc tại An Khang">
+        <div class="med-shortcut-label">Mua thuốc tại An Khang</div>
+      </div>
+      <div class="med-shortcut-item">
+        <img class="med-shortcut-icon" src="https://img.icons8.com/fluency/96/syringe.png" alt="Đặt lịch xét nghiệm">
+        <div class="med-shortcut-label">Đặt lịch xét nghiệm</div>
+      </div>
+      <div class="med-shortcut-item">
+        <img class="med-shortcut-icon" src="https://img.icons8.com/fluency/96/like-shield.png" alt="Gói khám sức khỏe">
+        <div class="med-shortcut-label">Gói khám sức khỏe</div>
+      </div>
+    </div>
+  </div>
+  <!-- Có thể chèn hình ảnh bác sĩ 2 bên bằng thẻ <img> và style absolute nếu cần -->
+</div>
+
+
+    <!-- Chuyên Khoa Section với hiệu ứng slider -->
+<style>
+.specialties-section {
+  max-width: 1300px;
+  margin: 0 auto 40px auto;
+  padding: 20px 0 0 0;
+  font-family: Arial, sans-serif;
+}
+.specialties-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #123B50;
+  margin-bottom: 0;
+}
+.specialties-title-underline {
+  border-bottom: 3px solid #28c3e3;
+  width: 100px;
+  margin-top: 0.4em;
+  margin-bottom: 2.5em;
+}
+.specialties-slider {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+}
+.specialty-card {
+  flex: 1 0 0;
+  max-width: 32%;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 3px 16px #16b8e11c;
+  margin: 0 10px;
+  padding: 10px 12px 22px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-bottom: 3px solid #eaeaea;
+  transition: box-shadow 0.2s;
+}
+.specialty-card:hover {
+  box-shadow: 0 8px 30px #16b8e12a;
+}
+.specialty-icon {
+  width: 135px;
+  height: 135px;
+  background: #28c3e3;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.specialty-icon img {
+  width: 75px;
+  height: 75px;
+}
+.specialty-name {
+  font-weight: bold;
+  font-size: 1.35rem;
+  color: #222;
+  margin-bottom: 10px;
+  margin-top: 0;
+  border-bottom: 2.3px solid #c7eaf5;
+  display: inline-block;
+  padding-bottom: 2px;
+}
+.specialty-desc {
+  color: #31424e;
+  font-size: 1.07rem;
+  margin-bottom: 18px;
+  min-height: 72px;
+  text-align: center;
+}
+.specialty-more-btn {
+  background: #005678;
+  color: #fff;
+  border-radius: 22px;
+  border: none;
+  padding: 8px 32px;
+  font-size: 1.05rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.specialty-more-btn:hover {
+  background: #048eaa;
+}
+.specialties-arrow {
+  align-self: center;
+  background: none;
+  border: none;
+  font-size: 2.5rem;
+  color: #33cad9;
+  cursor: pointer;
+  transition: color 0.2s;
+  z-index: 2;
+  margin: 0 5px;
+}
+.specialties-arrow:disabled {
+  opacity: 0.25;
+  pointer-events: none;
+}
+@media (max-width: 1100px) {
+  .specialties-slider {flex-direction: column;}
+  .specialty-card {max-width: none; margin: 14px 0;}
+  .specialties-arrow {margin: 8px 0;}
+}
+@media (max-width: 900px) {
+  .specialties-slider {flex-direction: column;}
+  .specialty-card {max-width: none; margin: 14px 0;}
+}
+</style>
+
+<div class="specialties-section">
+  <div class="specialties-title">CHUYÊN KHOA</div>
+  <div class="specialties-title-underline"></div>
+  <div style="display:flex; align-items:center; justify-content:center;">
+    <button class="specialties-arrow" id="specialty-prev">&#60;</button>
+    <div id="specialties-slider" class="specialties-slider"></div>
+    <button class="specialties-arrow" id="specialty-next">&#62;</button>
+  </div>
+</div>
+<script>
+// Dữ liệu các chuyên khoa (bạn bổ sung thêm nếu muốn)
+const specialties = [
+  {
+    name: "Khoa nội",
+    icon: "https://img.icons8.com/ios-filled/150/ffffff/heartbeat.png",
+    desc: "Khoa Nội tại SIM MED cung cấp dịch vụ chăm sóc sức khỏe ban đầu: Khám sức khỏe tổng quát, tầm soát bệnh lý đa khoa, tư vấn các vấn đề sức khỏe cũng như kế hoạch theo dõi định kỳ, chẩn đoán và điều trị ngoại..."
+  },
+  {
+    name: "Khoa tai mũi họng",
+    icon: "https://img.icons8.com/ios-filled/150/ffffff/nose.png",
+    desc: "Chuyên khoa tai mũi họng SIM MED luôn đặt vấn đề 'tài năng và y đức' lên hàng đầu. Phòng khám thu hút đội ngũ chuyên gia có tâm với nghề, giỏi chuyên môn, có trên 20 năm kinh nghiệm..."
+  },
+  {
+    name: "Khoa răng hàm mặt",
+    icon: "https://img.icons8.com/ios-filled/150/ffffff/tooth.png",
+    desc: "Phòng khám đa khoa SIM MED là cơ sở y tế uy tín trên địa bàn Quận Tân Phú, bên cạnh các chuyên khoa khác thì Khoa Răng Hàm Mặt cũng là nơi nhiều gia đình tin chọn..."
+  },
+  {
+    name: "Khoa ngoại",
+    icon: "https://img.icons8.com/ios-filled/150/ffffff/scalpel.png",
+    desc: "Khoa Ngoại tại SIM MED cung cấp các dịch vụ chẩn đoán, điều trị và tư vấn toàn bộ dịch vụ y tế toàn diện cho mọi lứa tuổi."
+  },
+  {
+    name: "Khoa Mắt",
+    icon: "https://img.icons8.com/ios-filled/150/ffffff/visible.png",
+    desc: "SIM MED triển khai Khoa Mắt với đội ngũ bác sĩ chuyên môn cao, trang thiết bị hiện đại và dịch vụ thăm khám..."
+  },
+  {
+    name: "Bác sĩ gia đình",
+    icon: "https://img.icons8.com/ios-filled/150/ffffff/hospital-room.png",
+    desc: "Bác sĩ gia đình tại SIM MED là người chịu trách nhiệm chăm sóc sức khỏe ban đầu cho các thành viên trong gia đình."
+  },
+  {
+    name: "Tiêm chủng",
+    icon: "https://img.icons8.com/ios-filled/150/ffffff/syringe.png",
+    desc: "SIM MED cung cấp dịch vụ tiêm chủng với nhiều loại vắc xin đa dạng cho các đối tượng khác nhau, từ trẻ sơ sinh, người lớn, phụ nữ trước và trong khi mang thai."
+  },
+  {
+    name: "Chẩn đoán hình ảnh",
+    icon: "https://img.icons8.com/ios-filled/150/ffffff/x-ray.png",
+    desc: "Khoa Chẩn đoán hình ảnh tại SIM MED bao gồm hai dịch vụ chính: Siêu âm và X-Quang với kĩ thuật thăm khám an toàn."
+  },
+  {
+    name: "Xét nghiệm",
+    icon: "https://img.icons8.com/ios-filled/150/ffffff/test-tube.png",
+    desc: "Khoa Xét nghiệm ở SIM MED giúp chẩn đoán, kiểm tra chức năng các cơ quan quan trọng, hỗ trợ các bác sĩ đánh giá hiệu quả điều trị."
+  },
+  {
+    name: "Khoa dược",
+    icon: "https://img.icons8.com/ios-filled/150/ffffff/pill.png",
+    desc: "Nhà thuốc SIM MED thuộc Phòng khám SIM MED, đạt tiêu chuẩn GPP do Sở Y tế TP.HCM cấp."
+  },
+  {
+    name: "Khoa nhi",
+    icon: "https://img.icons8.com/ios-filled/150/ffffff/baby.png",
+    desc: "Đội ngũ bác sĩ và nhân viên y tế thấu hiểu tâm lý trẻ em theo từng độ tuổi, đồng hành giúp các bé quên đi cảm giác lo lắng."
+  },
+  {
+    name: "Sản khoa",
+    icon: "https://img.icons8.com/ios-filled/150/ffffff/pregnant.png",
+    desc: "Khoa Sản tại SIM MED cung cấp dịch vụ chẩn đoán, điều trị và tư vấn toàn bộ các bệnh lý về sản khoa; hỗ trợ chăm sóc mẹ bầu trong suốt thời kỳ thai sản."
+  },
+  {
+    name: "Phụ khoa",
+    icon: "https://img.icons8.com/ios-filled/150/ffffff/uterus.png",
+    desc: "SIM MED cung cấp các dịch vụ khám, chẩn đoán và điều trị phụ khoa chất lượng cao, bảo mật thông tin khách hàng."
+  }
+];
+
+// Số lượng hiển thị mỗi lần
+const perPage = 3;
+let current = 0;
+
+function renderSpecialties() {
+  const slider = document.getElementById('specialties-slider');
+  slider.innerHTML = '';
+  for (let i = current; i < Math.min(current + perPage, specialties.length); i++) {
+    const s = specialties[i];
+    slider.innerHTML += `
+      <div class="specialty-card">
+        <div class="specialty-icon"><img src="${s.icon}" alt="icon"></div>
+        <div class="specialty-name">${s.name}</div>
+        <div class="specialty-desc">${s.desc}</div>
+        <button class="specialty-more-btn">Xem thêm</button>
+      </div>
+    `;
+  }
+  document.getElementById('specialty-prev').disabled = (current === 0);
+  document.getElementById('specialty-next').disabled = (current + perPage >= specialties.length);
+}
+
+document.getElementById('specialty-prev').onclick = function() {
+  if (current > 0) {
+    current -= perPage;
+    if (current < 0) current = 0;
+    renderSpecialties();
+  }
+}
+document.getElementById('specialty-next').onclick = function() {
+  if (current + perPage < specialties.length) {
+    current += perPage;
+    renderSpecialties();
+  }
+}
+renderSpecialties();
+</script>
+
+<!-- CHĂM SÓC SỨC KHỎE TOÀN DIỆN - SLIDER UI -->
+<style>
+.healthcare-section {
+  width: 100%;
+  background: #eaf7fd;
+  padding: 40px 0 0 0;
+}
+.healthcare-title {
+  text-align: center;
+  font-size: 2.3rem;
+  font-weight: bold;
+  color: #15598c;
+  letter-spacing: 0.01em;
+}
+.healthcare-tabs {
+  text-align: center;
+  margin: 18px 0 32px 0;
+}
+.healthcare-tab {
+  display: inline-block;
+  padding: 9px 32px;
+  border-radius: 13px;
+  background: #fff;
+  color: #009dea;
+  font-size: 1.11rem;
+  font-weight: 600;
+  margin: 0 7px;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 12px #c2ecff1a;
+  transition: background 0.14s, color 0.14s;
+}
+.healthcare-tab.active {
+  background: #12c3f7;
+  color: #fff;
+}
+.healthcare-slider-wrap {
+  position: relative;
+  max-width: 1340px;
+  margin: 0 auto 8px auto;
+  display: flex;
+  align-items: center;
+  min-height: 365px;
+}
+.healthcare-arrow {
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 10px #90e8ff33;
+  width: 46px; height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  font-size: 2rem;
+  color: #09bbf6;
+  cursor: pointer;
+  position: relative;
+  z-index: 3;
+  margin: 0 14px;
+  transition: background 0.13s;
+}
+.healthcare-arrow:disabled { opacity: 0.32; pointer-events: none; }
+.healthcare-slider {
+  display: flex;
+  flex: 1;
+  gap: 32px;
+  overflow: hidden;
+  justify-content: center;
+  min-width: 0;
+}
+.healthcare-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 6px 22px #a8e0f91c;
+  max-width: 320px;
+  min-width: 270px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow: hidden;
+  border: none;
+  transition: box-shadow 0.16s;
+  margin-bottom: 12px;
+}
+.healthcare-card:hover {
+  box-shadow: 0 12px 36px #36cef24c;
+}
+.healthcare-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 110px;
+  background: linear-gradient(120deg, #ebfaff 70%, #e1e8ff 100%);
+}
+.healthcare-card-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+}
+.healthcare-card-content {
+  padding: 18px 22px 12px 22px;
+  width: 100%;
+}
+.healthcare-card-title {
+  font-size: 1.23rem;
+  font-weight: bold;
+  color: #17406a;
+  margin-bottom: 7px;
+}
+.healthcare-card-clinic {
+  color: #1978bc;
+  font-size: 1.02rem;
+  font-weight: 500;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.healthcare-card-clinic .icon {
+  font-size: 1.09rem;
+  margin-right: 2px;
+  color: #1564a3;
+}
+.healthcare-card-price {
+  color: #fca311;
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.healthcare-card-oldprice {
+  text-decoration: line-through;
+  color: #a3b4c6;
+  font-size: 0.99rem;
+}
+.healthcare-card-btn {
+  background: #04b8f5;
+  color: #fff;
+  border-radius: 13px;
+  border: none;
+  width: 100%;
+  padding: 11px 0;
+  font-weight: bold;
+  font-size: 1.11rem;
+  margin-top: 6px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.healthcare-card-btn:hover {
+  background: #0998cb;
+}
+.healthcare-seeall {
+  text-align: center;
+  font-size: 1.18rem;
+  color: #01b6f2;
+  margin-top: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.healthcare-seeall:hover {
+  color: #0889ad;
+  text-decoration: underline;
+}
+@media (max-width:1100px){.healthcare-slider{gap:14px;}}
+@media (max-width:700px){.healthcare-card{min-width:240px;max-width:99vw;}.healthcare-slider{gap:6px;}}
+</style>
+<div class="healthcare-section">
+  <div class="healthcare-title">CHĂM SÓC SỨC KHỎE TOÀN DIỆN</div>
+  <div class="healthcare-tabs">
+    <button class="healthcare-tab active" id="health-tab-1">Sức khỏe</button>
+    <button class="healthcare-tab" id="health-tab-2">Xét nghiệm</button>
+    <button class="healthcare-tab" id="health-tab-3">Tiêm chủng</button>
+  </div>
+  <div class="healthcare-slider-wrap">
+    <button class="healthcare-arrow" id="health-prev">&#60;</button>
+    <div class="healthcare-slider" id="healthcare-slider"></div>
+    <button class="healthcare-arrow" id="health-next">&#62;</button>
+  </div>
+  <div class="healthcare-seeall" onclick="alert('Xem tất cả dịch vụ!')">Xem tất cả &nbsp;»</div>
+</div>
+<script>
+// Dữ liệu các gói dịch vụ sức khỏe, xét nghiệm, tiêm chủng với icon hiện đại
+const HEALTH_SERVICES = [
+  // Sức khỏe
+  [
+    {
+      title: "Đặt khám Bệnh Dạ dày - Đại tràng",
+      icon: "https://img.icons8.com/fluency/96/stomach.png",
+      clinic: "Trung Tâm Nội Soi Tiêu Hóa Doctor Check",
+      price: "200.000đ",
+      oldprice: ""
+    },
+    {
+      title: "Đặt khám Bệnh Tiêu Hoá - Gan Mật",
+      icon: "https://img.icons8.com/fluency/96/liver.png",
+      clinic: "Trung Tâm Nội Soi Tiêu Hóa Doctor Check",
+      price: "200.000đ",
+      oldprice: ""
+    },
+    {
+      title: "Gói khám mắt tổng quát",
+      icon: "https://img.icons8.com/fluency/96/invisible.png",
+      clinic: "Trung Tâm Mắt Quốc Tế Phương Đông",
+      price: "300.000đ",
+      oldprice: ""
+    },
+    {
+      title: "Gói khám tiểu đường",
+      icon: "https://img.icons8.com/fluency/96/insulin-pen.png",
+      clinic: "Phòng Khám Đa khoa Quốc Tế Golden Healthcare",
+      price: "720.000đ",
+      oldprice: ""
+    },
+    {
+      title: "Gói Khám Sức Khỏe Lao Động Nước Ngoài",
+      icon: "https://img.icons8.com/fluency/96/handshake.png",
+      clinic: "Phòng khám Đa khoa Hoàn Mỹ Sài Gòn",
+      price: "2.593.000đ",
+      oldprice: "3.168.000đ"
+    },
+    {
+      title: "Bệnh lây qua đường tình dục - STD - Nam",
+      icon: "https://img.icons8.com/fluency/96/std.png",
+      clinic: "Phòng Khám Đa Khoa Loukas",
+      price: "1.494.000đ",
+      oldprice: ""
+    },
+    {
+      title: "Khám sức khỏe xin việc",
+      icon: "https://img.icons8.com/fluency/96/cv.png",
+      clinic: "Phòng Khám Đa Khoa Pháp Anh",
+      price: "380.000đ",
+      oldprice: ""
+    },
+    {
+      title: "Tầm soát nguy cơ đột quỵ",
+      icon: "https://img.icons8.com/fluency/96/brain.png",
+      clinic: "Phòng Khám Đa Khoa Pháp Anh",
+      price: "1.875.000đ",
+      oldprice: ""
+    },
+    {
+      title: "Chăm sóc sức khỏe cha mẹ cao cấp",
+      icon: "https://img.icons8.com/fluency/96/family.png",
+      clinic: "Phòng Khám Đa Khoa Pháp Anh",
+      price: "1.640.000đ",
+      oldprice: ""
+    },
+    {
+      title: "Tầm soát chức năng gan",
+      icon: "https://img.icons8.com/fluency/96/liver.png",
+      clinic: "Phòng Khám Đa Khoa Pháp Anh",
+      price: "935.000đ",
+      oldprice: ""
+    },
+    {
+      title: "Khám sức khỏe tổng quát cao cấp",
+      icon: "https://img.icons8.com/fluency/96/doctor-male.png",
+      clinic: "Phòng Khám Đa Khoa Pháp Anh",
+      price: "2.090.000đ",
+      oldprice: ""
+    },
+    {
+      title: "Gói khám sức khỏe tổng quát tại nhà",
+      icon: "https://img.icons8.com/fluency/96/home.png",
+      clinic: "Trung tâm xét nghiệm Medlatec Bình Phước",
+      price: "530.000đ",
+      oldprice: "580.000đ"
+    },
+    {
+      title: "Gói Khám Tổng Quát Nhi Cơ Bản Từ 6 Tuổi",
+      icon: "https://img.icons8.com/fluency/96/baby.png",
+      clinic: "Bệnh viện Đa khoa Quốc Tế Hoàn Mỹ Thủ Đức",
+      price: "1.590.000đ",
+      oldprice: ""
+    },
+    {
+      title: "Gói khám sức khỏe tầm soát ung thư tuyến giáp",
+      icon: "https://img.icons8.com/fluency/96/thyroid.png",
+      clinic: "Bệnh viện Đa khoa Quốc Tế Hoàn Mỹ Thủ Đức",
+      price: "1.250.000đ",
+      oldprice: ""
+    },
+    {
+      title: "Gói khám bệnh lý về mắt",
+      icon: "https://img.icons8.com/fluency/96/visible.png",
+      clinic: "Bệnh Viện 199",
+      price: "259.000đ",
+      oldprice: ""
+    },
+    {
+      title: "Gói khám phụ khoa - Nữ độc thân",
+      icon: "https://img.icons8.com/fluency/96/uterus.png",
+      clinic: "Phòng khám đa khoa DHA Health Care",
+      price: "750.000đ",
+      oldprice: ""
+    },
+  ],
+  // Xét nghiệm
+  [
+    {
+      title: "Xét nghiệm máu tổng quát",
+      icon: "https://img.icons8.com/fluency/96/test-tube.png",
+      clinic: "Trung tâm Xét nghiệm Quốc tế DNA",
+      price: "180.000đ",
+      oldprice: ""
+    },
+    {
+      title: "Xét nghiệm đường huyết",
+      icon: "https://img.icons8.com/fluency/96/insulin-pen.png",
+      clinic: "Phòng Khám Đa Khoa Pasteur",
+      price: "95.000đ",
+      oldprice: ""
+    },
+    {
+      title: "Xét nghiệm chức năng gan",
+      icon: "https://img.icons8.com/fluency/96/liver.png",
+      clinic: "Trung tâm Xét nghiệm Medlatec",
+      price: "125.000đ",
+      oldprice: ""
+    },
+    {
+      title: "Xét nghiệm mỡ máu",
+      icon: "https://img.icons8.com/fluency/96/cholesterol.png",
+      clinic: "Phòng Khám Đa Khoa Lotus",
+      price: "100.000đ",
+      oldprice: "120.000đ"
+    }
+  ],
+  // Tiêm chủng
+  [
+    {
+      title: "Tiêm vắc xin cúm mùa",
+      icon: "https://img.icons8.com/fluency/96/syringe.png",
+      clinic: "Trung tâm tiêm chủng VNVC",
+      price: "250.000đ",
+      oldprice: ""
+    },
+    {
+      title: "Tiêm vắc xin viêm gan B",
+      icon: "https://img.icons8.com/fluency/96/syringe.png",
+      clinic: "Trung tâm tiêm chủng VNVC",
+      price: "240.000đ",
+      oldprice: ""
+    },
+    {
+      title: "Tiêm vắc xin HPV",
+      icon: "https://img.icons8.com/fluency/96/syringe.png",
+      clinic: "Trung tâm tiêm chủng VNVC",
+      price: "1.350.000đ",
+      oldprice: "1.500.000đ"
+    }
+  ]
+];
+const CARDS_PER_SLIDE = 4;
+let currentTab = 0;
+let currentIndex = 0;
+
+function renderHealthcareCards() {
+  const cards = HEALTH_SERVICES[currentTab];
+  const slider = document.getElementById('healthcare-slider');
+  slider.innerHTML = '';
+  for (let i = currentIndex; i < Math.min(currentIndex + CARDS_PER_SLIDE, cards.length); i++) {
+    const c = cards[i];
+    slider.innerHTML += `
+      <div class='healthcare-card'>
+        <div class='healthcare-card-top'><img src='${c.icon}' class='healthcare-card-icon' alt='icon'></div>
+        <div class='healthcare-card-content'>
+          <div class='healthcare-card-title'>${c.title}</div>
+          <div class='healthcare-card-clinic'><span class='icon'>🏥</span> ${c.clinic}</div>
+          <div class='healthcare-card-price'>
+            <span>${c.price}</span>
+            ${c.oldprice ? `<span class='healthcare-card-oldprice'>${c.oldprice}</span>` : ''}
+          </div>
+          <button class='healthcare-card-btn'>Đặt khám ngay</button>
+        </div>
+      </div>
+    `;
+  }
+  document.getElementById('health-prev').disabled = (currentIndex === 0);
+  document.getElementById('health-next').disabled = (currentIndex + CARDS_PER_SLIDE >= cards.length);
+}
+
+document.getElementById('health-prev').onclick = function() {
+  if (currentIndex > 0) {
+    currentIndex -= CARDS_PER_SLIDE;
+    if (currentIndex < 0) currentIndex = 0;
+    renderHealthcareCards();
+  }
+}
+document.getElementById('health-next').onclick = function() {
+  const cards = HEALTH_SERVICES[currentTab];
+  if (currentIndex + CARDS_PER_SLIDE < cards.length) {
+    currentIndex += CARDS_PER_SLIDE;
+    renderHealthcareCards();
+  }
+}
+function switchTab(tabIdx) {
+  currentTab = tabIdx;
+  currentIndex = 0;
+  document.querySelectorAll('.healthcare-tab').forEach((el, idx) => el.classList.toggle('active', idx===tabIdx));
+  renderHealthcareCards();
+}
+document.getElementById('health-tab-1').onclick = () => switchTab(0);
+document.getElementById('health-tab-2').onclick = () => switchTab(1);
+document.getElementById('health-tab-3').onclick = () => switchTab(2);
+
+renderHealthcareCards();
+</script>
+
+<!-- SLIDER ĐỐI TÁC BỆNH VIỆN - LOGO & TÊN -->
+<style>
+.trusted-partner-section {
+  width: 100%;
+  background: #fff;
+  padding: 36px 0 28px 0;
+}
+.trusted-partner-title {
+  text-align: center;
+  font-size: 2.1rem;
+  font-weight: bold;
+  color: #0f4266;
+  margin-bottom: 26px;
+  letter-spacing: 0.01em;
+}
+.trusted-partner-slider-wrap {
+  position: relative;
+  max-width: 1380px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  min-height: 155px;
+}
+.trusted-partner-arrow {
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 14px #7bcefa2e;
+  width: 48px; height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  font-size: 2rem;
+  color: #05b3f7;
+  cursor: pointer;
+  position: relative;
+  z-index: 3;
+  margin: 0 20px;
+  transition: background 0.13s;
+}
+.trusted-partner-arrow:disabled { opacity: 0.30; pointer-events: none; }
+.trusted-partner-slider {
+  display: flex;
+  flex: 1;
+  gap: 54px;
+  overflow: hidden;
+  justify-content: center;
+  min-width: 0;
+  transition: 0.18s;
+}
+.trusted-partner-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 178px;
+  max-width: 210px;
+  width: 178px;
+}
+.trusted-partner-logo {
+  height: 62px;
+  margin-bottom: 9px;
+  object-fit: contain;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.trusted-partner-name {
+  text-align: center;
+  color: #12406b;
+  font-size: 1.12rem;
+  font-weight: 500;
+  line-height: 1.26;
+  min-height: 45px;
+  margin-bottom: 0px;
+}
+.trusted-partner-verified {
+  color: #19b3ff;
+  font-size: 1.09em;
+  vertical-align: middle;
+  margin-left: 2px;
+}
+.trusted-partner-seeall {
+  text-align: center;
+  font-size: 1.13rem;
+  color: #01b6f2;
+  margin-top: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.trusted-partner-seeall:hover {
+  color: #0889ad;
+  text-decoration: underline;
+}
+@media (max-width:1100px){.trusted-partner-slider{gap:24px;}}
+@media (max-width:700px){.trusted-partner-card{min-width:115px;}.trusted-partner-slider{gap:7px;}}
+</style>
+<div class="trusted-partner-section">
+  <div class="trusted-partner-title">ĐƯỢC TIN TƯỞNG HỢP TÁC VÀ ĐỒNG HÀNH</div>
+  <div class="trusted-partner-slider-wrap">
+    <button class="trusted-partner-arrow" id="partner-prev">&#60;</button>
+    <div class="trusted-partner-slider" id="trusted-partner-slider"></div>
+    <button class="trusted-partner-arrow" id="partner-next">&#62;</button>
+  </div>
+  <div class="trusted-partner-seeall" onclick="alert('Xem tất cả đối tác!')"> <span>Xem tất cả</span> <span style='font-size:1.5em'>&#187;</span></div>
+</div>
+<script>
+// Dữ liệu đối tác bệnh viện: logo + tên (bạn hãy thay url logo thật của bạn vào nếu cần)
+const PARTNER_HOSPITALS = [
+  {
+    logo: '/mnt/data/541cfd74-40c8-4d02-be88-738c99e956a3.png',
+    name: 'Trung Tâm Nội Soi Tiêu Hoá Doctor Check',
+    verified: true
+  },
+  {
+    logo: '/mnt/data/e3af9906-9922-4dc1-bf97-51f6864a90ad.png',
+    name: 'Bệnh viện Đại học Y Dược TP.HCM',
+    verified: true
+  },
+  {
+    logo: '/mnt/data/a303269d-dda2-4282-b223-f0182e1410d9.png',
+    name: 'Bệnh viện Nhi Đồng 1',
+    verified: true
+  },
+  {
+    logo: '/mnt/data/e136ffd3-d953-4f58-a7ff-bb90ce1ca6e3.png',
+    name: 'Bệnh viện Chợ Rẫy',
+    verified: true
+  },
+  {
+    logo: '/mnt/data/bd876bd0-8303-4b17-9498-508c171b6d76.png',
+    name: 'Bệnh Viện Quận Bình Thạnh',
+    verified: true
+  },
+  {
+    logo: '/mnt/data/5ReaRXZ6TJzg6SJYT5cjMf.png',
+    name: 'Bệnh viện Da Liễu TP.HCM',
+    verified: true
+  },
+  {
+    logo: '/mnt/data/552ff035-f0ce-46e0-b46e-adbd833ff3b4.png',
+    name: 'Bệnh viện Trung Vương',
+    verified: true
+  },
+  {
+    logo: '/mnt/data/cdfe35c2-1347-4371-a6b6-82824e27ad4c.png',
+    name: 'Bệnh viện Chấn Thương Chỉnh Hình TP.HCM',
+    verified: true
+  },
+  {
+    logo: '/mnt/data/52de7acc-66cc-44b4-be55-38abb518dc79.png',
+    name: 'Bệnh viện Vũng Tàu',
+    verified: true
+  },
+  {
+    logo: '/mnt/data/e1f3cfa7-e3b2-4a6a-a25c-4298ecc0a541.png',
+    name: 'Bệnh viện Nhi Đồng Thành Phố',
+    verified: true
+  },
+  // ...Thêm các logo và tên đối tác khác ở đây
+];
+const PARTNERS_PER_SLIDE = 6;
+let partnerIndex = 0;
+function renderPartnerCards() {
+  const slider = document.getElementById('trusted-partner-slider');
+  slider.innerHTML = '';
+  for (let i = partnerIndex; i < Math.min(partnerIndex + PARTNERS_PER_SLIDE, PARTNER_HOSPITALS.length); i++) {
+    const p = PARTNER_HOSPITALS[i];
+    slider.innerHTML += `
+      <div class='trusted-partner-card'>
+        <img src='${p.logo}' class='trusted-partner-logo' alt='${p.name}'>
+        <div class='trusted-partner-name'>${p.name} ${p.verified ? '<span class="trusted-partner-verified">✔️</span>' : ''}</div>
+      </div>
+    `;
+  }
+  document.getElementById('partner-prev').disabled = (partnerIndex === 0);
+  document.getElementById('partner-next').disabled = (partnerIndex + PARTNERS_PER_SLIDE >= PARTNER_HOSPITALS.length);
+}
+document.getElementById('partner-prev').onclick = function() {
+  if (partnerIndex > 0) {
+    partnerIndex -= PARTNERS_PER_SLIDE;
+    if (partnerIndex < 0) partnerIndex = 0;
+    renderPartnerCards();
+  }
+}
+document.getElementById('partner-next').onclick = function() {
+  if (partnerIndex + PARTNERS_PER_SLIDE < PARTNER_HOSPITALS.length) {
+    partnerIndex += PARTNERS_PER_SLIDE;
+    renderPartnerCards();
+  }
+}
+renderPartnerCards();
+</script>
+
+
+    <!-- Footer HappyClinic - Giao diện -->
 <footer style="background:#204070; color:#fff; padding:40px 0 20px 0; font-family:Arial,sans-serif;">
     <div style="max-width:1300px; margin:auto; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-start;">
         <div style="flex:2; min-width:320px; margin-right:30px;">
-            <img src="https://diag.vn/images/logo.svg" alt="Diag Logo" style="height:38px; margin-bottom:22px;"/>
+            <img src="logo/logo-transparent.png" style="height:38px; margin-bottom:22px;"/>
             <hr style="border:0; border-top:1px solid #466aa6; margin:18px 0 24px 0;">
             <div style="font-weight:bold; margin-bottom:8px;">CÔNG TY TNHH LAB GROUP INTERNATIONAL VIỆT NAM</div>
             <div style="font-size:15px; line-height:1.7;">
@@ -44,12 +1255,12 @@
                 Giấy phép hoạt động khám bệnh, chữa bệnh số: 06454/HCM-GPHĐ<br>
                 cấp bởi Sở Y tế Thành phố Hồ Chí Minh.<br><br>
                 Địa chỉ:<br>
-                <span style="font-weight:bold;">Phòng khám Đa khoa – Trung tâm Xét nghiệm và Chẩn đoán Y khoa – Medical Diag Center,</span><br>
-                414-420 Đường Cao Thắng, Phường 12, Quận 10, Thành phố Hồ Chí Minh, Việt Nam
+                <span style="font-weight:bold;">Phòng khám Đa khoa – Trung tâm Xét nghiệm và Chẩn đoán Y khoa – Medical HappyClinic Center,</span><br>
+                279-231 Đường XXX, Phường 10, Quận 5, Thành phố Hồ Chí Minh, Việt Nam
             </div>
         </div>
         <div style="flex:1; min-width:160px; margin-right:25px;">
-            <div style="color:#2984ff; font-weight:bold; font-size:20px; margin-bottom:12px;">Diag</div>
+            <div style="color:#2984ff; font-weight:bold; font-size:20px; margin-bottom:12px;">HappyClinic</div>
             <div style="margin-bottom:10px;">Tuyển dụng</div>
             <div style="color:#2984ff; font-weight:bold; font-size:20px; margin:25px 0 12px 0;">Chính sách & điều khoản</div>
             <div style="margin-bottom:8px;">Chính sách bảo mật</div>
@@ -64,34 +1275,43 @@
             <div style="margin-bottom:10px;">Ứng dụng dành cho đối tác</div>
             <div style="margin-bottom:10px;">Danh sách nhân viên y tế</div>
             <div style="color:#2984ff; font-weight:bold; font-size:20px; margin:25px 0 12px 0;">Khách hàng</div>
-            <div style="margin-bottom:8px;">Xem kết quả xét nghiệm</div>
+            <div style="margin-bottom:8px;">Xem kết quả khám bệnh</div>
             <div style="margin-bottom:8px;">Tìm điểm lấy mẫu</div>
         </div>
         <div style="flex:1; min-width:160px;">
-            <div style="color:#2984ff; font-weight:bold; font-size:20px; margin-bottom:12px;">Theo dõi Diag</div>
+            <div style="color:#2984ff; font-weight:bold; font-size:20px; margin-bottom:12px;">Theo dõi HappyClinic</div>
             <!-- Bạn có thể thêm các icon mạng xã hội ở đây nếu muốn -->
         </div>
     </div>
+        <!-- Sidebar nổi bên phải (icon nhỏ lại) -->
     <div style="position:fixed; right:32px; top:70px; display:flex; flex-direction:column; align-items:center; z-index:1000;">
-        <div style="background:linear-gradient(135deg,#2f6fff 0%,#37aee2 100%); color:#fff; border-radius:50%; width:70px; height:70px; display:flex; justify-content:center; align-items:center; margin-bottom:14px; font-size:23px; font-weight:bold; box-shadow:0 2px 8px #002d6e38;">
-            <span>TƯ VẤN</span>
+        <div style="background:linear-gradient(135deg,#2f6fff 0%,#37aee2 100%); color:#fff; border-radius:50%; width:48px; height:48px; display:flex; justify-content:center; align-items:center; margin-bottom:10px; font-size:13px; font-weight:bold; box-shadow:0 2px 8px #002d6e38;">
+            <span>FB</span>
         </div>
-        <div style="background:linear-gradient(135deg,#0079ff 0%,#17a4fa 100%); color:#fff; border-radius:50%; width:70px; height:70px; display:flex; justify-content:center; align-items:center; margin-bottom:14px; font-size:20px; font-weight:bold; box-shadow:0 2px 8px #002d6e38;">
+        <div style="background:linear-gradient(135deg,#0079ff 0%,#17a4fa 100%); color:#fff; border-radius:50%; width:48px; height:48px; display:flex; justify-content:center; align-items:center; margin-bottom:10px; font-size:13px; font-weight:bold; box-shadow:0 2px 8px #002d6e38;">
             <span>Zalo</span>
         </div>
-        <div style="background:linear-gradient(135deg,#1f80ff 0%,#6cd8fd 100%); color:#fff; border-radius:50%; width:70px; height:70px; display:flex; justify-content:center; align-items:center; margin-bottom:14px; font-size:25px; font-weight:bold; box-shadow:0 2px 8px #002d6e38;">
-            <span style="font-size:28px;">💧</span>
+        <div style="background:linear-gradient(135deg,#1f80ff 0%,#6cd8fd 100%); color:#fff; border-radius:50%; width:48px; height:48px; display:flex; justify-content:center; align-items:center; margin-bottom:10px; font-size:19px; font-weight:bold; box-shadow:0 2px 8px #002d6e38;">
+            <span style="font-size:22px;">💧</span>
         </div>
-        <div style="background:linear-gradient(135deg,#1b7fe8 0%,#92e2ff 100%); color:#fff; border-radius:50%; width:70px; height:70px; display:flex; justify-content:center; align-items:center; margin-bottom:14px; font-size:25px; font-weight:bold; box-shadow:0 2px 8px #002d6e38;">
-            <span style="font-size:27px;">💬</span>
+        <div style="background:linear-gradient(135deg,#1b7fe8 0%,#92e2ff 100%); color:#fff; border-radius:50%; width:48px; height:48px; display:flex; justify-content:center; align-items:center; margin-bottom:10px; font-size:19px; font-weight:bold; box-shadow:0 2px 8px #002d6e38;">
+            <span style="font-size:20px;">💬</span>
         </div>
-        <div style="background:linear-gradient(135deg,#1b7fe8 0%,#92e2ff 100%); color:#fff; border-radius:50%; width:70px; height:70px; display:flex; justify-content:center; align-items:center; font-size:30px; font-weight:bold; box-shadow:0 2px 8px #002d6e38;">
+        <div style="background:linear-gradient(135deg,#1b7fe8 0%,#92e2ff 100%); color:#fff; border-radius:50%; width:48px; height:48px; display:flex; justify-content:center; align-items:center; font-size:22px; font-weight:bold; box-shadow:0 2px 8px #002d6e38;">
             <span>🎁</span>
         </div>
     </div>
-    <div style="position:fixed; right:130px; bottom:40px; background:#fff; color:#204070; border-radius:32px; box-shadow:0 1px 6px #0002; display:flex; align-items:center; font-size:20px; font-weight:500; padding:8px 18px; z-index:1000;">
-        <span style="font-size:28px; margin-right:10px;">⬆️</span> Lên đầu trang
+    <!-- Nút lên đầu trang -->
+    <div id="back-to-top" style="cursor:pointer; position:fixed; right:110px; bottom:40px; background:#fff; color:#204070; border-radius:32px; box-shadow:0 1px 6px #0002; display:flex; align-items:center; font-size:18px; font-weight:500; padding:8px 18px; z-index:1000; transition:background 0.2s;">
+        <span style="font-size:24px; margin-right:10px;">⬆️</span> Lên đầu trang
     </div>
+</footer>
+<script>
+    // Tính năng trượt mượt lên đầu trang khi click nút
+    document.getElementById('back-to-top').onclick = function() {
+        window.scrollTo({top:0, behavior:'smooth'});
+    }
+</script>
 </footer>
 
     <%- include('partials/chatSupport') %>
