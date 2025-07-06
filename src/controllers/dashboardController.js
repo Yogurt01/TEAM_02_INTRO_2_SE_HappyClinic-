@@ -1,6 +1,4 @@
-/**
- * Controller cho 3 dashboard
- */
+
 exports.admin = (req, res) => {
   res.render('adminManager', { user: req.user });
 };

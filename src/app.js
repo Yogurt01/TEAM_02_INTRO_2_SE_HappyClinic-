@@ -36,6 +36,7 @@ const appointmentRoutes = require('./routes/appointment');
 const medFormRoutes = require('./routes/medFormRoutes');
 const helpRequestRoutes = require('./routes/helpRequestRoutes');
 const aboutRoutes = require('./routes/aboutRoutes');
+const homeRoutes = require('./routes/homeRoutes');
 
 const app = express();
 
@@ -104,6 +105,8 @@ app.use('/medical-form', medFormRoutes)
 app.use('/dashboard', dashboardRoutes); //role based
 app.use('/help-requests', helpRequestRoutes);
 app.use('/about', aboutRoutes);
+app.use('/', homeRoutes);
+
 
 app.get('/api/medicines', (req, res) => {
   const dataPath = path.join(__dirname, 'data', 'medicines.json');
