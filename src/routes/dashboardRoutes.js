@@ -26,7 +26,7 @@ const dashCtrl      = require('../controllers/dashboardController');
 // router.get('/patient', authenticate, role('patient'), dashCtrl.patient);
 
 // // /dashboard – tất cả user đều có thể truy cập
-router.get('/dashboard', authenticate, (req, res) => {
+router.get('/', authenticate, (req, res) => {
     console.log(req.user);
     res.render('dashboard', { user: req.user });
 });

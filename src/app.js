@@ -105,7 +105,7 @@ app.use('/dashboard', dashboardRoutes);
 // app.use('/dashboard', dashboardRoutes); //role based
 app.use('/help-requests', helpRequestRoutes);
 app.use('/about', aboutRoutes);
-app.use('/', homeRoutes);
+// app.use('/', homeRoutes);
 
 
 app.get('/api/medicines', (req, res) => {

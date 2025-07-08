@@ -22,7 +22,7 @@
     "generate-password": "^1.7.1",
     "install": "^0.13.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.16.1",
+    "mongoose": "^8.16.2",
     "nodemailer": "^6.10.0",
     "npm": "^11.4.2",
     "otp-generator": "^4.0.1",
