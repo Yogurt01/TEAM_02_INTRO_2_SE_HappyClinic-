@@ -23,7 +23,6 @@ exports.getAvailability = async (req, res) => {
       query.date = filterDate;
     }
 
-
     // Nếu có filter theo email bệnh nhân
     let patientMap = {};
     if (filterEmail) {
@@ -51,8 +50,6 @@ exports.getAvailability = async (req, res) => {
       // Lấy thông tin bệnh nhân từ map hoặc DB
       const patient = patientMap[slot.patientCode] || await Patient.findOne({ code: slot.patientCode }).lean();
 
-      // Lấy thông tin bác sĩ từ bảng Appointment (dựa trên email + phone + date + time)
-      //let doctorName = 'Không rõ';
       if (patient) {
         const appointment = await Appointment.findOne({
           email: patient.email,
@@ -61,13 +58,11 @@ exports.getAvailability = async (req, res) => {
           time: slot.startTime
         }).lean();
 
-        //doctorName = appointment?.doctor || 'Không rõ';
       }
 
       return {
         ...slot,
         patient,
-        //doctorName
       };
     }));
 
@@ -90,8 +85,6 @@ exports.getAvailability = async (req, res) => {
     });
   }
 };
-
-
 
 
 async function generateCode(model, prefix, padLength, codeField = 'code') {
@@ -164,7 +157,7 @@ async function syncAppointmentsToAvailability() {
         patientName: appt.username,
         patientBirth: patient.dob || '2000-01-01',
         patientGender: patient.gender || 'Chưa rõ',
-        symptoms: appt.note || '',
+        symptoms: (typeof appt.note === 'string' && appt.note.trim() !== '') ? appt.note.trim() : 'Không rõ',
         patientEmail: patient.email,
         patientPhone: patient.phone,
         patientAddress: patient.address || 'Chưa rõ',
