@@ -9,10 +9,9 @@ const availabilityRoutes = require('./routes/availabilityRoutes');
 const medicalRecordRoutes = require('./routes/medicalRecordsRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const passportConfig = require('./config/passport');
-
+const https = require('https');
 const chatSupportRoutes = require('./routes/chatSupportRoutes');
 const contactRouter = require('./routes/contactRoutes');
-
 const announcementRoutes = require('./routes/announcementRoutes');
 
 
@@ -20,7 +19,13 @@ passportConfig();
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
+const keyPath = path.resolve(__dirname, 'config', 'keys', 'localhost-key.pem');
+const certPath = path.resolve(__dirname, 'config', 'keys', 'localhost.pem');
 
+const options = {
+  key: fs.readFileSync(keyPath),
+  cert: fs.readFileSync(certPath),
+};
 
 const authRoutes = require('./routes/authRoutes')
 // const dashboardRoutes = require('./routes/dashboardRoutes')
@@ -114,6 +119,6 @@ app.get('/api/medicines', (req, res) => {
   res.json(JSON.parse(data));
 });
 const PORT = process.env.PORT;
-app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+https.createServer(options, app).listen(PORT, () => {
+  console.log(`HTTPS server running at https://localhost:${PORT}`);
 });
