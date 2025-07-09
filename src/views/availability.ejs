@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Quản lý lịch khám</title>
+  <title>Quản lý bệnh nhân</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/styles/availability.css" />
@@ -18,10 +18,10 @@
   <% } %>
 
   <div class="breadcrumb">
-    <a href="/dashboard">TRANG CHỦ</a> &raquo; <span>QUẢN LÝ LỊCH KHÁM</span>
+    <a href="/dashboard">TRANG CHỦ</a> &raquo; <span>QUẢN LÝ BỆNH NHÂN</span>
   </div>
 
-  <h1 class="text-center text-3xl font-bold text-blue-900 mt-6 mb-4">Quản lý lịch khám</h1>
+  <h1 class="text-center text-3xl font-bold text-blue-900 mt-6 mb-4">Quản lý bệnh nhân</h1>
 
   <div class="form-container-availability">
     <% if (error) { %>
@@ -57,7 +57,7 @@
           <th class="p-2 border">Giờ kết thúc</th>
           <!--<th class="p-2 border">Bác sĩ</th>0-->
           <th class="p-2 border">Tên BN</th>
-          <!--<th class="p-2 border">Triệu chứng</th>-->
+          <th class="p-2 border">Triệu chứng</th>
           <th class="p-2 border">Trạng thái</th>
           <th class="p-2 border">Đánh dấu</th>
           <th class="p-2 border">Hồ sơ</th>
@@ -71,7 +71,7 @@
             <td class="p-2 border"><%= slot.startTime %></td>
             <td class="p-2 border"><%= slot.endTime %></td>
             <td class="p-2 border"><%= slot.patientName %></td>
-            <!--<td class="p-2 border"><%= slot.symptoms %></td>-->
+            <td class="p-2 border"><%= slot.symptoms %></td>
             <td class="p-2 border <%= slot.isChecked ? 'text-green-600' : 'text-yellow-600' %>">
               <%= slot.isChecked ? 'Đã khám' : 'Chưa khám' %>
             </td>
