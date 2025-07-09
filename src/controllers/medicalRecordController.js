@@ -1,6 +1,7 @@
 const Patient = require('../models/patient');
 const MedicalRecord = require('../models/medicalRecord');
 const Availability = require('../models/availability');
+const MedicalForm = require('../models/medForm');
 
 exports.getByPatientCode = async (req, res) => {
   try {
@@ -16,18 +17,38 @@ exports.getByPatientCode = async (req, res) => {
       });
     }
 
+    // Đồng bộ hồ sơ từ các phiếu khám
+    const medForms = await MedicalForm.find({ patientEmail: patient.email }).lean();
+
+    for (const form of medForms) {
+      if (!form.appointmentCode) continue;
+
+      await MedicalRecord.findOneAndUpdate(
+        { appointmentCode: form.appointmentCode },
+        {
+          patientCode: patient.code,
+          symptoms: form.symptoms,
+          diagnosis: form.predictedDisease,
+          note: 'Đồng bộ từ phiếu khám',
+          department: 'Tự động',
+          code: `MR-${form.appointmentCode}`,
+          medicines: form.medicines // thêm trường thuốc vào hồ sơ
+        },
+        { upsert: true }
+      );
+    }
+
+    // Truy vấn lại toàn bộ hồ sơ bệnh án sau đồng bộ
     const records = await MedicalRecord.find({ patientCode }).lean();
 
-    // Gắn thêm isChecked từ Availability vào từng hồ sơ
     const enhancedRecords = await Promise.all(records.map(async rec => {
-    const avail = await Availability.findOne({ appointmentCode: rec.appointmentCode }).lean();
+      const avail = await Availability.findOne({ appointmentCode: rec.appointmentCode }).lean();
       return {
         ...rec,
         isChecked: avail?.isChecked || false
       };
     }));
 
-    // Sắp xếp: hồ sơ chưa khám lên trước
     enhancedRecords.sort((a, b) => a.isChecked - b.isChecked);
 
     return res.render('medicalRecord', {
@@ -36,6 +57,7 @@ exports.getByPatientCode = async (req, res) => {
       message: req.query.message || null,
       error: req.query.error || null
     });
+
   } catch (err) {
     console.error(err);
     return res.render('medicalRecord', {
@@ -99,13 +121,6 @@ exports.updateDiagnosis = async (req, res) => {
     if (!updated) {
       throw new Error('Không tìm thấy hồ sơ để cập nhật');
     }
-
-    // Cập nhật trạng thái lịch hẹn thành "Đã khám"
-    await Availability.findOneAndUpdate(
-      { appointmentCode },          // filter
-      { isChecked: true },          // update
-      { new: true }                 // return the updated doc (handy for logging)
-    );
 
     return res.redirect(`/auth/medicalRecord/${patientCode}?message=` + encodeURIComponent('Cập nhật thành công'));
 

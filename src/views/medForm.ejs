@@ -21,6 +21,7 @@
 
       <form method="POST" action="/medical-form/create">
         <input type="hidden" name="examinationDate" value="<%= appointment.date.toISOString().split('T')[0] %>" />
+        <input type="hidden" name="appointmentId" value="<%= appointment._id %>">
 
         <!-- Họ tên -->
         <div class="mb-4">

@@ -8,6 +8,7 @@ const medicineSchema = new mongoose.Schema({
 });
 
 const medicalFormSchema = new mongoose.Schema({
+  appointmentCode: { type: String, required: true },
   patientName: { type: String, required: true },
   patientEmail:{ type: String, required: true },
   examinationDate: { type: Date, required: true },         // Ngày khám

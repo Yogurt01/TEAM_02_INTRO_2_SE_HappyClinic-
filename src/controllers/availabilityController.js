@@ -161,7 +161,6 @@ async function syncAppointmentsToAvailability() {
         patientEmail: patient.email,
         patientPhone: patient.phone,
         patientAddress: patient.address || 'Chưa rõ',
-        isChecked: false,
         patientCode: patient.code,
         appointmentCode
       });

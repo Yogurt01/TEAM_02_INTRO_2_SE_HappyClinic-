@@ -44,7 +44,7 @@
   </style>
 </head>
 <body>
-	<% if (user?.role === 'admin') { %>
+  <% if (user?.role === 'admin') { %>
     <%- include('partials/adminNavbar') %>
   <% } else if (user?.role === 'doctor') { %>
     <%- include('partials/doctorNavbar') %>
@@ -54,7 +54,7 @@
 
   <div class="breadcrumb">
     <a href="/dashboard">TRANG CHỦ</a> &raquo;
-    <a href="/availability">QUẢN LÝ BỆNH NHÂN</a> &raquo;
+    <a href="/availability">QUẢN LÝ HỒ SƠ</a> &raquo;
     <span>HỒ SƠ CHI TIẾT</span>
   </div>
 
@@ -62,17 +62,17 @@
     <!-- Sidebar -->
     <div class="sidebar">
       <h2 style="margin-top: 10px ;border-bottom: 2px solid #3498db; padding-bottom: 5px ;color: #2c3e50; font-size: 25px; font-weight: bold;">Thông tin bệnh nhân</h2>
-        <% if (patient) { %>
-          <p stype="font-size: 15px"><strong>Mã BN:</strong> <%= patient.code %></p>
-          <p stype="font-size: 15px"><strong>Họ tên:</strong> <%= patient.fullName || patient.name || 'Không rõ' %></p>
-          <p stype="font-size: 15px"><strong>Ngày sinh:</strong> <%= patient.dob ? new Date(patient.dob).toLocaleDateString() : 'Không rõ' %></p>
-          <p stype="font-size: 15px"><strong>Giới tính:</strong> <%= patient.gender || 'Không rõ' %></p>
-          <p stype="font-size: 15px"><strong>Điện thoại:</strong> <%= patient.phone || 'Không rõ' %></p>
-          <p stype="font-size: 15px"><strong>Email:</strong> <%= patient.email || 'Không rõ' %></p>
-          <p stype="font-size: 15px"><strong>Địa chỉ:</strong> <%= patient.address || 'Không rõ' %></p>
-        <% } else { %>
-          <p>Không có thông tin bệnh nhân.</p>
-        <% } %>
+      <% if (patient) { %>
+        <p><strong>Mã BN:</strong> <%= patient.code %></p>
+        <p><strong>Họ tên:</strong> <%= patient.fullName || patient.name || 'Không rõ' %></p>
+        <p><strong>Ngày sinh:</strong> <%= patient.dob ? new Date(patient.dob).toLocaleDateString() : 'Không rõ' %></p>
+        <p><strong>Giới tính:</strong> <%= patient.gender || 'Không rõ' %></p>
+        <p><strong>Điện thoại:</strong> <%= patient.phone || 'Không rõ' %></p>
+        <p><strong>Email:</strong> <%= patient.email || 'Không rõ' %></p>
+        <p><strong>Địa chỉ:</strong> <%= patient.address || 'Không rõ' %></p>
+      <% } else { %>
+        <p>Không có thông tin bệnh nhân.</p>
+      <% } %>
     </div>
 
     <!-- Main content -->
@@ -86,49 +86,50 @@
         <div class="alert alert-danger"><%= error %></div>
       <% } %>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Ngày khám</th>
-            <th>Khoa</th>
-            <th>Chẩn đoán</th>
-            <th>Triệu chứng</th>
-            <th>Ghi chú</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% records.forEach(rec => { %>
-            <tr>
-              <% if (!rec.isChecked) { %>
-                <!-- Hồ sơ đang khám: cho chỉnh sửa -->
-                <form method="POST" action="/auth/medicalRecord/update">
-                  <td><%= new Date(rec.date).toLocaleDateString() %></td>
-                  <td><%= rec.department %></td>
-                  <td><textarea name="diagnosis"><%= rec.diagnosis %></textarea></td>
-                  <td><textarea name="symptoms" readonly><%= rec.symptoms %></textarea></td>
-                  <td><textarea name="note"><%= rec.note %></textarea></td>
-                  <td>
-                    <input type="hidden" name="appointmentCode" value="<%= rec.appointmentCode %>">
-                    <input type="hidden" name="patientCode" value="<%= rec.patientCode %>">
-                    <button class="save-btn" type="submit">Lưu</button>
-                  </td>
-                </form>
-              <% } else { %>
-                <!-- Hồ sơ đã khám: chỉ đọc -->
-                <td><%= new Date(rec.date).toLocaleDateString() %></td>
-                <td><%= rec.department %></td>
-                <td><textarea readonly><%= rec.diagnosis %></textarea></td>
-                <td><textarea readonly><%= rec.symptoms %></textarea></td>
-                <td><textarea readonly><%= rec.note %></textarea></td>
-                <td><em>Đã khám</em></td>
-              <% } %>
-            </tr>
-          <% }); %>
-        </tbody>
-      </table>
+      <% if (records.length === 0) { %>
+        <p class="text-gray-600">Không có hồ sơ bệnh án nào.</p>
+      <% } else { %>
+        <% records.forEach(record => { %>
+          <div class="border border-gray-300 rounded p-4 mb-5 bg-white shadow">
+            <!--<h3 class="text-lg font-bold text-blue-700 mb-2">Mã lịch hẹn: <%= record.appointmentCode %></h3>-->
+            <p><strong>Khoa:</strong> <%= record.department || 'Không rõ' %></p>
+            <p><strong>Chẩn đoán:</strong> <%= record.diagnosis || '...' %></p>
+            <p><strong>Triệu chứng:</strong> <%= record.symptoms || '...' %></p>
+            <p><strong>Ghi chú:</strong> <%= record.note || '...' %></p>
+
+            <% if (record.medicines && record.medicines.length > 0) { %>
+              <div class="mt-3">
+                <strong>Toa thuốc:</strong>
+                <table class="table-auto w-full mt-2 border">
+                  <thead class="bg-gray-200">
+                    <tr>
+                      <th class="border p-1">Tên thuốc</th>
+                      <th class="border p-1">Đơn vị</th>
+                      <th class="border p-1">Số lượng</th>
+                      <th class="border p-1">Cách dùng</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% record.medicines.forEach(med => { %>
+                      <tr>
+                        <td class="border p-1"><%= med.name %></td>
+                        <td class="border p-1"><%= med.unit %></td>
+                        <td class="border p-1"><%= med.quantity %></td>
+                        <td class="border p-1"><%= med.usage %></td>
+                      </tr>
+                    <% }) %>
+                  </tbody>
+                </table>
+              </div>
+            <% } else { %>
+              <p class="text-gray-500 mt-2">Không có toa thuốc.</p>
+            <% } %>
+          </div>
+        <% }) %>
+      <% } %>
     </div>
   </div>
-<%- include('partials/chatSupport') %>
+
+  <%- include('partials/chatSupport') %>
 </body>
 </html>

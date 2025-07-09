@@ -52,10 +52,14 @@ exports.renderCreateForm = async (req, res) => {
 exports.createMedicalForm = async (req, res) => {
   try {
     const { patientName, patientEmail, examinationDate, symptoms, predictedDisease } = req.body;
+    const appointmentId = req.body.appointmentId;
+
+    // 🔁 Lấy lịch hẹn để lấy appointmentCode
+    const appointment = await Appointment.findById(appointmentId).lean();
+    if (!appointment) return res.status(404).send('Không tìm thấy lịch hẹn');
 
     const rawMedicines = req.body.medicines || [];
 
-    // Convert object to array if needed
     const medicineArray = Array.isArray(rawMedicines)
       ? rawMedicines
       : Object.values(rawMedicines);
@@ -74,6 +78,7 @@ exports.createMedicalForm = async (req, res) => {
       .filter(med => med !== null);
 
     const newForm = new MedicalForm({
+      appointmentCode: appointment.code || appointment._id.toString(), // fallback
       patientName,
       patientEmail,
       examinationDate,
@@ -83,6 +88,8 @@ exports.createMedicalForm = async (req, res) => {
     });
 
     await newForm.save();
+
+
     createPaymentByEmail(patientEmail);
     res.redirect('/doctor/today');
   } catch (err) {

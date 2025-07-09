@@ -10,6 +10,15 @@ const medicalRecordSchema = new mongoose.Schema({
   symptoms: { type: String, required: true },
   patientCode: { type: String, required: true },
 
+  medicines: [
+  {
+    name: String,
+    unit: String,
+    quantity: Number,
+    usage: String
+  }
+],
+
 });
 
 module.exports = mongoose.model('MedicalRecord', medicalRecordSchema);

@@ -8,7 +8,6 @@ const availabilitySchema = new mongoose.Schema({
   patientName: { type: String, required: true },
   patientBirth: { type: String, required: true },
   symptoms: { type: String, required: true },
-  isChecked: { type: Boolean, default: false }, 
   patientCode: {type: String, required: true}
 });
 
