@@ -98,7 +98,10 @@ exports.postEditProfile = async (req, res) => {
         success: null
       });
     }
-
+    let limit = max;
+    if (limit > 40){
+      limit = 40
+    }
     // 3) Cập nhật vào database
     await User.findByIdAndUpdate(userId, {
       fullname,
@@ -113,7 +116,7 @@ exports.postEditProfile = async (req, res) => {
         district,
         city
       },
-      limitation: max
+      limitation: limit
     });
 
     // 4) Lấy lại dữ liệu user mới để render
