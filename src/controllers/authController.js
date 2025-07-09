@@ -197,11 +197,12 @@ exports.googleLogin = async (req, res) => {
       return res.render('login', { error: 'Your account is banned! Please contact admin for more information' });
     }
 
-    switch (existingUser.role) {
-      case 'admin':  return res.redirect('/dashboard/admin');
-      case 'doctor': return res.redirect('/dashboard/doctor');
-      default:       return res.redirect('/dashboard/patient');
-    }
+    // switch (existingUser.role) {
+    //   case 'admin':  return res.redirect('/dashboard/admin');
+    //   case 'doctor': return res.redirect('/dashboard/doctor');
+    //   default:       return res.redirect('/dashboard/patient');
+    // }
+    res.render('dashboard', {user: user, error: null});
   } catch (err) {
     console.error(err);
     res.redirect('/');

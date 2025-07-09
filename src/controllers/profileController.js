@@ -67,7 +67,8 @@ exports.postEditProfile = async (req, res) => {
       street,
       ward,
       district,
-      city
+      city,
+      max,
     } = req.body;
 
     // 1) Kiểm tra email có bị trùng với user khác không
@@ -111,7 +112,8 @@ exports.postEditProfile = async (req, res) => {
         ward,
         district,
         city
-      }
+      },
+      limitation: max
     });
 
     // 4) Lấy lại dữ liệu user mới để render
